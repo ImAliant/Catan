@@ -1,4 +1,4 @@
-package catane_camara_diamant;
+package Game;
 
 public class Launcher {
 
