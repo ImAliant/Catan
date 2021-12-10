@@ -3,7 +3,7 @@ apply plugin: 'jacoco'
 apply plugin: 'application'
 
 
-mainClassName = 'catane_camara_diamant.Launcher'
+mainClassName = 'Game.Launcher'
 
 repositories {
     mavenCentral()
