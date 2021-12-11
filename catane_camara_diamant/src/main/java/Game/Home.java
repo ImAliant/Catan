@@ -8,7 +8,7 @@ public class Home extends JFrame{
 
     private static JPanel panel, panelButton;
     private static JLabel l1, l2;
-    private static JComboBox player;
+    private static JComboBox<String> player;
 
     public Home(){
         //Configurations de la fenetre
@@ -39,7 +39,7 @@ public class Home extends JFrame{
 
         //ComboBox et action de la comboBox
         String[] choice ={"3 joueurs", "4 joueurs"};
-        player =new JComboBox(choice);
+        player =new JComboBox<String>(choice);
         player.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
