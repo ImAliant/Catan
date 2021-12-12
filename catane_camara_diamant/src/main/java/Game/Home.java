@@ -11,6 +11,10 @@ public class Home extends JFrame{
     private static JComboBox<String> player;
 
     public Home(){
+        homeDisplay();
+    }
+
+    public void homeDisplay(){
         //Configurations de la fenetre
         setSize(300, 175);
         setTitle("Accueil");
@@ -21,6 +25,7 @@ public class Home extends JFrame{
             System.out.println("Le chemin de l'icone n'existe pas !");
         }
         
+        setVisible(true);
         setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -61,15 +66,19 @@ public class Home extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e){
                 if(player.getSelectedIndex()==0){
-                    new Game(new Player[]{new Player("Joueur bleu", 0), 
+                    Game game = new Game(new Player[]{new Player("Joueur bleu", 0), 
                                           new Player("Joueur rouge", 1), 
                                           new Player("Joueur orange", 2)});
+                    game.start();
+                    dispose();
                 }
                 else{
-                    new Game(new Player[]{new Player("Joueur bleu", 0), 
+                    Game game = new Game(new Player[]{new Player("Joueur bleu", 0), 
                                           new Player("Joueur rouge", 1), 
                                           new Player("Joueur orange", 2),
                                           new Player("Joueur violet", 3)});
+                    game.start();
+                    dispose();
                 }
             }
         });

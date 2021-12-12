@@ -8,7 +8,7 @@ public class Launcher {
         EventQueue.invokeLater(new Runnable(){
             @Override
             public void run() {
-                new Home().setVisible(true);
+                new Home();
             }
         });
     }
