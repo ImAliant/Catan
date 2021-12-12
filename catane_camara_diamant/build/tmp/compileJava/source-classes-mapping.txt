@@ -1,9 +1,17 @@
-Game/Board.java
- Game.Board
+Game/Port.java
+ Game.Port
 Game/Building.java
  Game.Building
 Game/Resource.java
  Game.Resource
+Game/Case.java
+ Game.Case
+Game/DevCard.java
+ Game.DevCard
+Game/Board.java
+ Game.Board
+Game/GameDisplay.java
+ Game.GameDisplay
 Game/Game.java
  Game.Game
 Game/Road.java
@@ -11,18 +19,12 @@ Game/Road.java
 Game/Launcher.java
  Game.Launcher
  Game.Launcher$1
-Game/DevCard.java
- Game.DevCard
 Game/Home.java
  Game.Home
  Game.Home$1
  Game.Home$2
  Game.Home$3
-Game/Port.java
- Game.Port
 Game/Intersection.java
  Game.Intersection
-Game/Case.java
- Game.Case
 Game/Player.java
  Game.Player
