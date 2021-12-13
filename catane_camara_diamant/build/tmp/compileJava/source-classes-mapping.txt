@@ -1,5 +1,7 @@
 Game/Board.java
  Game.Board
+Game/GameDisplay.java
+ Game.GameDisplay
 Game/Building.java
  Game.Building
 Game/Resource.java
