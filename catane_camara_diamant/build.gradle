@@ -1,0 +1,25 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'application'
+
+
+mainClassName = 'Game.Launcher'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+jar {
+    manifest {
+        attributes "Main-Class":"$mainClassName"
+    }
+}
+
+dependencies {
+    testImplementation     'junit:junit:4.13'
+}
