@@ -38,5 +38,15 @@ public class Board {
     private void initRoads(){
         //Initialiser les aretes du plateau.
     }
-    
+
+
+    //Getters et Setters
+    public Case[] getCases() {return cases;}
+    public void setCases(Case[] cases) {this.cases = cases;}
+    public Intersection[] getIntersections() {return intersections;}
+    public void setIntersections(Intersection[] intersections) {this.intersections = intersections;}
+    public Road[] getRoads() {return roads;}
+    public void setRoads(Road[] roads) {this.roads = roads;}
+    public int getIndexRobber() {return indexRobber;}
+    public void setIndexRobber(int indexRobber) {this.indexRobber = indexRobber;} 
 }

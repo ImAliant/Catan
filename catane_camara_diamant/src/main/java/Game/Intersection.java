@@ -10,4 +10,11 @@ public class Intersection {
         this.building=building;
         player=null;
     }
+
+    //Getters et Setters
+    public int getId() {return id;}
+    public void setId(int id) {this.id = id;}
+    public Building getBuilding() {return building;}
+    public Player getPlayer() {return player;}
+    public void setPlayer(Player player) {this.player = player;}
 }

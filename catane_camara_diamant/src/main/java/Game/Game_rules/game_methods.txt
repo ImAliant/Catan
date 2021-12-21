@@ -1,0 +1,28 @@
+PLAYER :
+
+- Est ce que le joueur peut construire un nouveau batiment sur une case ?
+- Est ce que le joueur peut construire une route sur une arête ?
+- Est ce que le joueur a la route la plus longue ?
+- Est ce que le joueur a le chevalier le plus fort ?
+- Est ce que le joueur peut jouer une carte developpement ?
+
+- Methode joue(Board, Game) different chez Human et IA.
+
+GAME:
+
+- Fondation du jeu : boucle de 2 tours où les joueurs choissisent les emplacements de leurs colonies et de routes.
+- Tour : 
+  |_> Jet de dés 
+  |_> Plusieurs choix disponibles pour le joueur (commerce, constructions, carte dev).               
+- Est ce que la case est libre pour une nouvelle colonie/ville ?
+- Est ce que la route est libre pour une nouvelle route ?
+- Est ce que le joueur peut ameliorer un batiment où il possede deja une colonie ?
+- Mise a jour de l'interface graphique.
+
+GAMEDISPLAY:
+
+- Mise a jour du plateau.
+- Mise a jour des cases.
+- Mise a jour des routes.
+
+- Création de l'interface graphique.

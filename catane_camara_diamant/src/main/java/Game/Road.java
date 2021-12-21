@@ -1,8 +1,8 @@
 package Game;
 
 public class Road {
-    private int id1;
-    private int id2;
+    private final int id1;
+    private final int id2;
     private boolean road;
     private Player player;
     
@@ -12,4 +12,12 @@ public class Road {
         road=false;
         player=null;
     }
+
+    //Getters et Setters
+    public int getId1() {return id1;}
+    public int getId2() {return id2;}
+    public boolean isRoad() {return road;}
+    public void setRoad(boolean road) {this.road = road;}
+    public Player getPlayer() {return player;}
+    public void setPlayer(Player player) {this.player = player;}
 }

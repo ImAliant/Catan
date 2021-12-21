@@ -1,7 +1,7 @@
 package Game;
 
 public class Game implements Runnable{
-    private Player[] players;
+    private final Player[] players;
     private GameDisplay display;
     private Thread thread;
     private boolean running=false;
@@ -51,4 +51,13 @@ public class Game implements Runnable{
             e.printStackTrace();    
         }
     }
+
+    //Getters et Setters
+    public Player[] getPlayers() {return players;}
+    public GameDisplay getDisplay() {return display;}
+    public void setDisplay(GameDisplay display) {this.display = display;}
+    public Thread getThread() {return thread;}
+    public void setThread(Thread thread) {this.thread = thread;}
+    public boolean isRunning() {return running;}
+    public void setRunning(boolean running) {this.running = running;} 
 }

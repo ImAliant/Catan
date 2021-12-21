@@ -1,11 +1,11 @@
 package Game;
 
 public class Case {
-    private int id;
-    private Resource resource;
+    private final int id;
+    private final Resource resource;
     private boolean robber;
-    private int land;
-    private int diceRoll;
+    private final int land;
+    private final int diceRoll;
     
     public Case(int id, int land, Resource resource, int diceRoll){
         this.id=id;
@@ -13,4 +13,13 @@ public class Case {
         this.resource=resource;
         this.diceRoll=diceRoll;
     }
+
+
+    //Getters et Setters
+    public int getId() {return id;}
+    public Resource getResource() {return resource;}
+    public boolean isRobber() {return robber;}
+    public void setRobber(boolean robber) {this.robber = robber;}
+    public int getLand() {return land;}
+    public int getDiceRoll() {return diceRoll;}
 }
