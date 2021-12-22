@@ -17,7 +17,7 @@ public class GameDisplay extends JFrame{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         try {
-            setIconImage(new ImageIcon(getClass().getResource("image/colons_catanes_carre.jpg")).getImage());
+            setIconImage(new ImageIcon(getClass().getResource("Image/colons_catanes_carre.jpg")).getImage());
         } catch (Exception e) {
             System.out.println("Le chemin de l'icone n'existe pas !");
         }

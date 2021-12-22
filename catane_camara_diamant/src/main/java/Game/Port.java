@@ -1,11 +1,20 @@
 package Game;
 
 public class Port {
-    private int portType;
-    private Resource resource;
-    
-    public Port(int portType, Resource resource){
-        this.portType=portType;
-        this.resource=resource;
+    private final int portType; // 0 = 2 ressouces demandé spécifique / 0 = 3 ressouces demandé
+    private final Resource resource; //Resource spécifié si type "2:1"
+
+    public Port(Resource resource){ // port type "3:1"
+          this.portType = 0;
+          this.resource = resource;
+        }
+
+    public Port(){ // port type "2:1"
+        this.portType=1;
+        this.resource=null;
     }
+
+    //Getters et Setters
+    public int getPortType() {return portType;}
+    public Resource getResource() {return resource;}
 }

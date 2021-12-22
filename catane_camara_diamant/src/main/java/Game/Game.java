@@ -24,12 +24,12 @@ public class Game implements Runnable{
 
     @Override
     public void run() {
-        init(); 
+        init();
 
         while(running){ //Tant qu'il n'y pas de gagnant.
-            update(); 
+            update();
             render();
-        } 
+        }
 
         stop();
     }
@@ -48,7 +48,7 @@ public class Game implements Runnable{
         try {
             thread.join();
         } catch (InterruptedException e) {
-            e.printStackTrace();    
+            e.printStackTrace();
         }
     }
 }
