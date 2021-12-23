@@ -66,13 +66,13 @@ public class Home extends JFrame{
             public void actionPerformed(ActionEvent e){
                 if(player.getSelectedIndex()==0){
                     Game game = new Game(threePlayersArrayInit());
-                    game.start();
                     dispose();
+                    game.gameCatane();
                 }
                 else{
                     Game game = new Game(fourPlayersArrayInit());
-                    game.start();
                     dispose();
+                    game.gameCatane();
                 }
             }
         });

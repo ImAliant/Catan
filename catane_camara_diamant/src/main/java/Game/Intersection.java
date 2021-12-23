@@ -1,16 +1,23 @@
 package Game;
 
+import java.util.ArrayList;
+
 public class Intersection {
-    private static int id = -1;
+    private static int nextId = -1;
+
+    private int id;
     private Building building;
     private Player player;
     private Port port;
 
-    public Intersection(Building building, Port port){
-        id++;
+    private final Case[] caseAdj;
+
+    public Intersection(Building building, Port port, Case[] caseAdj){
+        id=nextId++;
         this.building=building;
         this.port=port;
         player=null;
+        this.caseAdj=caseAdj;
     }
 
     //Getters et Setters
@@ -21,4 +28,5 @@ public class Intersection {
     public void setBuilding(Building building) {this.building = building;}
     public Port getPort(){return port;}
     public void setPort(Port port) {this.port = port;}
+    public Case[] getCaseAdj() {return caseAdj;}
 }

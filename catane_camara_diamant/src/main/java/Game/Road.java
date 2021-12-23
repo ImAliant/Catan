@@ -13,6 +13,21 @@ public class Road {
         player=null;
     }
 
+    public boolean canUpgradeRoad(){
+        if(!road){
+            return true;
+        }
+        return false;
+    }
+    public boolean upgradeRoad(Player p){
+        if(!canUpgradeRoad()) return false;
+        
+        road=true;
+        player=p;
+        return true;
+    }
+
+    //Getters et Setters
     public int getId1() {return id1;}
     public int getId2() {return id2;}
     public boolean isRoad() {return road;}

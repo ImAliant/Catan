@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Human extends Player{
 
     public Human(String name, int color) {
-        super(name + "(Human)", color);
+        super(name + " (Humain)", color);
     }
     
     /*public void joue(Board b, Game g){

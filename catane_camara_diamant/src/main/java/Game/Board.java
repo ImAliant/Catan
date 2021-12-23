@@ -30,28 +30,6 @@ public class Board {
     // Le plateau a initialiser sera le plateau present sur le sujet. --je m'en
     // charge .IB
     // Pour l'instant pas de plateau initialise aleatoirement.
-    // Vu qu'on est sur un tableau simple , se lit de gauche a droite
-
-    /*
-     * cases[0] = new Case(FORET,FORET,6);
-     * cases[1] = new Case(PRE,PRE,10);
-     * cases[2] = new Case(CHAMPS,CHAMPS,11);
-     * cases[3] = new Case(PRE,PRE,8);
-     * cases[4] = new Case(CHAMPS,CHAMPS,4);
-     * cases[5] = new Case(COLLINE,COLLINE,10);
-     * cases[6] = new Case(FORET,FORET,5);
-     * cases[7] = new Case(MONTAGNE,MONTAGNE,12);
-     * cases[8] = new Case(MONTAGNE,MONTAGNE,3);
-     * cases[9] = new Case(DESERT,DESERT,DESERT);
-     * cases[9].setRobber(true);
-     * cases[10] = new Case(CHAMPS,CHAMPS,10);
-     * cases[11] = new Case(COLLINE,COLLINE,6);
-     * cases[12] = new Case(COLLINE,COLLINE,9);
-     * cases[13] = new Case(MONTAGNE,MONTAGNE,8);
-     * cases[14] = new Case(PRE,PRE,5);
-     * cases[15] = new Case(FORET,FORET,2);
-     */
-
     cases = new Case[] {
         new Case(FORET, new Resource(Resource.BOIS), 6),
         new Case(PRE, new Resource(Resource.MOUTON), 10),
@@ -77,63 +55,75 @@ public class Board {
 
   private void initIntersections() {
     // Initialiser les intersections du plateau.
-    // Initialiser la position des ports.
-    /*
-     * this.intersections = new Intersection[25];
-     * for(int i = 0; i<this.intersections.length; i++){
-     * if(i == 0 || i == 3 || i == 4 ||i == 5 || i == 19 || i == 24){
-     * this.intersections[i] = new Port(0);
-     * }else if(i == 2 || i == 3){
-     * this.intersections[i] = new Port(0,PRE);
-     * }else if(i == 9 || i == 14){
-     * this.intersections[i] = new Port(0,FORET);
-     * }else if(i == 10 || i == 15 ){
-     * this.intersections[i] = new Port(0,CHAMPS);
-     * }else if(i ==20 || i == 21){
-     * this.intersections[i] = new Port(0,MONTAGNE);
-     * }else if(i ==22 || i == 23){
-     * this.intersections[i] = new Port(0,COLLINE);
-     * }else{
-     * this.intersections[i] = new Intersection(0);
-     * }
-     * 
-     * if(i == 0 || i == 4 || i == 20 || i == 24){
-     * this.intersections[i].setCoin(true);
-     * }
-     * 
-     * }
-     */
+    // Initialiser la position des ports. 
     intersections = new Intersection[] {
-        new Intersection(new Building(0), new Port()),
-        new Intersection(new Building(0), new Port(new Resource(Resource.MOUTON))),
-        new Intersection(new Building(0), new Port(new Resource(Resource.MOUTON))),
-        new Intersection(new Building(0), new Port()),
-        new Intersection(new Building(0), new Port()),
-        new Intersection(new Building(0), new Port()),
-        new Intersection(new Building(0), null),
-        new Intersection(new Building(0), null),
-        new Intersection(new Building(0), null),
-        new Intersection(new Building(0), new Port(new Resource(Resource.BOIS))),
-        new Intersection(new Building(0), new Port(new Resource(Resource.BLE))),
-        new Intersection(new Building(0), null),
-        new Intersection(new Building(0), null),
-        new Intersection(new Building(0), null),
-        new Intersection(new Building(0), new Port(new Resource(Resource.BOIS))),
-        new Intersection(new Building(0), new Port(new Resource(Resource.BLE))),
-        new Intersection(new Building(0), null),
-        new Intersection(new Building(0), null),
-        new Intersection(new Building(0), null),
-        new Intersection(new Building(0), new Port()),
-        new Intersection(new Building(0), new Port(new Resource(Resource.PIERRE))),
-        new Intersection(new Building(0), new Port(new Resource(Resource.PIERRE))),
-        new Intersection(new Building(0), new Port(new Resource(Resource.ARGILE))),
-        new Intersection(new Building(0), new Port(new Resource(Resource.ARGILE))),
-        new Intersection(new Building(0), new Port())
+        new Intersection(new Building(0), new Port(), new Case[]{cases[0]}),
+        new Intersection(new Building(0), new Port(new Resource(Resource.MOUTON)), new Case[]{cases[0], cases[1]}),
+        new Intersection(new Building(0), new Port(new Resource(Resource.MOUTON)), new Case[]{cases[1], cases[2]}),
+        new Intersection(new Building(0), new Port(), new Case[]{cases[2], cases[3]}),
+        new Intersection(new Building(0), new Port(), new Case[]{cases[3]}),
+        new Intersection(new Building(0), new Port(), new Case[]{cases[0], cases[4]}),
+        new Intersection(new Building(0), null, new Case[]{cases[0], cases[1], cases[4], cases[5]}),
+        new Intersection(new Building(0), null, new Case[]{cases[1], cases[2], cases[5], cases[6]}),
+        new Intersection(new Building(0), null, new Case[]{cases[2], cases[3], cases[6], cases[7]}),
+        new Intersection(new Building(0), new Port(new Resource(Resource.BOIS)), new Case[]{cases[3], cases[7]}),
+        new Intersection(new Building(0), new Port(new Resource(Resource.BLE)), new Case[]{cases[4], cases[8]}),
+        new Intersection(new Building(0), null, new Case[]{cases[4], cases[5], cases[8], cases[9]}),
+        new Intersection(new Building(0), null, new Case[]{cases[5], cases[6], cases[9], cases[10]}),
+        new Intersection(new Building(0), null, new Case[]{cases[6], cases[7], cases[10], cases[11]}),
+        new Intersection(new Building(0), new Port(new Resource(Resource.BOIS)), new Case[]{cases[7], cases[11]}),
+        new Intersection(new Building(0), new Port(new Resource(Resource.BLE)), new Case[]{cases[8], cases[12]}),
+        new Intersection(new Building(0), null, new Case[]{cases[8], cases[9], cases[12], cases[13]}),
+        new Intersection(new Building(0), null, new Case[]{cases[9], cases[10], cases[13], cases[14]}),
+        new Intersection(new Building(0), null, new Case[]{cases[10], cases[11], cases[14], cases[15]}),
+        new Intersection(new Building(0), new Port(), new Case[]{cases[11], cases[15]}),
+        new Intersection(new Building(0), new Port(new Resource(Resource.PIERRE)), new Case[]{cases[12]}),
+        new Intersection(new Building(0), new Port(new Resource(Resource.PIERRE)), new Case[]{cases[12], cases[13]}),
+        new Intersection(new Building(0), new Port(new Resource(Resource.ARGILE)), new Case[]{cases[13], cases[14]}),
+        new Intersection(new Building(0), new Port(new Resource(Resource.ARGILE)), new Case[]{cases[14], cases[15]}),
+        new Intersection(new Building(0), new Port(), new Case[]{cases[15]})
     };
   }
 
   private void initRoads() {
     // Initialiser les aretes du plateau.
+    roads =new Road[]{
+      new Road(0,1), new Road(0,5),
+      new Road(1,2), new Road(1,6),
+      new Road(2,3), new Road(2,7),
+      new Road(3,4), new Road(3,8),
+      new Road(4,9),
+      new Road(5,6), new Road(5,10),
+      new Road(6,7), new Road(6,11),
+      new Road(7,8), new Road(7,12),
+      new Road(8,9), new Road(8,13),
+      new Road(9,14),
+      new Road(10,11), new Road(10,15),
+      new Road(11,12), new Road(11,16),
+      new Road(12,13), new Road(12,17),
+      new Road(13,14), new Road(13,18),
+      new Road(14,19),
+      new Road(15,16), new Road(15,20),
+      new Road(16,17), new Road(16,21),
+      new Road(17,18), new Road(17,22),
+      new Road(18,19), new Road(18,23),
+      new Road(19,24),
+      new Road(20,21),
+      new Road(21,22),
+      new Road(22,23),
+      new Road(23,24)
+    };
+  }
+
+  public Road getSpecifiedRoad(int id1, int id2){
+    Road rep=null;
+    for(Road r : roads){
+      if(r.getId1()==id1 && r.getId2()==id2){
+        rep=r;
+        break;
+      }
+    }
+    return rep;
   }
 
   //Getters et Setters

@@ -1,14 +1,16 @@
 package Game;
 
 public class Case {
-    private static int id = -1;
+    private static int nextId = -1;
+
+    private int id;
     private final Resource resource;
     private boolean robber;
     private final int land;
     private final int diceRoll;
 
     public Case(int land, Resource resource, int diceRoll){
-        id++;
+        id = nextId++;
         this.land=land;
         this.resource=resource;
         this.diceRoll=diceRoll;
