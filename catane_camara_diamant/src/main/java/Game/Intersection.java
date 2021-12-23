@@ -1,7 +1,5 @@
 package Game;
 
-import java.util.ArrayList;
-
 public class Intersection {
     private static int nextId = -1;
 
