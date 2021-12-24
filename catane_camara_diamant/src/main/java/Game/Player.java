@@ -99,8 +99,55 @@ public class Player {
         }
     }
 
+    public boolean resourceForSettlement(){
+        if(playerResources[Resource.BOIS]>=1 && playerResources[Resource.ARGILE]>=1 && playerResources[Resource.BLE]>=1 && playerResources[Resource.MOUTON]>=1){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean resourceForCity(){
+        if(playerResources[Resource.BLE]>=2 && playerResources[Resource.PIERRE]>=3){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean resourceForRoad(){
+        if(playerResources[Resource.BOIS]>=1 && playerResources[Resource.ARGILE]>=1){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean resourceForDevCard(){
+        if(playerResources[Resource.BLE]>=1 && playerResources[Resource.MOUTON]>=1 && playerResources[Resource.PIERRE]>=1){
+            return true;
+        }
+        return false;
+    }
+
+    public ArrayList<Port> getPortsOfPlayer(){
+        ArrayList<Port> portOfPlayer=new ArrayList<Port>();
+        for(int i=0; i<settlements.size(); i++){
+            if(settlements.get(i).getPort()!=null){
+                portOfPlayer.add(settlements.get(i).getPort());
+            }
+        }
+        for(int i=0; i<cities.size(); i++){
+            if(cities.get(i).getPort()!=null){
+                portOfPlayer.add(settlements.get(i).getPort());
+            }
+        }
+        return portOfPlayer;
+    }
+
     public void collectResources(int resourceType){
         playerResources[resourceType]++;
+    }
+
+    public void removeResource(int resourceType, int nb){
+        playerResources[resourceType] =- nb;
     }
 
     public Intersection lastSettlements(){

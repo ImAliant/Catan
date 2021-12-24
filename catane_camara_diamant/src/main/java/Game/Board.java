@@ -1,5 +1,7 @@
 package Game;
 
+import java.util.ArrayList;
+
 public class Board {
 
   public static final int DESERT = -1;
@@ -124,6 +126,16 @@ public class Board {
       }
     }
     return rep;
+  }
+
+  public ArrayList<Port> getAllPorts(){
+    ArrayList<Port> allPorts =new ArrayList<Port>();
+    for(Intersection inter : intersections){
+      if(inter.getPort()!=null){
+        allPorts.add(inter.getPort());
+      }
+    }
+    return allPorts;
   }
 
   //Getters et Setters

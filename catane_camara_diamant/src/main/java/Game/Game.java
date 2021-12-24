@@ -72,21 +72,21 @@ public class Game {
         boolean turnCompleted = false;
         while(!turnCompleted){
             System.out.println("Que souhaitez-vous faire a présent ?");
-
+            System.out.println("Vous pouvez construire, faire du commerce avec les ports ou jouer une carte de developpement.");
+            
             boolean reponseValide = false;
             while(!reponseValide){
-                System.out.println("Vous pouvez construire, faire du commerce avec les ports ou jouer une carte de developpement.");
-                System.out.println("(construire | echange | carte");
+                System.out.println("Choix : construire | echange | carte");
                 
                 String rep = scan.nextLine();
                 
                 switch (rep) {
                     case "construire":
-                        
+                        buildAnswer(playerTurn);
                         reponseValide=true;
                         break;
                     case "echange":
-
+                        //methode tradeAnswer()
                         reponseValide=true;
                         break;
                     case "carte":
@@ -99,6 +99,131 @@ public class Game {
                 }
             }
         }
+    }
+
+
+
+    public void buildAnswer(int playerTurn){
+        boolean reponseValide=false;
+        while(!reponseValide){
+            System.out.println("Que souhaitez-vous construire (ou souhaitez-vous revenir dans les choix précédent) ? (colonie/ville/route/choix)"); //Le choix "choix" nous fait revenir dans la méthode turn.
+            String rep=scan.nextLine();
+            switch (rep) {
+                case "colonie":
+                    if(players[playerTurn].resourceForSettlement()){
+                        System.out.println("Choisissez l'emplacement de la colonie (0 à 24): ");
+
+                        int rep1 = scan.nextInt();
+
+                        players[playerTurn].buildSettlement(rep1, board);
+                        reponseValide=true;
+                    }
+                    else{
+                        System.out.println("Vous n'avez pas les resources nécessaires pour construire une colonie !");
+                    }
+                    break;
+                case "ville":
+                    if(players[playerTurn].resourceForCity()){
+                        System.out.println("Choisissez l'emplacement de la ville (0 à 24): ");
+
+                        int rep1=scan.nextInt();
+
+                        players[playerTurn].buildCity(rep1, board);
+                        reponseValide=true;
+                    }
+                    else{
+                        System.out.println("Vous n'avez pas les resources nécessaires pour construire une ville !");
+                    }
+                    break;
+                case "route":
+                    if(players[playerTurn].resourceForRoad()){
+                        System.out.println("Choisissez l'emplacement de la route (Saisissez les id de deux intersections adjacentes) :");
+                        
+                        int rep1=scan.nextInt();
+                        int rep2=scan.nextInt();
+
+                        players[playerTurn].buildRoad(rep1, rep2, board);
+                        reponseValide=true;
+                    }
+                    else{
+                        System.out.println("Vous n'avez pas les resources nécessaires pour construire une route !");
+                    }
+                    break;
+                case "choix":
+                    reponseValide=true;
+                    break;
+                default:
+                    System.out.println("Ce choix de construction n'existe pas !");
+                    break;
+            }
+        }
+    }    
+
+    public void tradeAnswer(int playerTurn){
+        System.out.println("Voici tous les ports du plateau : ");
+        for(Port p : board.getAllPorts()){
+            int index=0;
+            System.out.println("    "+p.toString() + ": "+ index);
+            index++;
+        }
+
+        
+
+
+             /*if(rep<=players[playerTurn].getPortsOfPlayer().size()-1){
+                switch (players[playerTurn].getPortsOfPlayer().get(rep).getPortType()) {
+                    case 0:
+                        if(players[playerTurn].getPlayerResources()[players[playerTurn].getPortsOfPlayer().get(rep).getResource().getResourceType()]>=2){
+                            System.out.println("Choisissez la ressource que voulez en échange : (bois/pierre/ble/mouton/argile)");
+                                
+                            String rep1=scan.nextLine();
+                                
+                            players[playerTurn].removeResource(players[playerTurn].getPortsOfPlayer().get(rep).getResource().getResourceType(), 2);
+                            players[playerTurn].collectResources(askedResource(rep1));
+                            reponseValide=true;
+                        }
+                        else{
+                            System.out.println("Vous n'avez pas assez de ressource pour échanger avec ce port !");
+                        }
+                    break;
+                case 1:
+                    if(players[playerTurn].getPlayerResources()[players[playerTurn].getPortsOfPlayer().get(rep).getResource().getResourceType()]>=2){
+                        System.out.println("Choisissez la ressource que voulez en échange : (bois/pierre/ble/mouton/argile)");
+                            
+                        String rep1=scan.nextLine();
+                            
+                        players[playerTurn].removeResource(players[playerTurn].getPortsOfPlayer().get(rep).getResource().getResourceType(), 2);
+                        players[playerTurn].collectResources(askedResource(rep1));
+                        reponseValide=true;
+                    }
+                    else{
+                        System.out.println("Vous n'avez pas assez de ressource pour échanger avec ce port !");
+                    }
+                    break;
+            }
+        }*/
+    }
+
+    public int askedResource(String resourceType){
+        int resource=0;
+        switch (resourceType) {
+            case "bois":
+                resource=Resource.BOIS;
+                break;
+            case "pierre":
+                resource=Resource.BOIS;
+                break;
+            case "ble":
+                resource=Resource.BOIS;
+                break;
+            case "mouton":
+                resource=Resource.BOIS;
+                break;
+            case "argile":
+                resource=Resource.BOIS;
+                break;
+        }
+        return resource;
     }
 
     public int diceRolls(){

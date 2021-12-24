@@ -14,6 +14,31 @@ public class Resource {
         this.resourceType=resourceType;
     }
 
+    public String toString(){
+        String resource="";
+        switch (resourceType) {
+            case BOIS: 
+                resource="BOIS";
+                break;
+            case PIERRE:
+                resource="PIERRE";
+                break;
+            case BLE:
+                resource="BLE";
+                break;
+            case MOUTON:
+                resource="MOUTON";
+                break;
+            case ARGILE:
+                resource="ARGILE";
+                break;
+            case DESERT:
+                resource="DESERT";
+                break;
+        }
+        return resource;
+    }
+
     //Getters et Setters
     public int getResourceType() {return resourceType;}
 }
