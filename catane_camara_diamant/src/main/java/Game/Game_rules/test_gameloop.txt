@@ -1,0 +1,37 @@
+Representation plateau :
+    0------1------2------3------4
+    |   6  |  10  |  11  |   8  |
+    |      |      |      |      |
+    5------6------7------8------9
+    |   4  |  10  |   5  |  12  |
+    |      |      |      |      |
+    10----11-----12-----13-----14
+    |   3  |  -1  |  10  |   6  |
+    |      |      |      |      |
+    15----16-----17-----18-----19
+    |   9  |   8  |   5  |   2  |
+    |      |      |      |      |
+    20----21-----22-----23-----24
+
+Test 3 joueur (test pas définitif et fonctionnel a l'instant T):
+
+    -Joueur bleu place colonie en 0.
+    -            place route en (0 1).
+    -Joueur rouge place colonie en 4.
+    -             place route en (3 4).
+    -Joueur orange place colonie en 24.
+    -              place route en (23 24).
+
+    -Joueur bleu place colonie en 6.
+    -            place route en (5 6).
+    -Joueur rouge place colonie en 12.
+    -             place route en (12 13).
+    -Joueur orange place colonie en 21.
+    -              place route en (21 16).
+
+    -Joueur bleu ne fait rien.
+
+    -Joueur rouge ne fait rien.
+
+    -Joueur orange veut construire.
+        -> Pas assez de ressource il doit donc revenir au choix précédent.

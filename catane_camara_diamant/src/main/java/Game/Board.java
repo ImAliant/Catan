@@ -120,22 +120,12 @@ public class Board {
   public Road getSpecifiedRoad(int id1, int id2){
     Road rep=null;
     for(Road r : roads){
-      if(r.getId1()==id1 && r.getId2()==id2){
+      if(r.getId1()==id1 && r.getId2()==id2 || r.getId1()==id2 && r.getId2()==id1){
         rep=r;
         break;
       }
     }
     return rep;
-  }
-
-  public ArrayList<Port> getAllPorts(){
-    ArrayList<Port> allPorts =new ArrayList<Port>();
-    for(Intersection inter : intersections){
-      if(inter.getPort()!=null){
-        allPorts.add(inter.getPort());
-      }
-    }
-    return allPorts;
   }
 
   //Getters et Setters

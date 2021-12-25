@@ -35,24 +35,30 @@ public class Player {
         victoryPoint=0;
     }
 
-    public void buildSettlement(int id, Board board){
+    public void buildSettlement(int id, Board board, int turn){
         if(id >= 0 && id <=24){
             if(board.getIntersections()[id].getBuilding().upgradeToSettlements()){
                 settlements.add(board.getIntersections()[id]);
+                if(turn!=0){
+                    removeResource(Resource.BOIS, 1);
+                    removeResource(Resource.ARGILE, 1);
+                    removeResource(Resource.BLE, 1);
+                    removeResource(Resource.MOUTON, 1);
+                }
                 victoryPoint+=1;
             }
             else{
                 System.out.println("Cette intersection ne peut pas être amélioré en colonie !");
                 System.out.println("Saississez un nouvel id (0 à 24) : ");
                 int rep=scan.nextInt();
-                buildSettlement(rep, board);
+                buildSettlement(rep, board, turn);
             }
         }
         else{
             System.out.println("Cette intersection n'existe pas !");
             System.out.println("Saississez un nouvel id (0 à 24) : ");
             int rep=scan.nextInt();
-            buildSettlement(rep, board);
+            buildSettlement(rep, board, turn);
         }
     }
 
@@ -61,6 +67,8 @@ public class Player {
             if(board.getIntersections()[id].getBuilding().upgradeToCity()){
                 cities.add(board.getIntersections()[id]);
                 settlements.remove(board.getIntersections()[id]);
+                removeResource(Resource.BLE, 2);
+                removeResource(Resource.PIERRE, 3);
                 victoryPoint+=2;
             }
             else{
@@ -78,16 +86,30 @@ public class Player {
         }
     }
 
-    public void buildRoad(int id1, int id2, Board board){
-        if((id1 >= 0 && id1 <= 24) && (id2 == id1+1 || id2 == id1-1)){
-            if(board.getSpecifiedRoad(id1, id2).upgradeRoad(this))
-                roads.add(board.getSpecifiedRoad(id1, id2));
+    public void buildRoad(int id1, int id2, Board board, int turn){
+        if((id1 >= 0 && id1 <= 24) && (id2 >= 0 && id2 <= 24)){
+            if(board.getSpecifiedRoad(id1, id2)!=null){
+                if(board.getSpecifiedRoad(id1, id2).upgradeRoad(this)){
+                    if(turn!=0){
+                        removeResource(Resource.BOIS, 1);
+                        removeResource(Resource.ARGILE, 1);
+                    }
+                    roads.add(board.getSpecifiedRoad(id1, id2));
+                }
+                else{
+                    System.out.println("Cette arête possède déjà une route !");
+                    System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
+                    int rep1=scan.nextInt();
+                    int rep2=scan.nextInt();
+                    buildRoad(rep1, rep2, board, turn);
+                }
+            }
             else{
-                System.out.println("Cette arête possède déjà une route !");
+                System.out.println("Cette route n'existe pas !");
                 System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
                 int rep1=scan.nextInt();
                 int rep2=scan.nextInt();
-                buildRoad(rep1, rep2, board);
+                buildRoad(rep1, rep2, board, turn);
             }
         }
         else{
@@ -95,7 +117,7 @@ public class Player {
             System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
             int rep1=scan.nextInt();
             int rep2=scan.nextInt();
-            buildRoad(rep1, rep2, board);
+            buildRoad(rep1, rep2, board, turn);
         }
     }
 
@@ -142,12 +164,59 @@ public class Player {
         return portOfPlayer;
     }
 
+    public ArrayList<Port> getPortsType2OfPlayer(){
+        ArrayList<Port> portType2OfPlayer =new ArrayList<Port>();
+        for(int i=0; i<getPortsOfPlayer().size(); i++){
+            if(getPortsOfPlayer().get(i).getPortType()==0)
+                portType2OfPlayer.add(getPortsOfPlayer().get(i));
+        }
+        return portType2OfPlayer;
+    }
+
+    public ArrayList<Port> getPortsType3OfPlayer(){
+        ArrayList<Port> portType3OfPlayer =new ArrayList<Port>();
+        for(int i=0; i<getPortsOfPlayer().size(); i++){
+            if(getPortsOfPlayer().get(i).getPortType()==1)
+                portType3OfPlayer.add(getPortsOfPlayer().get(i));
+        }
+        return portType3OfPlayer;
+    }
+
     public void collectResources(int resourceType){
-        playerResources[resourceType]++;
+        if(resourceType!=-1)
+            playerResources[resourceType]++;
     }
 
     public void removeResource(int resourceType, int nb){
-        playerResources[resourceType] =- nb;
+        playerResources[resourceType] -= nb;
+    }
+
+    public String resourceOfPlayerToString(){
+        String s="";
+        s+="Ressource du " + name + " : [";
+        for(int resource : playerResources){
+            s+=(resource+" ");
+        }
+        s+="] (bois/pierre/ble/mouton/argile)";
+        return s;
+    }
+
+    public boolean hasTwoResources(int resource){
+        if(playerResources[resource]>=2)
+            return true;
+        return false;
+    }
+
+    public boolean hasThreeResources(int resource){
+        if(playerResources[resource]>=3)
+            return true;
+        return false;
+    }
+
+    public boolean hasFourResources(int resource){
+        if(playerResources[resource]>=4)
+            return true;
+        return false;
     }
 
     public Intersection lastSettlements(){

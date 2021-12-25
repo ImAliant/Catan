@@ -1,7 +1,7 @@
 package Game;
 
 public class Port {
-    private final int portType; // 0 = 2 ressouces demandé spécifique / 0 = 3 ressouces demandé
+    private final int portType; // 0 = 2 ressouces demandé spécifique / 1 = 3 ressouces demandé
     private final Resource resource; //Resource spécifié si type "2:1"
 
     public Port(Resource resource){ // port type "2:1"
@@ -15,7 +15,7 @@ public class Port {
     }
 
     public String toString(){
-        if(portType==0){
+        if(portType==1){
             return "3:1";
         }
         return "2:1 ("+resource.toString()+")";
