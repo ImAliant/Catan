@@ -3,6 +3,7 @@ package Game;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Player {
     private String name;
@@ -134,7 +135,7 @@ public abstract class Player {
                         
                         ArrayList<Integer> canBuilRoad = game.intersectionsRoadIA(rep1);
 
-                        rep2=canBuilRoad.get(rand.nextInt(canBuilRoad.size()));
+                        rep2=canBuilRoad.get(ThreadLocalRandom.current().nextInt(0, canBuilRoad.size()));
                     }
                     buildRoad(rep1, rep2, board, turn, game);
                 }

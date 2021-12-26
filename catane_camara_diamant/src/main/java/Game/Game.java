@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Game {
     private Player[] players;
@@ -73,13 +74,11 @@ public class Game {
                             System.out.println("\nChoisissez la position de votre deuxième colonie : (0 à 24)");
                     
                         int rep = scan.nextInt();
+                        scan.nextLine();
     
-                        if(distanceRules(rep)){
+                        if(distanceRules(rep, player)){
                             player.buildSettlement(rep, board, turn);
                             reponseValide1=true;
-                        }
-                        else{
-                            System.out.println("Vous ne pouvez pas construire sur cette intersection. La règle de distance des colonies n'est pas respecté !");
                         }
                     }
 
@@ -90,7 +89,9 @@ public class Game {
                         else 
                             System.out.println("\nChoisissez la position de votre deuxième route (Saisir les deux id des intersections où est présente l'arête) : ");
                         int rep1 = scan.nextInt();
+                        scan.nextLine();
                         int rep2 = scan.nextInt();
+                        scan.nextLine();
 
                         if(idForRoadHasSettlementsOrCity(rep1, rep2, player)){
                             player.buildRoad(rep1, rep2, board, turn, this);
@@ -102,11 +103,12 @@ public class Game {
                     }
                 }
                 else{
+                    int rep=0;
                     boolean reponseValide1=false;
                     while(!reponseValide1){
-                        int rep=0+rand.nextInt(24-0);
+                        rep=0+rand.nextInt(24-0);
 
-                        if(distanceRules(rep)){
+                        if(distanceRules(rep, player)){
                             player.buildSettlement(rep, board, turn);
                             reponseValide1=true;
                         }
@@ -114,14 +116,12 @@ public class Game {
 
                     boolean reponseValide2=false;
                     while(!reponseValide2){
-                        int rep1=player.getSettlements().get(rand.nextInt(player.getSettlements().size())).getId();
+                        ArrayList<Integer> canBuilRoad = intersectionsRoadIA(rep);
                         
-                        ArrayList<Integer> canBuilRoad = intersectionsRoadIA(rep1);
+                        int rep2=canBuilRoad.get(ThreadLocalRandom.current().nextInt(0, canBuilRoad.size()));
 
-                        int rep2=canBuilRoad.get(rand.nextInt(canBuilRoad.size()));
-
-                        if(idForRoadHasSettlementsOrCity(rep1, rep2, player)){
-                            player.buildRoad(rep1, rep2, board, turn, this);
+                        if(idForRoadHasSettlementsOrCity(rep, rep2, player)){
+                            player.buildRoad(rep, rep2, board, turn, this);
                             reponseValide2=true;
                         }
                     }
@@ -134,7 +134,6 @@ public class Game {
                 player.collectResources(player.lastSettlements().getCaseAdj()[i].getResource().getResourceType(), 1);
             }
         }
-        scan.nextLine();
     }
 
     public void buildAnswer(Player player){
@@ -150,7 +149,7 @@ public class Game {
                         int rep1 = scan.nextInt();
                         scan.nextLine();
 
-                        if(distanceRules(rep1)){
+                        if(distanceRules(rep1, player)){
                             player.buildSettlement(rep1, board, turn);
                             reponseValide=true;
                         }
@@ -166,7 +165,7 @@ public class Game {
                         int rep1=scan.nextInt();
                         scan.nextLine();
 
-                        if(distanceRules(rep1)){
+                        if(distanceRules(rep1, player)){
                             player.buildCity(rep1, board);
                             reponseValide=true;
                         }
@@ -184,8 +183,12 @@ public class Game {
                         int rep2=scan.nextInt();
                         scan.nextLine();
 
-                        player.buildRoad(rep1, rep2, board, turn, this);
-                        reponseValide=true;
+                        if(idHasRoadOfPlayer(rep1, rep2, player) || idForRoadHasSettlementsOrCity(rep1, rep2, player)){
+                            player.buildRoad(rep1, rep2, board, turn, this);
+                            reponseValide=true;
+                        }
+                        else
+                            System.out.println("La route car elle n'est pas placé sur une intersection déjà connecté a une route ou car elle n'est pas placé sur une intersection possedant une ville.");
                     }
                     else{
                         System.out.println("Vous n'avez pas les resources nécessaires pour construire une route !");
@@ -992,7 +995,7 @@ public class Game {
         player.addVictoryPoint(1);
     }
 
-    public boolean distanceRules(int id){
+    public boolean distanceRules(int id, Player player){
         if(id==0){
             if(board.getIntersections()[id+5].getPlayer()==null && board.getIntersections()[id+1].getPlayer()==null){
                 return true;
@@ -1039,8 +1042,8 @@ public class Game {
                 return true;
             }
         }
-        if(players[playerTurn] instanceof Human){
-            System.out.println("La régle distance des colonies/ville pas respecté !");
+        if(player instanceof Human){
+            System.out.println("Vous ne pouvez pas construire sur cette intersection. La règle de distance des colonies n'est pas respecté !");
         }
         return false;
     }
@@ -1080,8 +1083,20 @@ public class Game {
     }
 
     public boolean idForRoadHasSettlementsOrCity(int id1, int id2, Player player){
+        if(id1<0 || id1>24 || id2<0 || id2>24)
+            return false;
         if(board.getIntersections()[id1].getPlayer()==player || board.getIntersections()[id2].getPlayer()==player)
             return true;
+        return false;
+    }
+
+    public boolean idHasRoadOfPlayer(int id1, int id2, Player player){
+        if(id1<0 || id1>24 || id2<0 || id2>24)
+            return false;
+        for(Road road : board.getRoads()){
+            if((road.getId1()==id1 || road.getId2()==id2) && road.getPlayer()==player)
+                return true;
+        }
         return false;
     }
 
@@ -1095,50 +1110,50 @@ public class Game {
         return roads;
     }
 
-    public ArrayList<Integer> intersectionsRoadIA(int rep){
+    public ArrayList<Integer> intersectionsRoadIA(int id){
         ArrayList<Integer> canBuilRoad =new ArrayList<Integer>();
 
-        if(rep==0){
-            canBuilRoad.add(board.getIntersections()[rep+1].getId());
-            canBuilRoad.add(board.getIntersections()[rep+5].getId());
+        if(id==0){
+            canBuilRoad.add(board.getIntersections()[id+1].getId());
+            canBuilRoad.add(board.getIntersections()[id+5].getId());
         }
-        else if(rep==4){
-            canBuilRoad.add(board.getIntersections()[rep-1].getId());
-            canBuilRoad.add(board.getIntersections()[rep+5].getId());
+        else if(id==4){
+            canBuilRoad.add(board.getIntersections()[id-1].getId());
+            canBuilRoad.add(board.getIntersections()[id+5].getId());
         }
-        else if(rep==20){
-            canBuilRoad.add(board.getIntersections()[rep-5].getId());
-            canBuilRoad.add(board.getIntersections()[rep+1].getId());
+        else if(id==20){
+            canBuilRoad.add(board.getIntersections()[id-5].getId());
+            canBuilRoad.add(board.getIntersections()[id+1].getId());
         }
-        else if(rep==24){
-            canBuilRoad.add(board.getIntersections()[rep-1].getId());
-            canBuilRoad.add(board.getIntersections()[rep-5].getId());
+        else if(id==24){
+            canBuilRoad.add(board.getIntersections()[id-1].getId());
+            canBuilRoad.add(board.getIntersections()[id-5].getId());
         }
-        else if(rep>0 && rep<4){
-            canBuilRoad.add(board.getIntersections()[rep-1].getId());
-            canBuilRoad.add(board.getIntersections()[rep+5].getId());
-            canBuilRoad.add(board.getIntersections()[rep+1].getId());
+        else if(id>0 && id<4){
+            canBuilRoad.add(board.getIntersections()[id-1].getId());
+            canBuilRoad.add(board.getIntersections()[id+5].getId());
+            canBuilRoad.add(board.getIntersections()[id+1].getId());
         }
-        else if(rep>20 && rep<24){
-            canBuilRoad.add(board.getIntersections()[rep-1].getId());
-            canBuilRoad.add(board.getIntersections()[rep-5].getId());
-            canBuilRoad.add(board.getIntersections()[rep+1].getId());
+        else if(id>20 && id<24){
+            canBuilRoad.add(board.getIntersections()[id-1].getId());
+            canBuilRoad.add(board.getIntersections()[id-5].getId());
+            canBuilRoad.add(board.getIntersections()[id+1].getId());
         }
-        else if((rep>5 && rep<9)||(rep>10 && rep<14)||(rep>15 && rep<19)){
-            canBuilRoad.add(board.getIntersections()[rep-1].getId());
-            canBuilRoad.add(board.getIntersections()[rep+5].getId());
-            canBuilRoad.add(board.getIntersections()[rep+1].getId());
-            canBuilRoad.add(board.getIntersections()[rep+5].getId());
+        else if((id>5 && id<9)||(id>10 && id<14)||(id>15 && id<19)){
+            canBuilRoad.add(board.getIntersections()[id-1].getId());
+            canBuilRoad.add(board.getIntersections()[id+5].getId());
+            canBuilRoad.add(board.getIntersections()[id+1].getId());
+            canBuilRoad.add(board.getIntersections()[id-5].getId());
         }
-        else if(rep==5 || rep==10 || rep==15){
-            canBuilRoad.add(board.getIntersections()[rep+5].getId());
-            canBuilRoad.add(board.getIntersections()[rep-5].getId());
-            canBuilRoad.add(board.getIntersections()[rep+1].getId());
+        else if(id==5 || id==10 || id==15){
+            canBuilRoad.add(board.getIntersections()[id+5].getId());
+            canBuilRoad.add(board.getIntersections()[id-5].getId());
+            canBuilRoad.add(board.getIntersections()[id+1].getId());
         }
-        else if(rep==9 || rep==14 || rep==19){
-            canBuilRoad.add(board.getIntersections()[rep+5].getId());
-            canBuilRoad.add(board.getIntersections()[rep-5].getId());
-            canBuilRoad.add(board.getIntersections()[rep-1].getId());
+        else if(id==9 || id==14 || id==19){
+            canBuilRoad.add(board.getIntersections()[id+5].getId());
+            canBuilRoad.add(board.getIntersections()[id-5].getId());
+            canBuilRoad.add(board.getIntersections()[id-1].getId());
         }
         return canBuilRoad;
     }
