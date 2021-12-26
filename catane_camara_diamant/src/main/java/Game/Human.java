@@ -16,7 +16,7 @@ public class Human extends Player{
 
         if(diceRolls==7){
             game.diceRolls7();
-            game.moveRobber();
+            moveRobber(board, game);
         }
         else{
             for(Player player : game.getPlayers()){
@@ -66,7 +66,7 @@ public class Human extends Player{
                         reponseValide=true;
                         break;
                     case "rien":
-                        System.out.println("Vous choisissez de ne rien faire ce tour.\n");
+                        System.out.println(getName()+" choisit de ne rien faire ce tour.\n");
                         reponseValide=true;
                         turnCompleted=true;
                         break;
@@ -79,6 +79,36 @@ public class Human extends Player{
             if(game.winner()){
                 game.setWinner(game.getPlayerTurn());
             }
+        }
+    }
+
+    @Override
+    public void moveRobber(Board board, Game game){
+        boolean reponseValide=false;
+        while(!reponseValide){
+            System.out.println("Dans quel case voulez-vous placer le voleur ?");
+            
+            int rep=game.getScan().nextInt();
+            game.getScan().nextLine();
+
+            if((rep>=0 && rep<=15) && board.getIndexRobber()!=rep){
+                for(Case c : board.getCases()){
+                    if(c.isRobber()){
+                        c.setRobber(false);
+                        break;
+                    }
+                }
+                board.getCases()[rep].setRobber(true);
+                board.setIndexRobber(rep);
+                reponseValide=true;
+                System.out.println("\nLe voleur à été déplacé sur la case "+board.getIndexRobber());
+            }   
+            else
+                if(board.getIndexRobber()==rep){
+                    System.out.println("Le voleur est déjà présent sur cette case !");
+                }
+                else
+                    System.out.println("Cette case n'existe pas !");
         }
     }
 }

@@ -1,6 +1,7 @@
 package Game;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public abstract class Player {
@@ -20,6 +21,7 @@ public abstract class Player {
     private int knightPlayed;
 
     private Scanner scan=new Scanner(System.in);
+    private Random rand =new Random();
     
     public Player(String name, int color){
         this.name=name;
@@ -39,7 +41,9 @@ public abstract class Player {
 
     public abstract void turn(Board board, Game game);
 
-    public void buildSettlement(int id, Board board, int turn){
+    public abstract void moveRobber(Board board, Game game);
+
+    public void buildSettlement(int id, Board board, int turn){ //HUMAIN ET IA
         if(id >= 0 && id <=24){
             if(board.getIntersections()[id].getBuilding().upgradeToSettlements()){
                 settlements.add(board.getIntersections()[id]);
@@ -54,16 +58,28 @@ public abstract class Player {
                 victoryPoint+=1;
             }
             else{
-                System.out.println("Cette intersection ne peut pas être amélioré en colonie !");
-                System.out.println("Saississez un nouvel id (0 à 24) : ");
-                int rep=scan.nextInt();
+                int rep=0;
+                if(this instanceof Human){
+                    System.out.println("Cette intersection ne peut pas être amélioré en colonie !");
+                    System.out.println("Saississez un nouvel id (0 à 24) : ");
+                    rep=scan.nextInt();
+                }
+                else{
+                    rep=0+rand.nextInt(24-0);
+                }
                 buildSettlement(rep, board, turn);
             }
         }
         else{
-            System.out.println("Cette intersection n'existe pas !");
-            System.out.println("Saississez un nouvel id (0 à 24) : ");
-            int rep=scan.nextInt();
+            int rep=0;
+            if(this instanceof Human){
+                System.out.println("Cette intersection n'existe pas !");
+                System.out.println("Saississez un nouvel id (0 à 24) : ");
+                rep=scan.nextInt();
+            }
+            else{
+                rep=0+rand.nextInt(24-0);
+            }
             buildSettlement(rep, board, turn);
         }
     }
@@ -93,7 +109,7 @@ public abstract class Player {
         }
     }
 
-    public void buildRoad(int id1, int id2, Board board, int turn){
+    public void buildRoad(int id1, int id2, Board board, int turn, Game game){ //HUMAIN ET IA
         if((id1 >= 0 && id1 <= 24) && (id2 >= 0 && id2 <= 24)){
             if(board.getSpecificRoad(id1, id2)!=null){
                 if(board.getSpecificRoad(id1, id2).upgradeRoad(this)){
@@ -105,27 +121,54 @@ public abstract class Player {
                     System.out.println("Route construite en ("+id1+" "+id2+").\n");
                 }
                 else{
-                    System.out.println("Cette arête possède déjà une route !");
-                    System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
-                    int rep1=scan.nextInt();
-                    int rep2=scan.nextInt();
-                    buildRoad(rep1, rep2, board, turn);
+                    int rep1=0;
+                    int rep2=0;
+                    if(this instanceof Human){
+                        System.out.println("Cette arête possède déjà une route !");
+                        System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
+                        rep1=scan.nextInt();
+                        rep2=scan.nextInt();
+                    }
+                    else{
+                        rep1=settlements.get(rand.nextInt(settlements.size())).getId();
+                        
+                        ArrayList<Integer> canBuilRoad = game.intersectionsRoadIA(rep1);
+
+                        rep2=canBuilRoad.get(rand.nextInt(canBuilRoad.size()));
+                    }
+                    buildRoad(rep1, rep2, board, turn, game);
                 }
             }
             else{
-                System.out.println("Cette route n'existe pas !");
-                System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
-                int rep1=scan.nextInt();
-                int rep2=scan.nextInt();
-                buildRoad(rep1, rep2, board, turn);
+                int rep1=0;
+                int rep2=0;
+                if(this instanceof Human){
+                    System.out.println("Cette route n'existe pas !");
+                    System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
+                    rep1=scan.nextInt();
+                    rep2=scan.nextInt();
+                }
+                else{
+                    rep1=0+rand.nextInt(24-0);
+                    rep2=0+rand.nextInt(24-0);
+                }
+                buildRoad(rep1, rep2, board, turn, game);
             }
         }
         else{
-            System.out.println("Cette route n'existe pas !");
-            System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
-            int rep1=scan.nextInt();
-            int rep2=scan.nextInt();
-            buildRoad(rep1, rep2, board, turn);
+            int rep1=0;
+            int rep2=0;
+            if(this instanceof Human){
+                System.out.println("Cette route n'existe pas !");
+                System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
+                rep1=scan.nextInt();
+                rep2=scan.nextInt();
+            }
+            else{
+                rep1=0+rand.nextInt(24-0);
+                rep2=0+rand.nextInt(24-0);
+            }
+            buildRoad(rep1, rep2, board, turn, game);
         }
     }
 

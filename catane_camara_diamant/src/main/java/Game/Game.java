@@ -17,10 +17,11 @@ public class Game {
 
     private int strongestKnightSize;
     private Player strongestKnightOwner;
-    private int longestRoadSize;
-    private Player longestRoadOwner;
+    //private int longestRoadSize;
+    //private Player longestRoadOwner;
 
     private Scanner scan =new Scanner(System.in);
+    private Random rand =new Random();
  
     public Game(Player[] players) throws Exception{
         this.players=players;
@@ -28,14 +29,14 @@ public class Game {
         initDevCardGame(); 
     }
 
-    public void gameCatane(){
+    public void play(){
         turn=0;
         foundation();
 
         strongestKnightSize=0;
         strongestKnightOwner=null;
-        longestRoadSize=0;
-        longestRoadOwner=null;
+        //longestRoadSize=0;
+        //longestRoadOwner=null;
 
         winner=-1;
         int playerTurn=0;
@@ -58,45 +59,71 @@ public class Game {
         scan.close();
     }
 
-    public void foundation(){
+    public void foundation(){  //HUMAIN ET IA
         int tour=0;
         while(tour!=2){
             for(Player player : players){
                 System.out.println("Tour : " + player.toString());
-
-                boolean reponseValide1=false;
-                while(!reponseValide1){
-                    if(tour==0)
-                        System.out.println("\nChoisissez la position de votre première colonie : (0 à 24)");
-                    else 
-                        System.out.println("\nChoisissez la position de votre deuxième colonie : (0 à 24)");
-                
-                    int rep = scan.nextInt();
-
-                    if(distanceRules(rep)){
-                        player.buildSettlement(rep, board, turn);
-                        reponseValide1=true;
+                if(player instanceof Human){
+                    boolean reponseValide1=false;
+                    while(!reponseValide1){
+                        if(tour==0)
+                            System.out.println("\nChoisissez la position de votre première colonie : (0 à 24)");
+                        else 
+                            System.out.println("\nChoisissez la position de votre deuxième colonie : (0 à 24)");
+                    
+                        int rep = scan.nextInt();
+    
+                        if(distanceRules(rep)){
+                            player.buildSettlement(rep, board, turn);
+                            reponseValide1=true;
+                        }
+                        else{
+                            System.out.println("Vous ne pouvez pas construire sur cette intersection. La règle de distance des colonies n'est pas respecté !");
+                        }
                     }
-                    else{
-                        System.out.println("Vous ne pouvez pas construire sur cette intersection. La règle de distance des colonies n'est pas respecté !");
+
+                    boolean reponseValide2=false;
+                    while(!reponseValide2){
+                        if(tour==0)
+                            System.out.println("\nChoisissez la position de votre première route (Saisir les deux id des intersections où est présente l'arête) : ");
+                        else 
+                            System.out.println("\nChoisissez la position de votre deuxième route (Saisir les deux id des intersections où est présente l'arête) : ");
+                        int rep1 = scan.nextInt();
+                        int rep2 = scan.nextInt();
+
+                        if(idForRoadHasSettlementsOrCity(rep1, rep2, player)){
+                            player.buildRoad(rep1, rep2, board, turn, this);
+                            reponseValide2=true;
+                        }
+                        else{
+                            System.out.println("La route ne peut pas être placé a cet emplacement !");
+                        }
                     }
                 }
-                
-                boolean reponseValide2=false;
-                while(!reponseValide2){
-                    if(tour==0)
-                        System.out.println("\nChoisissez la position de votre première route (Saisir les deux id des intersections où est présente l'arête) : ");
-                    else 
-                        System.out.println("\nChoisissez la position de votre deuxième route (Saisir les deux id des intersections où est présente l'arête) : ");
-                    int rep1 = scan.nextInt();
-                    int rep2 = scan.nextInt();
+                else{
+                    boolean reponseValide1=false;
+                    while(!reponseValide1){
+                        int rep=0+rand.nextInt(24-0);
 
-                    if(idForRoadHasSettlementsOrCity(rep1, rep2, player)){
-                        player.buildRoad(rep1, rep2, board, turn);
-                        reponseValide2=true;
+                        if(distanceRules(rep)){
+                            player.buildSettlement(rep, board, turn);
+                            reponseValide1=true;
+                        }
                     }
-                    else{
-                        System.out.println("La route ne peut pas être placé a cet emplacement !");
+
+                    boolean reponseValide2=false;
+                    while(!reponseValide2){
+                        int rep1=player.getSettlements().get(rand.nextInt(player.getSettlements().size())).getId();
+                        
+                        ArrayList<Integer> canBuilRoad = intersectionsRoadIA(rep1);
+
+                        int rep2=canBuilRoad.get(rand.nextInt(canBuilRoad.size()));
+
+                        if(idForRoadHasSettlementsOrCity(rep1, rep2, player)){
+                            player.buildRoad(rep1, rep2, board, turn, this);
+                            reponseValide2=true;
+                        }
                     }
                 }
             }
@@ -123,8 +150,10 @@ public class Game {
                         int rep1 = scan.nextInt();
                         scan.nextLine();
 
-                        player.buildSettlement(rep1, board, turn);
-                        reponseValide=true;
+                        if(distanceRules(rep1)){
+                            player.buildSettlement(rep1, board, turn);
+                            reponseValide=true;
+                        }
                     }
                     else{
                         System.out.println("Vous n'avez pas les resources nécessaires pour construire une colonie !");
@@ -137,8 +166,10 @@ public class Game {
                         int rep1=scan.nextInt();
                         scan.nextLine();
 
-                        player.buildCity(rep1, board);
-                        reponseValide=true;
+                        if(distanceRules(rep1)){
+                            player.buildCity(rep1, board);
+                            reponseValide=true;
+                        }
                     }
                     else{
                         System.out.println("Vous n'avez pas les resources nécessaires pour construire une ville !");
@@ -153,7 +184,7 @@ public class Game {
                         int rep2=scan.nextInt();
                         scan.nextLine();
 
-                        player.buildRoad(rep1, rep2, board, turn);
+                        player.buildRoad(rep1, rep2, board, turn, this);
                         reponseValide=true;
                     }
                     else{
@@ -311,9 +342,10 @@ public class Game {
                 }
                 else{
                     if(player.hasTwoResources(player.getPortsType2OfPlayer().get(repToInt).getResource().getResourceType())){
-                        System.out.println("Quel ressource voulez-vous en échange ? (bois/pierre/ble/mouton/argile)");
+                        System.out.println("Quel ressource voulez-vous en échange ? (bois (0)/pierre (1)/ble (2)/mouton (3)/argile (4))");
 
-                        String rep1=scan.nextLine();
+                        int rep1=scan.nextInt();
+                        scan.nextLine();
 
                         if(askedResource(rep1)!=-10 && askedResource(rep1)!=player.getPortsType2OfPlayer().get(repToInt).getResource().getResourceType()){
                             player.removeResource(player.getPortsType2OfPlayer().get(repToInt).getResource().getResourceType(), 2);
@@ -344,20 +376,22 @@ public class Game {
 
         boolean reponseValide=false;
         while(!reponseValide){
-            System.out.println("Quel type de ressource souhaitez-vous échangé ? (bois/pierre/ble/mouton/argile) | Souhaitez-vous revenir aux choix précédent ? (choix)");
+            System.out.println("Quel type de ressource souhaitez-vous échangé ? (bois (0)/pierre (1)/ble (2)/mouton (3)/argile (4)) | Souhaitez-vous revenir aux choix précédent ? (choix)");
 
-            String rep=scan.nextLine();
+            int rep=scan.nextInt();
+            scan.nextLine();
             System.out.println();
 
             switch (askedResource(rep)) {
                 case Resource.BOIS:
                     if(player.hasThreeResources(Resource.BOIS)){
-                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (pierre/ble/mouton/argile)");
+                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (pierre (1)/ble (2)/mouton (3)/argile (4))");
 
-                        String rep1 = scan.nextLine();
+                        int rep1 = scan.nextInt();
+                        scan.nextLine();
                         System.out.println();
 
-                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=0){                
+                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=Resource.BOIS){                
                             player.removeResource(Resource.BOIS, 3);
                             player.collectResources(askedResource(rep1), 1);
                             reponseValide=true;
@@ -365,7 +399,7 @@ public class Game {
                         else{
                             if(askedResource(rep1)==-10)
                                 System.out.println("Ce type de resource n'existe pas !");
-                            if(askedResource(rep1)==0)
+                            if(askedResource(rep1)==Resource.BOIS)
                                 System.out.println("Vous ne pouvez pas choisir la même ressource !");
                         }
                     }
@@ -375,12 +409,13 @@ public class Game {
                     break;
                 case Resource.PIERRE:
                     if(player.hasThreeResources(Resource.PIERRE)){
-                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois/ble/mouton/argile)");
+                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/ble (2)/mouton (3)/argile (4))");
 
-                        String rep1 = scan.nextLine();
+                        int rep1 = scan.nextInt();
+                        scan.nextLine();
                         System.out.println();
 
-                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=1){                
+                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=Resource.PIERRE){                
                             player.removeResource(Resource.PIERRE, 3);
                             player.collectResources(askedResource(rep1), 1);
                             reponseValide=true;
@@ -388,7 +423,7 @@ public class Game {
                         else{
                             if(askedResource(rep1)==-10)
                                 System.out.println("Ce type de resource n'existe pas !");
-                            if(askedResource(rep1)==1)
+                            if(askedResource(rep1)==Resource.PIERRE)
                                 System.out.println("Vous ne pouvez pas choisir la même ressource !");
                         }
                     }
@@ -398,12 +433,13 @@ public class Game {
                     break;
                 case Resource.BLE:
                     if(player.hasThreeResources(Resource.BLE)){
-                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois/pierre/mouton/argile)");
+                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/pierre (1)/mouton (3)/argile (4))");
 
-                        String rep1 = scan.nextLine();
+                        int rep1 = scan.nextInt();
+                        scan.nextLine();
                         System.out.println();
 
-                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=2){                
+                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=Resource.BLE){                
                             player.removeResource(Resource.BLE, 3);
                             player.collectResources(askedResource(rep1), 1);
                             reponseValide=true;
@@ -411,7 +447,7 @@ public class Game {
                         else{
                             if(askedResource(rep1)==-10)
                                 System.out.println("Ce type de resource n'existe pas !");
-                            if(askedResource(rep1)==2)
+                            if(askedResource(rep1)==Resource.BLE)
                                 System.out.println("Vous ne pouvez pas choisir la même ressource !");
                         }
                     }
@@ -421,12 +457,13 @@ public class Game {
                     break;
                 case Resource.MOUTON:
                     if(player.hasThreeResources(Resource.MOUTON)){
-                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois/pierre/ble/argile)");
+                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/pierre (1)/ble (2)/argile (4))");
 
-                        String rep1 = scan.nextLine();
+                        int rep1 = scan.nextInt();
+                        scan.nextLine();
                         System.out.println();
 
-                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=3){                
+                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=Resource.MOUTON){                
                             player.removeResource(Resource.MOUTON, 3);
                             player.collectResources(askedResource(rep1), 1);
                             reponseValide=true;
@@ -434,7 +471,7 @@ public class Game {
                         else{
                             if(askedResource(rep1)==-10)
                                 System.out.println("Ce type de resource n'existe pas !");
-                            if(askedResource(rep1)==3)
+                            if(askedResource(rep1)==Resource.MOUTON)
                                 System.out.println("Vous ne pouvez pas choisir la même ressource !");
                         }
                     }
@@ -444,12 +481,13 @@ public class Game {
                     break;
                 case Resource.ARGILE:
                     if(player.hasThreeResources(Resource.ARGILE)){
-                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois/pierre/ble/mouton)");
+                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/pierre (1)/ble (2)/mouton (3))");
 
-                        String rep1 = scan.nextLine();
+                        int rep1 = scan.nextInt();
+                        scan.nextLine();
                         System.out.println();
 
-                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=4){                
+                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=Resource.ARGILE){                
                             player.removeResource(Resource.ARGILE, 3);
                             player.collectResources(askedResource(rep1), 1);
                             reponseValide=true;
@@ -457,7 +495,7 @@ public class Game {
                         else{
                             if(askedResource(rep1)==-10)
                                 System.out.println("Ce type de resource n'existe pas !");
-                            if(askedResource(rep1)==4)
+                            if(askedResource(rep1)==Resource.ARGILE)
                                 System.out.println("Vous ne pouvez pas choisir la même ressource !");
                         }
                     }
@@ -483,18 +521,20 @@ public class Game {
 
         boolean reponseValide=false;
         while(!reponseValide){
-            System.out.println("Quel type de ressource souhaitez-vous échangé ? (bois/pierre/ble/mouton/argile) | Souhaitez-vous revenir aux choix précédent ? (choix)");
+            System.out.println("Quel type de ressource souhaitez-vous échangé ? (bois (0)/pierre (1)/ble (2)/mouton (3)/argile (4)) | Souhaitez-vous revenir aux choix précédent ? (20)");
             
-            String rep=scan.nextLine();
+            int rep=scan.nextInt();
+            scan.nextLine();
 
             switch (askedResource(rep)) {
                 case Resource.BOIS:
                     if(player.hasFourResources(Resource.BOIS)){
-                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (pierre/ble/mouton/argile)");
+                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (pierre (1)/ble (2)/mouton (3)/argile (4))");
 
-                        String rep1 = scan.nextLine();
+                        int rep1 = scan.nextInt();
+                        scan.nextLine();
 
-                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=0){                
+                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=Resource.BOIS){                
                             player.removeResource(Resource.BOIS, 4);
                             player.collectResources(askedResource(rep1), 1);
                             reponseValide=true;
@@ -502,7 +542,7 @@ public class Game {
                         else{
                             if(askedResource(rep1)==-10)
                                 System.out.println("Ce type de resource n'existe pas !");
-                            if(askedResource(rep1)==0)
+                            if(askedResource(rep1)==Resource.BOIS)
                                 System.out.println("Vous ne pouvez pas choisir la même ressource !");
                         }
                     }
@@ -512,11 +552,12 @@ public class Game {
                     break;
                 case Resource.PIERRE:
                     if(player.hasFourResources(Resource.PIERRE)){
-                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois/ble/mouton/argile)");
+                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/ble (2)/mouton (3)/argile (4))");
 
-                        String rep1 = scan.nextLine();
+                        int rep1 = scan.nextInt();
+                        scan.nextLine();
 
-                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=1){                
+                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=Resource.PIERRE){                
                             player.removeResource(Resource.PIERRE, 4);
                             player.collectResources(askedResource(rep1), 1);
                             reponseValide=true;
@@ -524,7 +565,7 @@ public class Game {
                         else{
                             if(askedResource(rep1)==-10)
                                 System.out.println("Ce type de resource n'existe pas !");
-                            if(askedResource(rep1)==1)
+                            if(askedResource(rep1)==Resource.PIERRE)
                                 System.out.println("Vous ne pouvez pas choisir la même ressource !");
                         }
                     }
@@ -534,11 +575,12 @@ public class Game {
                     break;
                 case Resource.BLE:
                     if(player.hasFourResources(Resource.BLE)){
-                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois/pierre/mouton/argile)");
+                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/pierre (1)/mouton (3)/argile (4))");
 
-                        String rep1 = scan.nextLine();
+                        int rep1 = scan.nextInt();
+                        scan.nextLine();
 
-                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=2){                
+                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=Resource.BLE){                
                             player.removeResource(Resource.BLE, 4);
                             player.collectResources(askedResource(rep1), 1);
                             reponseValide=true;
@@ -546,7 +588,7 @@ public class Game {
                         else{
                             if(askedResource(rep1)==-10)
                                 System.out.println("Ce type de resource n'existe pas !");
-                            if(askedResource(rep1)==2)
+                            if(askedResource(rep1)==Resource.BLE)
                                 System.out.println("Vous ne pouvez pas choisir la même ressource !");
                         }
                     }
@@ -556,11 +598,12 @@ public class Game {
                     break;
                 case Resource.MOUTON:
                     if(player.hasFourResources(Resource.MOUTON)){
-                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois/pierre/ble/argile)");
+                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/pierre (1)/ble (2)/argile (4))");
 
-                        String rep1 = scan.nextLine();
+                        int rep1 = scan.nextInt();
+                        scan.nextLine();
 
-                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=3){                
+                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=Resource.MOUTON){                
                             player.removeResource(Resource.MOUTON, 4);
                             player.collectResources(askedResource(rep1), 1);
                             reponseValide=true;
@@ -568,7 +611,7 @@ public class Game {
                         else{
                             if(askedResource(rep1)==-10)
                                 System.out.println("Ce type de resource n'existe pas !");
-                            if(askedResource(rep1)==3)
+                            if(askedResource(rep1)==Resource.MOUTON)
                                 System.out.println("Vous ne pouvez pas choisir la même ressource !");
                         }
                     }
@@ -578,11 +621,12 @@ public class Game {
                     break;
                 case Resource.ARGILE:
                     if(player.hasFourResources(Resource.ARGILE)){
-                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois/pierre/ble/mouton)");
+                        System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/pierre (1)/ble (2)/mouton (3))");
 
-                        String rep1 = scan.nextLine();
+                        int rep1 = scan.nextInt();
+                        scan.nextLine();
 
-                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=4){                
+                        if(askedResource(rep1)!=-10 && askedResource(rep1)!=Resource.ARGILE){                
                             player.removeResource(Resource.ARGILE, 4);
                             player.collectResources(askedResource(rep1), 1);
                             reponseValide=true;
@@ -590,7 +634,7 @@ public class Game {
                         else{
                             if(askedResource(rep1)==-10)
                                 System.out.println("Ce type de resource n'existe pas !");
-                            if(askedResource(rep1)==4)
+                            if(askedResource(rep1)==Resource.ARGILE)
                                 System.out.println("Vous ne pouvez pas choisir la même ressource !");
                         }
                     }
@@ -629,9 +673,10 @@ public class Game {
                     trade4Resources(player);
                 else{
                     if(player.hasTwoResources(player.getPortsType2OfPlayer().get(repToInt).getResource().getResourceType())){
-                        System.out.println("Quel ressource voulez-vous en échange ? (bois/pierre/ble/mouton/argile)");
+                        System.out.println("Quel ressource voulez-vous en échange ? (bois (0)/pierre (1)/ble (2)/mouton (3)/argile (4))");
 
-                        String rep1=scan.nextLine();
+                        int rep1=scan.nextInt();
+                        scan.nextLine();
 
                         if(askedResource(rep1)!=-10 && askedResource(rep1)!=player.getPortsType2OfPlayer().get(repToInt).getResource().getResourceType()){
                             player.removeResource(player.getPortsType2OfPlayer().get(repToInt).getResource().getResourceType(), 2);
@@ -657,25 +702,25 @@ public class Game {
         }
     }
 
-    public int askedResource(String resourceType){
+    public int askedResource(int resourceType){
         int resource=0;
         switch (resourceType) {
-            case "bois":
+            case Resource.BOIS:
                 resource=Resource.BOIS;
                 break;
-            case "pierre":
+            case Resource.PIERRE:
                 resource=Resource.PIERRE;
                 break;
-            case "ble":
+            case Resource.BLE:
                 resource=Resource.BLE;
                 break;
-            case "mouton":
+            case Resource.MOUTON:
                 resource=Resource.MOUTON;
                 break;
-            case "argile":
+            case Resource.ARGILE:
                 resource=Resource.ARGILE;
                 break;
-            case "choix":
+            case 20:
                 resource=20;
                 break;
             default:
@@ -693,49 +738,6 @@ public class Game {
         }
         return false;
     }
-
-    /*public void longestRoad(){
-        int roadSize = findLongestRoad(0, 1);
-        if(roadSize>=5){
-
-        }
-    }
-
-    public int findLongestRoad(int i1, int j1){
-        ArrayList<Road> roads = possessedRoads();
-        int compteur=0;
-        for(int i=i1; i<roads.size(); i++){
-            for(int j=j1; j<roads.size(); j++){
-                if((roads.get(i).getId1()==roads.get(j).getId1())||(roads.get(i).getId1()==roads.get(j).getId2())
-                ||(roads.get(i).getId2()==roads.get(j).getId1())||(roads.get(i).getId2()==roads.get(j).getId2())){
-                    if((roads.get(i).getPlayer()==roads.get(j).getPlayer())){
-                        int compteurTemp=compteur;
-                        if(findLongestRoad(i, j)>compteurTemp)
-                            compteur = findLongestRoad(i, j);
-                    }
-                }
-            }
-        }
-        return compteur;
-    }
-
-    public Player findLongestRoadOwner(int i1, int j1){
-        ArrayList<Road> roads = possessedRoads();
-        int compteur=0;
-        for(int i=i1; i<roads.size(); i++){
-            for(int j=j1; j<roads.size(); j++){
-                if((roads.get(i).getId1()==roads.get(j).getId1())||(roads.get(i).getId1()==roads.get(j).getId2())
-                ||(roads.get(i).getId2()==roads.get(j).getId1())||(roads.get(i).getId2()==roads.get(j).getId2())){
-                    if((roads.get(i).getPlayer()==roads.get(j).getPlayer())){
-                        int compteurTemp=compteur;
-                        if(findLongestRoad(i, j)>compteurTemp)
-                            compteur = findLongestRoad(i, j);
-                    }
-                }
-            }
-        }
-        return compteur;
-    }*/
 
     public void strongestKnight(){
         for(Player player : players){
@@ -766,18 +768,27 @@ public class Game {
     public void diceRolls7(){
         for(Player player : players){
             if(player.totalResource()>7){
-                System.out.println(player.toString()+" vous avez plus de 7 resources aux total !");
                 int discardResource=player.totalResource()/2;
-                System.out.println("Vous devez vous défausser de la moitié de vos ressources. C'est à dire "+ discardResource);
-
+                if(player instanceof Human){
+                    System.out.println(player.toString()+" vous avez plus de 7 resources aux total !");
+                    System.out.println("Vous devez vous défausser de la moitié de vos ressources. C'est à dire "+ discardResource);
+                }
+                
                 while(discardResource!=0){
                     System.out.println(player.resourceOfPlayerToString());
 
                     boolean reponseValide=false;
                     while(!reponseValide){
-                        System.out.println("\nChoisissez une ressource à défausser : (bois/pierre/ble/mouton/argile)");
+                        int rep=0;
+                        if(player instanceof Human){
+                            System.out.println("\nChoisissez une ressource à défausser : (bois/pierre/ble/mouton/argile)");
 
-                        String rep=scan.nextLine();
+                            rep=scan.nextInt();
+                            scan.nextLine();
+                        }
+                        else{
+                            rep=0+rand.nextInt(4-0);
+                        }
 
                         switch (askedResource(rep)) {
                             case Resource.BOIS:
@@ -786,8 +797,10 @@ public class Game {
                                     System.out.println(player.toString()+" c'est défaussé 1 ressource bois.");
                                     reponseValide=true;
                                 }
-                                else
-                                    System.out.println("Vous n'avez pas assez de cette ressource !");
+                                else{
+                                    if(player instanceof Human)
+                                        System.out.println("Vous n'avez pas assez de cette ressource !");
+                                }
                                 break;
                             case Resource.PIERRE:
                                 if(player.hasOneResources(Resource.PIERRE)){
@@ -795,8 +808,10 @@ public class Game {
                                     System.out.println(player.toString()+" c'est défaussé 1 ressource pierre.");
                                     reponseValide=true;
                                 }
-                                else
-                                    System.out.println("Vous n'avez pas assez de cette ressource !");
+                                else{
+                                    if(player instanceof Human)
+                                        System.out.println("Vous n'avez pas assez de cette ressource !");
+                                }
                                 break;
                             case Resource.BLE:
                                 if(player.hasOneResources(Resource.BLE)){
@@ -804,8 +819,10 @@ public class Game {
                                     System.out.println(player.toString()+" c'est défaussé 1 ressource ble.");
                                     reponseValide=true;
                                 }
-                            else
-                                System.out.println("Vous n'avez pas assez de cette ressource !");
+                                else{
+                                    if(player instanceof Human)
+                                        System.out.println("Vous n'avez pas assez de cette ressource !");
+                                }
                                 break;
                             case Resource.MOUTON:
                                 if(player.hasOneResources(Resource.MOUTON)){
@@ -813,8 +830,10 @@ public class Game {
                                     System.out.println(player.toString()+" c'est défaussé 1 ressource mouton.");
                                     reponseValide=true;
                                 }
-                                else
-                                    System.out.println("Vous n'avez pas assez de cette ressource !");
+                                else{
+                                    if(player instanceof Human)
+                                        System.out.println("Vous n'avez pas assez de cette ressource !");
+                                }
                                 break;
                             case Resource.ARGILE:
                                 if(player.hasOneResources(Resource.ARGILE)){
@@ -822,12 +841,16 @@ public class Game {
                                     System.out.println(player.toString()+" c'est défaussé 1 ressource argoile.");
                                     reponseValide=true;
                                 }
-                                else
-                                    System.out.println("Vous n'avez pas assez de cette ressource !");
+                                else{
+                                    if(player instanceof Human)
+                                        System.out.println("Vous n'avez pas assez de cette ressource !");
+                                }
                                 break;
                             default:
-                                if(askedResource(rep)==-10)
-                                    System.out.println("Cette ressource n'existe pas !");
+                                if(player instanceof Human){
+                                    if(askedResource(rep)==-10)
+                                        System.out.println("Cette ressource n'existe pas !");
+                                }
                                 break;
                         }
                     }
@@ -837,32 +860,8 @@ public class Game {
         }    
     }
 
-    public void moveRobber(){
-        boolean reponseValide=false;
-        while(!reponseValide){
-            System.out.println("Dans quel case voulez-vous placer le voleur ?");
-            
-            int rep=scan.nextInt();
-            scan.nextLine();
-
-            if(rep>=0 || rep<=15){
-                for(Case c : board.getCases()){
-                    if(c.isRobber()){
-                        c.setRobber(false);
-                        break;
-                    }
-                }
-                board.getCases()[rep].setRobber(true);
-                board.setIndexRobber(rep);
-                reponseValide=true;
-            }   
-            else
-                System.out.println("Cette case n'existe pas !");
-        }
-    }
-
     public void knightCard(Player player){
-        moveRobber();
+        player.moveRobber(board, this);
 
         int playerSettlementOrCity=0;
         for(Intersection inter : board.getCases()[board.getIndexRobber()].getCaseIntersections()){
@@ -931,7 +930,7 @@ public class Game {
             int rep2=scan.nextInt();
             scan.nextLine();
 
-            player.buildRoad(rep1, rep2, board, turn);
+            player.buildRoad(rep1, rep2, board, turn, this);
             System.out.println("Route construite en ("+rep1+" "+rep2+").\n");
 
             route--;
@@ -945,9 +944,10 @@ public class Game {
         while(resource!=0){
             boolean reponseValide=false;
             while(!reponseValide){
-                System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois/pierre/ble/mouton/argile)");
+                System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/pierre (1)/ble (2)/mouton (3)/argile (4))");
     
-                String rep1 = scan.nextLine();
+                int rep1 = scan.nextInt();
+                scan.nextLine();
     
                 if(askedResource(rep1)!=-10){                
                     player.collectResources(askedResource(rep1), 1);
@@ -967,9 +967,10 @@ public class Game {
         
         boolean reponseValide=false;
         while(!reponseValide){
-            System.out.println("Quel type de resource souhaitez-vous monopolisé ? (bois/pierre/ble/mouton/argile)");
+            System.out.println("Quel type de resource souhaitez-vous monopolisé ? (bois (0)/pierre (1)/ble (2)/mouton (3)/argile (4))");
 
-            String rep1 =scan.nextLine();
+            int rep1 =scan.nextInt();
+            scan.nextLine();
 
             if(askedResource(rep1)!=-10){                
                 for(Player player : players){
@@ -1038,6 +1039,9 @@ public class Game {
                 return true;
             }
         }
+        if(players[playerTurn] instanceof Human){
+            System.out.println("La régle distance des colonies/ville pas respecté !");
+        }
         return false;
     }
 
@@ -1076,8 +1080,7 @@ public class Game {
     }
 
     public boolean idForRoadHasSettlementsOrCity(int id1, int id2, Player player){
-        if((board.getIntersections()[id1].getPlayer()!=null || board.getIntersections()[id2].getPlayer()!=null) && 
-        (board.getIntersections()[id1].getPlayer()==player || board.getIntersections()[id2].getPlayer()==player))
+        if(board.getIntersections()[id1].getPlayer()==player || board.getIntersections()[id2].getPlayer()==player)
             return true;
         return false;
     }
@@ -1091,6 +1094,102 @@ public class Game {
         }
         return roads;
     }
+
+    public ArrayList<Integer> intersectionsRoadIA(int rep){
+        ArrayList<Integer> canBuilRoad =new ArrayList<Integer>();
+
+        if(rep==0){
+            canBuilRoad.add(board.getIntersections()[rep+1].getId());
+            canBuilRoad.add(board.getIntersections()[rep+5].getId());
+        }
+        else if(rep==4){
+            canBuilRoad.add(board.getIntersections()[rep-1].getId());
+            canBuilRoad.add(board.getIntersections()[rep+5].getId());
+        }
+        else if(rep==20){
+            canBuilRoad.add(board.getIntersections()[rep-5].getId());
+            canBuilRoad.add(board.getIntersections()[rep+1].getId());
+        }
+        else if(rep==24){
+            canBuilRoad.add(board.getIntersections()[rep-1].getId());
+            canBuilRoad.add(board.getIntersections()[rep-5].getId());
+        }
+        else if(rep>0 && rep<4){
+            canBuilRoad.add(board.getIntersections()[rep-1].getId());
+            canBuilRoad.add(board.getIntersections()[rep+5].getId());
+            canBuilRoad.add(board.getIntersections()[rep+1].getId());
+        }
+        else if(rep>20 && rep<24){
+            canBuilRoad.add(board.getIntersections()[rep-1].getId());
+            canBuilRoad.add(board.getIntersections()[rep-5].getId());
+            canBuilRoad.add(board.getIntersections()[rep+1].getId());
+        }
+        else if((rep>5 && rep<9)||(rep>10 && rep<14)||(rep>15 && rep<19)){
+            canBuilRoad.add(board.getIntersections()[rep-1].getId());
+            canBuilRoad.add(board.getIntersections()[rep+5].getId());
+            canBuilRoad.add(board.getIntersections()[rep+1].getId());
+            canBuilRoad.add(board.getIntersections()[rep+5].getId());
+        }
+        else if(rep==5 || rep==10 || rep==15){
+            canBuilRoad.add(board.getIntersections()[rep+5].getId());
+            canBuilRoad.add(board.getIntersections()[rep-5].getId());
+            canBuilRoad.add(board.getIntersections()[rep+1].getId());
+        }
+        else if(rep==9 || rep==14 || rep==19){
+            canBuilRoad.add(board.getIntersections()[rep+5].getId());
+            canBuilRoad.add(board.getIntersections()[rep-5].getId());
+            canBuilRoad.add(board.getIntersections()[rep-1].getId());
+        }
+        return canBuilRoad;
+    }
+    
+    /*public void longestRoad(){
+        int compteur=0;
+        int compteurMax=0;
+        Player lRoadOwner=null;
+
+        for(Player player : players){
+            compteur = findLongestRoadSize(0, 1, compteur, player.getRoads(), player);
+            if(compteur>compteurMax && compteur>=5){
+                compteurMax=compteur;
+                lRoadOwner=player;
+            }
+        }
+
+        if(longestRoadOwner!=null){
+            longestRoadOwner.setLongestRoad(false);            
+            lRoadOwner.setLongestRoad(true);
+            longestRoadOwner=lRoadOwner;
+        }
+        else{
+            lRoadOwner.setLongestRoad(true);
+            longestRoadOwner=lRoadOwner;
+        }
+    }
+
+    public int findLongestRoadSize(int indexR1, int indexR2, int compteur, ArrayList<Road> roads, Player player){
+        ArrayList<Road> roadsWithoutR1=roads;
+        ArrayList<Road> roadsWithoutR2=roads;
+
+        int compteur1=0;
+        int compteur2=0;
+
+        if((player.getRoads().get(indexR1).getId1()==player.getRoads().get(indexR2).getId1()) 
+        || (player.getRoads().get(indexR1).getId1()==player.getRoads().get(indexR2).getId2()) 
+        || (player.getRoads().get(indexR1).getId2()==player.getRoads().get(indexR2).getId1()) 
+        || (player.getRoads().get(indexR1).getId2()==player.getRoads().get(indexR2).getId2())){
+            roadsWithoutR1.remove(player.getRoads().get(indexR1));
+            roadsWithoutR2.remove(player.getRoads().get(indexR2));
+            compteur1 += findLongestRoadSize(indexR2, indexR2+1, compteur, roadsWithoutR1, player);
+            compteur2 += findLongestRoadSize(indexR1, indexR1+1, compteur, roadsWithoutR2, player);
+            
+            if(compteur1>compteur2)
+                compteur=compteur1;
+            else compteur=compteur2;
+        }
+        System.out.println(player.getName()+": "+compteur);
+        return compteur;
+    }*/
 
     //Getters et setters
     public Player[] getPlayers() {return players;}
@@ -1107,4 +1206,10 @@ public class Game {
     public void setScan(Scanner scan) {this.scan = scan;}
     public int getPlayerTurn() {return playerTurn;}
     public void setPlayerTurn(int playerTurn) {this.playerTurn = playerTurn;}
+    public int getStrongestKnightSize() {return strongestKnightSize;}
+    public void setStrongestKnightSize(int strongestKnightSize) {this.strongestKnightSize = strongestKnightSize;}
+    public Player getStrongestKnightOwner() {return strongestKnightOwner;}
+    public void setStrongestKnightOwner(Player strongestKnightOwner) {this.strongestKnightOwner = strongestKnightOwner;}
+    public Random getRand() {return rand;}
+    public void setRand(Random rand) {this.rand = rand;}
 }

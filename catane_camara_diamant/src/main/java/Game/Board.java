@@ -1,5 +1,7 @@
 package Game;
 
+import java.util.ArrayList;
+
 public class Board {
 
   public static final int DESERT = -1;

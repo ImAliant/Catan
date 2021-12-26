@@ -69,7 +69,7 @@ public class Home extends JFrame{
                     try {
                         game = new Game(threePlayersArrayInit());
                         dispose();
-                        game.gameCatane();
+                        game.play();
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }
@@ -79,7 +79,7 @@ public class Home extends JFrame{
                     try {
                         game = new Game(fourPlayersArrayInit());
                         dispose();
-                        game.gameCatane();
+                        game.play();
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }
