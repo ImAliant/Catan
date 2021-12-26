@@ -188,7 +188,7 @@ public class Game {
                             reponseValide=true;
                         }
                         else
-                            System.out.println("La route car elle n'est pas placé sur une intersection déjà connecté a une route ou car elle n'est pas placé sur une intersection possedant une ville.");
+                            System.out.println("La route ne peut pas être construite car elle n'est pas placé sur une intersection déjà connecté a une route ou car elle n'est pas placé sur une intersection possedant une ville.");
                     }
                     else{
                         System.out.println("Vous n'avez pas les resources nécessaires pour construire une route !");
