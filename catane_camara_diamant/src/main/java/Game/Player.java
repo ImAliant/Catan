@@ -3,7 +3,7 @@ package Game;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Player {
+public abstract class Player {
     private String name;
     private int color;
 
@@ -17,6 +17,7 @@ public class Player {
     private boolean strongestKnight;
 
     private int victoryPoint;
+    private int knightPlayed;
 
     private Scanner scan=new Scanner(System.in);
     
@@ -33,18 +34,23 @@ public class Player {
         longestRoad=false;
         strongestKnight=false;
         victoryPoint=0;
+        knightPlayed=0;
     }
+
+    public abstract void turn(Board board, Game game);
 
     public void buildSettlement(int id, Board board, int turn){
         if(id >= 0 && id <=24){
             if(board.getIntersections()[id].getBuilding().upgradeToSettlements()){
                 settlements.add(board.getIntersections()[id]);
+                board.getIntersections()[id].setPlayer(this);
                 if(turn!=0){
                     removeResource(Resource.BOIS, 1);
                     removeResource(Resource.ARGILE, 1);
                     removeResource(Resource.BLE, 1);
                     removeResource(Resource.MOUTON, 1);
                 }
+                System.out.println("Colonie construite en ("+id+").");
                 victoryPoint+=1;
             }
             else{
@@ -70,6 +76,7 @@ public class Player {
                 removeResource(Resource.BLE, 2);
                 removeResource(Resource.PIERRE, 3);
                 victoryPoint+=2;
+                System.out.println("Ville construite en ("+id+").\n");
             }
             else{
                 System.out.println("Cette colonie ne peut pas être amélioré en ville !");
@@ -88,13 +95,14 @@ public class Player {
 
     public void buildRoad(int id1, int id2, Board board, int turn){
         if((id1 >= 0 && id1 <= 24) && (id2 >= 0 && id2 <= 24)){
-            if(board.getSpecifiedRoad(id1, id2)!=null){
-                if(board.getSpecifiedRoad(id1, id2).upgradeRoad(this)){
+            if(board.getSpecificRoad(id1, id2)!=null){
+                if(board.getSpecificRoad(id1, id2).upgradeRoad(this)){
                     if(turn!=0){
                         removeResource(Resource.BOIS, 1);
                         removeResource(Resource.ARGILE, 1);
                     }
-                    roads.add(board.getSpecifiedRoad(id1, id2));
+                    roads.add(board.getSpecificRoad(id1, id2));
+                    System.out.println("Route construite en ("+id1+" "+id2+").\n");
                 }
                 else{
                     System.out.println("Cette arête possède déjà une route !");
@@ -182,13 +190,36 @@ public class Player {
         return portType3OfPlayer;
     }
 
-    public void collectResources(int resourceType){
+    public void collectResources(int resourceType, int nb){
         if(resourceType!=-1)
             playerResources[resourceType]++;
     }
 
     public void removeResource(int resourceType, int nb){
         playerResources[resourceType] -= nb;
+    }
+
+    public void removeResourceForDevCard(){
+        removeResource(Resource.BLE, 1);
+        removeResource(Resource.MOUTON, 1);
+        removeResource(Resource.PIERRE, 1);
+    }
+
+    public void removeResourceForSettlements(){
+        removeResource(Resource.BOIS, 1);
+        removeResource(Resource.ARGILE, 1);
+        removeResource(Resource.BLE, 1);
+        removeResource(Resource.MOUTON, 1);
+    }
+
+    public void removeResourceForCities(){
+        removeResource(Resource.BLE, 2);
+        removeResource(Resource.PIERRE, 3);
+    }
+
+    public void removeResourceForRoad(){
+        removeResource(Resource.BOIS, 1);
+        removeResource(Resource.ARGILE, 1);
     }
 
     public String resourceOfPlayerToString(){
@@ -199,6 +230,12 @@ public class Player {
         }
         s+="] (bois/pierre/ble/mouton/argile)";
         return s;
+    }
+
+    public boolean hasOneResources(int resource){
+        if(playerResources[resource]>=1)
+            return true;
+        return false;
     }
 
     public boolean hasTwoResources(int resource){
@@ -219,8 +256,32 @@ public class Player {
         return false;
     }
 
+    public int totalResource(){
+        int total=0;
+        for(int resource : playerResources){
+            total+=resource;
+        }
+        return total;
+    }
+
+    public void addDevCard(DevCard devCard){
+        cards.add(devCard);
+    }
+
+    public void removeDevCard(DevCard devCard){
+        cards.remove(devCard);
+    }
+
     public Intersection lastSettlements(){
         return settlements.get(settlements.size()-1);
+    }
+
+    public void addVictoryPoint(int nb){
+        victoryPoint += nb;
+    }
+
+    public void removeVictoryPoint(int nb){
+        victoryPoint -= nb;
     }
 
     @Override
@@ -249,4 +310,7 @@ public class Player {
     public void setLongestRoad(boolean longestRoad) {this.longestRoad = longestRoad;}
     public boolean isStrongestKnight() {return strongestKnight;}
     public void setStrongestKnight(boolean strongestKnight) {this.strongestKnight = strongestKnight;}
+    public int getKnightPlayed() {return knightPlayed;}
+    public void setKnightPlayed(int knightPlayed) {this.knightPlayed = knightPlayed;}
+    
 }

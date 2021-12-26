@@ -1,84 +1,84 @@
 package Game;
 
-import java.util.Random;
-import java.util.Scanner;
-
 public class Human extends Player{
 
     public Human(String name, int color) {
         super(name + " (Humain)", color);
     }
-    
-    /*public void joue(Board b, Game g){
-        Random rand =new Random();
-        Scanner scan =new Scanner(System.in);
 
-        //JOUEUR lance les dés pour savoir où il y a des revenus en matiere premiere
-        int diceRolls = rand.nextInt(12-2+1)+1;
+    @Override
+    public void turn(Board board, Game game) {
+        System.out.println(this.toString() + " lance ses dés !");
+        int diceRolls1 = game.diceRolls();
+        int diceRolls2 = game.diceRolls();
+        int diceRolls=diceRolls1+diceRolls2;
+        System.out.println(this.toString() + " obtient " + diceRolls + "\n");
 
-        System.out.println(this.getName() + " lance les dés !");
-        System.out.println("Les dés donnent : "+  diceRolls);
-
-        for(Case c : b.getCases()){
-            if(c.getDiceRoll()==diceRolls){
-                for(Player p : g.getPlayers()){
-                    p.addResourcesInv(c.getResource().getResourceType());
+        if(diceRolls==7){
+            game.diceRolls7();
+            game.moveRobber();
+        }
+        else{
+            for(Player player : game.getPlayers()){
+                for(int i=0; i<player.getSettlements().size(); i++){
+                    for(Case c : player.getSettlements().get(i).getCaseAdj()){
+                        if(diceRolls==c.getDiceRoll()){
+                            System.out.println(player.toString() + " obtient 1 ressource : " + c.getResource().toString());
+                            player.collectResources(c.getResource().getResourceType(), 1);
+                        }
+                    }
                 }
             }
         }
 
-        System.out.println("Que voulez vous faire a présent ? (construire/developpement/port/resource)");
+        game.resourceAnswer(this);
 
-        String reponse1 = scan.nextLine();
-
-        switch (reponse1) {
-            case "construire":
-                System.out.println("Que voulez vous construire ? (colonie/ville/route)");
-                String reponse2 = scan.nextLine();
+        boolean turnCompleted = false;
+        while(!turnCompleted){
+            System.out.println("Que souhaitez-vous faire a présent ?");
+            System.out.println("Vous pouvez construire, faire du commerce avec les ports, acheter une carte de développent, jouer une carte de developpement et/ou consulter vos ressources.\n");
+            
+            boolean reponseValide = false;
+            while(!reponseValide){
+                System.out.println("Choix : construire | echange | achat | carte | ressource | rien");
                 
-                break;
-            case "developpement":
+                String rep=game.getScan().nextLine();
+                
+                switch (rep) {
+                    case "construire":
+                        game.buildAnswer(this);
+                        reponseValide=true;
+                        break;
+                    case "echange":
+                        game.tradeAnswer(this);
+                        reponseValide=true;
+                        break;
+                    case "achat":
+                        game.buyAnswer(this);
+                        reponseValide=true;
+                        break;
+                    case "carte":
+                        game.playCardAnswer(this);
+                        reponseValide=true;
+                        break;
+                    case "ressource":
+                        game.resourceAnswer(this);
+                        reponseValide=true;
+                        break;
+                    case "rien":
+                        System.out.println("Vous choisissez de ne rien faire ce tour.\n");
+                        reponseValide=true;
+                        turnCompleted=true;
+                        break;
+                    default:
+                        System.out.println("Ce choix n'existe pas!\n");
+                        break;
+                }
+            }
 
-                break;
-            case "port":
-
-                break;
-            case "resource":
-            default:
-                break;
+            if(game.winner()){
+                game.setWinner(game.getPlayerTurn());
+            }
         }
-
     }
-
-    public void reponseQ2(String reponse2, Board b){
-        switch (reponse2) {
-            case "colonie":
-                if(neededResources(reponse2, b)){
-                    
-                }
-                break;
-            case "ville":
-                if(neededResources(reponse2, b)){
-                    
-                }
-                break;
-            case "route":
-                if(neededResources(reponse2, b)){
-                    
-                }
-            default:
-                break;
-        }
-    }
-
-    public boolean neededResources(String reponse2, Board b){
-        if(reponse2=="colonie") 
-            return (getPlayerResources()[Resource.BOIS]>=1 && getPlayerResources()[Resource.ARGILE]>=1 
-            && getPlayerResources()[Resource.BLE]>=1 && getPlayerResources()[Resource.MOUTON]>=1); 
-        else if(reponse2 =="ville")
-            return (getPlayerResources()[Resource.BLE]>=2 && getPlayerResources()[Resource.PIERRE]>=1);
-        else if(reponse2 == "route")
-            return (getPlayerResources()[Resource.BOIS]>=1 && getPlayerResources()[Resource.ARGILE]>=1);
-        return false;
-    }*/
 }

@@ -8,6 +8,7 @@ public class Case {
     private boolean robber;
     private final int land;
     private final int diceRoll;
+    private Intersection[] caseIntersections;
 
     public Case(int land, Resource resource, int diceRoll){
         id = nextId++;
@@ -15,6 +16,7 @@ public class Case {
         this.resource=resource;
         this.diceRoll=diceRoll;
         this.robber = false;
+        caseIntersections=null;
     }
 
 
@@ -25,5 +27,7 @@ public class Case {
   public void setRobber(boolean robber) {this.robber = robber;}
   public int getLand() {return land;}
   public int getDiceRoll() {return diceRoll;}
+  public Intersection[] getCaseIntersections() {return caseIntersections;}
+  public void setCaseIntersections(Intersection[] caseIntersections) {this.caseIntersections = caseIntersections;}
   
 }

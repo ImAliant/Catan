@@ -65,14 +65,24 @@ public class Home extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e){
                 if(player.getSelectedIndex()==0){
-                    Game game = new Game(threePlayersArrayInit());
-                    dispose();
-                    game.gameCatane();
+                    Game game;
+                    try {
+                        game = new Game(threePlayersArrayInit());
+                        dispose();
+                        game.gameCatane();
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
                 }
                 else{
-                    Game game = new Game(fourPlayersArrayInit());
-                    dispose();
-                    game.gameCatane();
+                    Game game;
+                    try {
+                        game = new Game(fourPlayersArrayInit());
+                        dispose();
+                        game.gameCatane();
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
         });

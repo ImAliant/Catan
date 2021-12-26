@@ -1,7 +1,5 @@
 package Game;
 
-import java.util.ArrayList;
-
 public class Board {
 
   public static final int DESERT = -1;
@@ -24,6 +22,7 @@ public class Board {
   private void init() {
     initCases();
     initIntersections();
+    initCasesIntersectionAdj();
     initRoads();
   }
 
@@ -87,6 +86,25 @@ public class Board {
     };
   }
 
+  private void initCasesIntersectionAdj(){
+    cases[0].setCaseIntersections(new Intersection[]{intersections[0],intersections[1],intersections[5],intersections[6]});
+    cases[1].setCaseIntersections(new Intersection[]{intersections[1],intersections[2],intersections[6],intersections[7]});
+    cases[2].setCaseIntersections(new Intersection[]{intersections[2],intersections[3],intersections[7],intersections[8]});
+    cases[3].setCaseIntersections(new Intersection[]{intersections[3],intersections[4],intersections[8],intersections[9]});
+    cases[4].setCaseIntersections(new Intersection[]{intersections[5],intersections[6],intersections[10],intersections[11]});
+    cases[5].setCaseIntersections(new Intersection[]{intersections[6],intersections[7],intersections[11],intersections[12]});
+    cases[6].setCaseIntersections(new Intersection[]{intersections[7],intersections[8],intersections[12],intersections[13]});
+    cases[7].setCaseIntersections(new Intersection[]{intersections[8],intersections[9],intersections[13],intersections[14]});
+    cases[8].setCaseIntersections(new Intersection[]{intersections[10],intersections[11],intersections[15],intersections[16]});
+    cases[9].setCaseIntersections(new Intersection[]{intersections[11],intersections[12],intersections[16],intersections[17]});
+    cases[10].setCaseIntersections(new Intersection[]{intersections[12],intersections[13],intersections[17],intersections[18]});
+    cases[11].setCaseIntersections(new Intersection[]{intersections[13],intersections[14],intersections[18],intersections[19]});
+    cases[12].setCaseIntersections(new Intersection[]{intersections[15],intersections[16],intersections[20],intersections[21]});
+    cases[13].setCaseIntersections(new Intersection[]{intersections[16],intersections[17],intersections[21],intersections[22]});
+    cases[14].setCaseIntersections(new Intersection[]{intersections[17],intersections[18],intersections[22],intersections[23]});
+    cases[15].setCaseIntersections(new Intersection[]{intersections[18],intersections[19],intersections[23],intersections[24]});
+  }
+
   private void initRoads() {
     // Initialiser les aretes du plateau.
     roads =new Road[]{
@@ -117,7 +135,7 @@ public class Board {
     };
   }
 
-  public Road getSpecifiedRoad(int id1, int id2){
+  public Road getSpecificRoad(int id1, int id2){
     Road rep=null;
     for(Road r : roads){
       if(r.getId1()==id1 && r.getId2()==id2 || r.getId1()==id2 && r.getId2()==id1){
