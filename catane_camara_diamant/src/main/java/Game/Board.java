@@ -55,7 +55,7 @@ public class Board {
 
   private void initIntersections() {
     // Initialiser les intersections du plateau.
-    // Initialiser la position des ports. 
+    // Initialiser la position des ports.
     intersections = new Intersection[] {
         new Intersection(new Building(0), new Port(), new Case[]{cases[0]}),
         new Intersection(new Building(0), new Port(new Resource(Resource.MOUTON)), new Case[]{cases[0], cases[1]}),
@@ -134,5 +134,5 @@ public class Board {
   public Road[] getRoads() {return roads;}
   public void setRoads(Road[] roads) {this.roads = roads;}
   public int getIndexRobber() {return indexRobber;}
-  public void setIndexRobber(int indexRobber) {this.indexRobber = indexRobber;} 
+  public void setIndexRobber(int indexRobber) {this.indexRobber = indexRobber;}
 }
