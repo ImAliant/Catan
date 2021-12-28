@@ -1,5 +1,7 @@
 package Game;
 
+import java.util.ArrayList;
+
 public class IA extends Player {
 
     public IA(String name, int color) {
@@ -33,8 +35,93 @@ public class IA extends Player {
 
         game.resourceAnswer(this);
 
-        System.out.println(getName()+" choisit de ne rien faire ce tour.\n");
+        ArrayList<String> possibleChoice =new ArrayList<String>();
 
+        boolean choice0 = resourceForCity() || resourceForRoad() || resourceForSettlement();
+        boolean choice1 = hasPort() || hasFourResources();
+        boolean choice2 = resourceForDevCard();
+        boolean choice3 = hasDevCard();
+
+        if(choice0)
+            possibleChoice.add("0");
+        if(choice1){
+            if(hasType2Port())
+                possibleChoice.add("10");
+            if(hasType3Port() && hasThreeResources())
+                possibleChoice.add("11");
+            if(hasFourResources())
+                possibleChoice.add("12");
+        }
+        if(choice2)
+            possibleChoice.add("2");
+        if(choice3)
+            possibleChoice.add("3");
+        if(choice0 || choice1 || choice2 || choice3)
+            possibleChoice.add("100");
+
+        if(possibleChoice.isEmpty())
+            System.out.println(getName()+" choisit de ne rien faire ce tour.\n");
+        else{
+            String choice = possibleChoice.get(game.getRand().nextInt(possibleChoice.size()));
+
+            int tour=0;
+            while(tour!=1){
+                boolean reponseValide=false;
+                while(!reponseValide){
+                    switch (choice) {
+                        case "0":
+                            if(game.buildAnswerIA(this)){
+                                reponseValide=true;
+                                tour++;
+                            }
+                            else 
+                                possibleChoice.remove(0);
+                            break;
+                        case "10":
+                            if(game.trade2ResourcesIA(this)){
+                                reponseValide=true;
+                                tour++;
+                            }
+                            else
+                                possibleChoice.remove(10);
+                            break;
+                        case "11":
+                            if(game.trade3ResourceIA(this)){
+                                reponseValide=true;
+                                tour++;
+                            }
+                            else 
+                                possibleChoice.remove(11);
+                            break;
+                        case "12":
+                            if(game.trade4ResourcesIA(this)){
+                                reponseValide=true;
+                                tour++;
+                            }
+                            else
+                                possibleChoice.remove(12);
+                            break;
+                        case "2":
+                            game.buyAnswerIA(this); //MODIFIÉ LA MÉTHODE DANS GAME
+                            reponseValide=true;
+                            tour++;
+                            break;
+                        case "3":
+                            game.playCardAnswerIA(this); //MODIFIÉ LA MÉTHODE DANS GAME
+                            reponseValide=true;
+                            tour++;
+                            break;
+                        case "100":
+                            System.out.println(getName()+" choisit de ne rien faire ce tour.\n");
+                            reponseValide=true;
+                            tour++;
+                            break;
+                    }
+                }
+            }
+        }
+
+        game.strongestKnight();
         if(game.winner()){
             game.setWinner(game.getPlayerTurn());
         }
@@ -42,22 +129,18 @@ public class IA extends Player {
 
     @Override
     public void moveRobber(Board board, Game game){
-        boolean reponseValide=false;
-        while(!reponseValide){
-            int rep=0+game.getRand().nextInt(15+0);
+        ArrayList<Case> isNotRobber = board.caseWithoutRobber(); 
+        Case rep=isNotRobber.get(game.getRand().nextInt(isNotRobber.size()));
 
-            if(board.getIndexRobber()!=rep){
-                for(Case c : board.getCases()){
-                    if(c.isRobber()){
-                        c.setRobber(false);
-                        break;
-                    }
-                }
-                board.getCases()[rep].setRobber(true);
-                board.setIndexRobber(rep);
-                reponseValide=true;
-                System.out.println("\nLe voleur à été déplacé sur la case "+board.getIndexRobber());
+            
+        for(Case c : board.getCases()){
+            if(c.isRobber()){
+                c.setRobber(false);
+                break;
             }
         }
+        rep.setRobber(true);
+        board.setIndexRobber(rep.getId());
+        System.out.println("Le voleur à été déplacé sur la case "+board.getIndexRobber());
     }
 }

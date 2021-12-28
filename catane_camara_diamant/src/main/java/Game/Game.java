@@ -136,7 +136,7 @@ public class Game {
         }
     }
 
-    public void buildAnswer(Player player){
+    public void buildAnswer(Player player){ //HUMAIN
         boolean reponseValide=false;
         while(!reponseValide){
             System.out.println("Que souhaitez-vous construire ? (colonie/ville/route) | Souhaitez-vous revenir aux choix précédent ? (choix)"); //Le choix "choix" nous fait revenir dans la méthode turn.
@@ -204,6 +204,70 @@ public class Game {
         }
     }    
 
+    public boolean buildAnswerIA(IA ia){ //IA
+        ArrayList<Integer> buildChoice=new ArrayList<Integer>();
+
+        if(ia.resourceForSettlement())
+            buildChoice.add(0);
+        if(ia.resourceForCity())
+            buildChoice.add(1);
+        if(ia.resourceForRoad())
+            buildChoice.add(2);
+        
+        if(!buildChoice.isEmpty()){
+            ArrayList<Integer> emptyIntersection = board.getEmptyIntersection();
+            ArrayList<Integer> settlementsIA =new ArrayList<Integer>();
+            for(Intersection inter : ia.getSettlements()){
+                settlementsIA.add(inter.getId());
+            }
+            ArrayList<Road> emptyRoad = board.getEmptyRoad();
+
+            boolean reponseValide=false;
+            while(!reponseValide){
+                int buildType = buildChoice.get(rand.nextInt(buildChoice.size()));
+                int randChoice=0;
+                switch (buildType) {
+                    case 0:
+                        randChoice = emptyIntersection.get(rand.nextInt(emptyIntersection.size()));
+
+                        if(distanceRules(randChoice, ia)){
+                            ia.buildSettlement(randChoice, board, turn);
+                            reponseValide=true;
+                            return true;
+                        }
+                        else
+                            emptyIntersection.remove(randChoice);
+                        break;
+                    case 1:
+                        randChoice = settlementsIA.get(rand.nextInt(settlementsIA.size()));
+
+                        if(distanceRules(randChoice, ia)){
+                            ia.buildCity(randChoice, board);
+                            reponseValide=true;
+                            return true;
+                        }
+                        else
+                            settlementsIA.remove(randChoice);
+                        break;
+                    case 2:
+                        Road roadChoice = emptyRoad.get(rand.nextInt(emptyRoad.size()));
+                        int id1 = roadChoice.getId1();
+                        int id2 = roadChoice.getId2();
+
+                        if(idHasRoadOfPlayer(id1, id2, ia) || idForRoadHasSettlementsOrCity(id1, id2, ia)){
+                            ia.buildRoad(id1, id2, board, turn, this);
+                            reponseValide=true;
+                            return true;
+                        }
+                        else
+                            emptyRoad.remove(roadChoice);
+                        break;
+                }
+            }
+        }
+        return false;
+    }
+
     public void tradeAnswer(Player player){
         if(!player.getPortsOfPlayer().isEmpty()){ //Possède port 3:1 et/ou 2:1
             player.resourceOfPlayerToString();
@@ -234,7 +298,7 @@ public class Game {
                 case "oui":
                     if(player.resourceForDevCard()){
                         player.addDevCard(devCard.get(0));
-                        System.out.println("\nVous venez de piocher "+devCard.get(0).toString()+" !");
+                        System.out.println("\n"+player.getName()+" vient de piocher "+devCard.get(0).toString()+" !");
                         devCard.remove(0);
                         player.removeResourceForDevCard();
                         reponseValide=true;
@@ -257,12 +321,19 @@ public class Game {
         }
     }
 
+    public void buyAnswerIA(IA ia){
+        ia.addDevCard(devCard.get(0));
+        System.out.println("\n"+ia.getName()+" vient de piocher "+devCard.get(0).toString()+" !");
+        devCard.remove(0);
+        ia.removeResourceForDevCard();
+    }
+
     public void resourceAnswer(Player player){
         System.out.println(player.resourceOfPlayerToString()+"\n");
     }
 
-    public void playCardAnswer(Player player){
-        if(player.getCards().isEmpty()){
+    public void playCardAnswer(Player player){ //HUMAIN
+        if(player.hasDevCard()){
             System.out.println("\nVous n'avez pas de cartes de développement a jouer !");
         }   
         else{
@@ -320,6 +391,34 @@ public class Game {
         }
     }
 
+    public void playCardAnswerIA(IA ia){
+        ArrayList<DevCard> cards =new ArrayList<DevCard>();
+        for(DevCard card : ia.getCards()){
+            cards.add(card);
+        }
+
+        DevCard randCard = cards.get(rand.nextInt(cards.size()));
+
+        switch (randCard.getCard()) {
+            case DevCard.VICTORY_POINT:
+                victoryPointCard(ia);
+                break;
+            case DevCard.PROGRESS_BUILD:
+                progressCardIA(ia, DevCard.PROGRESS_BUILD);
+                break;
+            case DevCard.PROGRESS_DISCOVERY:
+                progressCardIA(ia, DevCard.PROGRESS_DISCOVERY);
+                break;
+            case DevCard.PROGRESS_MONOPOLY:
+                progressCardIA(ia, DevCard.PROGRESS_MONOPOLY);
+                break;
+            case DevCard.KNIGHT:
+                knightCardIA(ia);
+                break;
+        }
+        ia.removeDevCard(randCard);
+    }
+
     public void trade2or3Resources(Player player){
         player.resourceOfPlayerToString();
         int index = -1;
@@ -344,7 +443,7 @@ public class Game {
                     reponseValide=true;
                 }
                 else{
-                    if(player.hasTwoResources(player.getPortsType2OfPlayer().get(repToInt).getResource().getResourceType())){
+                    if(player.hasTwoSpecificResources(player.getPortsType2OfPlayer().get(repToInt).getResource().getResourceType())){
                         System.out.println("Quel ressource voulez-vous en échange ? (bois (0)/pierre (1)/ble (2)/mouton (3)/argile (4))");
 
                         int rep1=scan.nextInt();
@@ -387,7 +486,7 @@ public class Game {
 
             switch (askedResource(rep)) {
                 case Resource.BOIS:
-                    if(player.hasThreeResources(Resource.BOIS)){
+                    if(player.hasThreeSpecificResources(Resource.BOIS)){
                         System.out.println("Quel type de ressource souhaitez-vous recevoir ? (pierre (1)/ble (2)/mouton (3)/argile (4))");
 
                         int rep1 = scan.nextInt();
@@ -411,7 +510,7 @@ public class Game {
                     }
                     break;
                 case Resource.PIERRE:
-                    if(player.hasThreeResources(Resource.PIERRE)){
+                    if(player.hasThreeSpecificResources(Resource.PIERRE)){
                         System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/ble (2)/mouton (3)/argile (4))");
 
                         int rep1 = scan.nextInt();
@@ -435,7 +534,7 @@ public class Game {
                     }
                     break;
                 case Resource.BLE:
-                    if(player.hasThreeResources(Resource.BLE)){
+                    if(player.hasThreeSpecificResources(Resource.BLE)){
                         System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/pierre (1)/mouton (3)/argile (4))");
 
                         int rep1 = scan.nextInt();
@@ -459,7 +558,7 @@ public class Game {
                     }
                     break;
                 case Resource.MOUTON:
-                    if(player.hasThreeResources(Resource.MOUTON)){
+                    if(player.hasThreeSpecificResources(Resource.MOUTON)){
                         System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/pierre (1)/ble (2)/argile (4))");
 
                         int rep1 = scan.nextInt();
@@ -483,7 +582,7 @@ public class Game {
                     }
                     break;
                 case Resource.ARGILE:
-                    if(player.hasThreeResources(Resource.ARGILE)){
+                    if(player.hasThreeSpecificResources(Resource.ARGILE)){
                         System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/pierre (1)/ble (2)/mouton (3))");
 
                         int rep1 = scan.nextInt();
@@ -516,6 +615,58 @@ public class Game {
         }
     }  
 
+    public boolean trade3ResourceIA(IA ia){ //IA
+        if(!ia.getPortsType3OfPlayer().isEmpty()){
+            ArrayList<Integer> resources =new ArrayList<Integer>();
+            for(int i=0; i<ia.getPlayerResources().length; i++){
+                if(ia.getPlayerResources()[i]>=3)
+                    resources.add(i);
+            }
+            int randResourceTypeSent = resources.get(rand.nextInt(resources.size()));
+
+            ArrayList<Resource> resourceChoice =new ArrayList<Resource>();
+
+            if(randResourceTypeSent==Resource.BOIS){
+                resourceChoice.add(new Resource(1));
+                resourceChoice.add(new Resource(2));
+                resourceChoice.add(new Resource(3));
+                resourceChoice.add(new Resource(4));
+            }
+            else if(randResourceTypeSent==Resource.PIERRE){
+                resourceChoice.add(new Resource(0));
+                resourceChoice.add(new Resource(2));
+                resourceChoice.add(new Resource(3));
+                resourceChoice.add(new Resource(4));
+            }
+            else if(randResourceTypeSent==Resource.BLE){
+                resourceChoice.add(new Resource(0));
+                resourceChoice.add(new Resource(1));
+                resourceChoice.add(new Resource(3));
+                resourceChoice.add(new Resource(4));
+            }
+            else if(randResourceTypeSent==Resource.MOUTON){
+                resourceChoice.add(new Resource(0));
+                resourceChoice.add(new Resource(1));
+                resourceChoice.add(new Resource(2));
+                resourceChoice.add(new Resource(4));
+            }
+            else if(randResourceTypeSent==Resource.ARGILE){
+                resourceChoice.add(new Resource(0));
+                resourceChoice.add(new Resource(1));
+                resourceChoice.add(new Resource(2));
+                resourceChoice.add(new Resource(3));
+            }
+
+            Resource resource = resourceChoice.get(rand.nextInt(resourceChoice.size()));
+
+            ia.removeResource(resource.getResourceType(), 3);
+            ia.collectResources(resource.getResourceType(), 1);
+
+            return true;
+        }
+        return false;
+    }
+
     public void trade4Resources(Player player){
         player.resourceOfPlayerToString();
         System.out.println();
@@ -531,7 +682,7 @@ public class Game {
 
             switch (askedResource(rep)) {
                 case Resource.BOIS:
-                    if(player.hasFourResources(Resource.BOIS)){
+                    if(player.hasFourSpecificResources(Resource.BOIS)){
                         System.out.println("Quel type de ressource souhaitez-vous recevoir ? (pierre (1)/ble (2)/mouton (3)/argile (4))");
 
                         int rep1 = scan.nextInt();
@@ -554,7 +705,7 @@ public class Game {
                     }
                     break;
                 case Resource.PIERRE:
-                    if(player.hasFourResources(Resource.PIERRE)){
+                    if(player.hasFourSpecificResources(Resource.PIERRE)){
                         System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/ble (2)/mouton (3)/argile (4))");
 
                         int rep1 = scan.nextInt();
@@ -577,7 +728,7 @@ public class Game {
                     }
                     break;
                 case Resource.BLE:
-                    if(player.hasFourResources(Resource.BLE)){
+                    if(player.hasFourSpecificResources(Resource.BLE)){
                         System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/pierre (1)/mouton (3)/argile (4))");
 
                         int rep1 = scan.nextInt();
@@ -600,7 +751,7 @@ public class Game {
                     }
                     break;
                 case Resource.MOUTON:
-                    if(player.hasFourResources(Resource.MOUTON)){
+                    if(player.hasFourSpecificResources(Resource.MOUTON)){
                         System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/pierre (1)/ble (2)/argile (4))");
 
                         int rep1 = scan.nextInt();
@@ -623,7 +774,7 @@ public class Game {
                     }
                     break;
                 case Resource.ARGILE:
-                    if(player.hasFourResources(Resource.ARGILE)){
+                    if(player.hasFourSpecificResources(Resource.ARGILE)){
                         System.out.println("Quel type de ressource souhaitez-vous recevoir ? (bois (0)/pierre (1)/ble (2)/mouton (3))");
 
                         int rep1 = scan.nextInt();
@@ -655,6 +806,58 @@ public class Game {
         }
     }
 
+    public boolean trade4ResourcesIA(IA ia){ //IA
+        ArrayList<Integer> resources =new ArrayList<Integer>();
+        for(int i=0; i<ia.getPlayerResources().length; i++){
+            if(ia.getPlayerResources()[i]>=4)
+                resources.add(i);
+        }
+        int randResourceTypeSent = resources.get(rand.nextInt(resources.size()));
+
+        if(!resources.isEmpty()){
+            ArrayList<Resource> resourceChoice =new ArrayList<Resource>();
+
+            if(randResourceTypeSent==Resource.BOIS){
+                resourceChoice.add(new Resource(1));
+                resourceChoice.add(new Resource(2));
+                resourceChoice.add(new Resource(3));
+                resourceChoice.add(new Resource(4));
+            }
+            else if(randResourceTypeSent==Resource.PIERRE){
+                resourceChoice.add(new Resource(0));
+                resourceChoice.add(new Resource(2));
+                resourceChoice.add(new Resource(3));
+                resourceChoice.add(new Resource(4));
+            }
+            else if(randResourceTypeSent==Resource.BLE){
+                resourceChoice.add(new Resource(0));
+                resourceChoice.add(new Resource(1));
+                resourceChoice.add(new Resource(3));
+                resourceChoice.add(new Resource(4));
+            }
+            else if(randResourceTypeSent==Resource.MOUTON){
+                resourceChoice.add(new Resource(0));
+                resourceChoice.add(new Resource(1));
+                resourceChoice.add(new Resource(2));
+                resourceChoice.add(new Resource(4));
+            }
+            else if(randResourceTypeSent==Resource.ARGILE){
+                resourceChoice.add(new Resource(0));
+                resourceChoice.add(new Resource(1));
+                resourceChoice.add(new Resource(2));
+                resourceChoice.add(new Resource(3));
+            }
+
+            Resource resource = resourceChoice.get(rand.nextInt(resourceChoice.size()));
+
+            ia.removeResource(resource.getResourceType(), 4);
+            ia.collectResources(resource.getResourceType(), 1);
+
+            return true;
+        }
+        return false;
+    }
+
     public void trade2or4Resources(Player player){
         player.resourceOfPlayerToString();
         int index=0;
@@ -675,7 +878,7 @@ public class Game {
                 if(repToInt==index+1)
                     trade4Resources(player);
                 else{
-                    if(player.hasTwoResources(player.getPortsType2OfPlayer().get(repToInt).getResource().getResourceType())){
+                    if(player.hasTwoSpecificResources(player.getPortsType2OfPlayer().get(repToInt).getResource().getResourceType())){
                         System.out.println("Quel ressource voulez-vous en échange ? (bois (0)/pierre (1)/ble (2)/mouton (3)/argile (4))");
 
                         int rep1=scan.nextInt();
@@ -703,6 +906,131 @@ public class Game {
                 System.out.println("L'index que vous avez saisit n'existe pas !");
                 
         }
+    }
+
+    public boolean trade2ResourcesIA(IA ia){ //IA
+        if(ia.getPortsType2OfPlayer().size()==1){
+            int resourceTypeOfPort=ia.getPortsType2OfPlayer().get(0).getResource().getResourceType();
+            if(ia.hasTwoSpecificResources(resourceTypeOfPort)){
+                
+                ArrayList<Resource> resourceChoice =new ArrayList<Resource>();
+                
+                if(resourceTypeOfPort==Resource.BOIS){
+                    resourceChoice.add(new Resource(1));
+                    resourceChoice.add(new Resource(2));
+                    resourceChoice.add(new Resource(3));
+                    resourceChoice.add(new Resource(4));
+                }
+                else if(resourceTypeOfPort==Resource.PIERRE){
+                    resourceChoice.add(new Resource(0));
+                    resourceChoice.add(new Resource(2));
+                    resourceChoice.add(new Resource(3));
+                    resourceChoice.add(new Resource(4));
+                }
+                else if(resourceTypeOfPort==Resource.BLE){
+                    resourceChoice.add(new Resource(0));
+                    resourceChoice.add(new Resource(1));
+                    resourceChoice.add(new Resource(3));
+                    resourceChoice.add(new Resource(4));
+                }
+                else if(resourceTypeOfPort==Resource.MOUTON){
+                    resourceChoice.add(new Resource(0));
+                    resourceChoice.add(new Resource(1));
+                    resourceChoice.add(new Resource(2));
+                    resourceChoice.add(new Resource(4));
+                }
+                else if(resourceTypeOfPort==Resource.ARGILE){
+                    resourceChoice.add(new Resource(0));
+                    resourceChoice.add(new Resource(1));
+                    resourceChoice.add(new Resource(2));
+                    resourceChoice.add(new Resource(3));
+                }
+                
+                Resource resource = resourceChoice.get(rand.nextInt(resourceChoice.size()));
+
+                ia.removeResource(resourceTypeOfPort, 2);
+                ia.collectResources(resource.getResourceType(), 1);
+
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        else{
+            Port portChoice = ia.getPortsType2OfPlayer().get(rand.nextInt(ia.getPortsType2OfPlayer().size()));
+
+            int resourceTypeOfPort=portChoice.getResource().getResourceType();
+            if(ia.hasTwoSpecificResources(resourceTypeOfPort)){
+                
+                ArrayList<Resource> resourceChoice =new ArrayList<Resource>();
+                
+                if(resourceTypeOfPort==Resource.BOIS){
+                    resourceChoice.add(new Resource(1));
+                    resourceChoice.add(new Resource(2));
+                    resourceChoice.add(new Resource(3));
+                    resourceChoice.add(new Resource(4));
+                }
+                else if(resourceTypeOfPort==Resource.PIERRE){
+                    resourceChoice.add(new Resource(0));
+                    resourceChoice.add(new Resource(2));
+                    resourceChoice.add(new Resource(3));
+                    resourceChoice.add(new Resource(4));
+                }
+                else if(resourceTypeOfPort==Resource.BLE){
+                    resourceChoice.add(new Resource(0));
+                    resourceChoice.add(new Resource(1));
+                    resourceChoice.add(new Resource(3));
+                    resourceChoice.add(new Resource(4));
+                }
+                else if(resourceTypeOfPort==Resource.MOUTON){
+                    resourceChoice.add(new Resource(0));
+                    resourceChoice.add(new Resource(1));
+                    resourceChoice.add(new Resource(2));
+                    resourceChoice.add(new Resource(4));
+                }
+                else if(resourceTypeOfPort==Resource.ARGILE){
+                    resourceChoice.add(new Resource(0));
+                    resourceChoice.add(new Resource(1));
+                    resourceChoice.add(new Resource(2));
+                    resourceChoice.add(new Resource(3));
+                }
+                
+                Resource resource = resourceChoice.get(rand.nextInt(resourceChoice.size()));
+
+                System.out.println(ia.toString()+" a échanger 2 ressources "+portChoice.getResource().toString()+
+                " contre "+ resource.toString());
+
+                ia.removeResource(resourceTypeOfPort, 2);
+                ia.collectResources(resource.getResourceType(), 1);
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+    }
+
+    public Resource intToResource(int resourceType){
+        Resource resource=null;
+        switch (resourceType) {
+            case Resource.BOIS:
+                resource=new Resource(Resource.BOIS);
+                break;
+            case Resource.PIERRE:
+                resource=new Resource(Resource.PIERRE);
+                break;
+            case Resource.BLE:
+                resource=new Resource(Resource.BLE);
+                break;
+            case Resource.MOUTON:
+                resource=new Resource(Resource.MOUTON);
+                break;
+            case Resource.ARGILE:
+                resource=new Resource(Resource.ARGILE);
+                break;
+        }
+        return resource;
     }
 
     public int askedResource(int resourceType){
@@ -750,13 +1078,16 @@ public class Game {
                 if(strongestKnightOwner!=null){
                     strongestKnightOwner.setStrongestKnight(false);
                     strongestKnightOwner.removeVictoryPoint(2);
+                    System.out.println(strongestKnightOwner.toString()+" perd la carte spéciale \"Chevalier le plus fort\" et perd 2 points de victoire !");
                     strongestKnightOwner=player;
                     player.setStrongestKnight(true);
+                    System.out.println(player.toString()+" obtient la carte spéciale \"Chevalier le plus fort\" et obtient 2 points de victoire !");
                     player.addVictoryPoint(2);
                 }
                 else{
                     strongestKnightOwner=player;
                     player.setStrongestKnight(true);
+                    System.out.println(player.toString()+" obtient la carte spéciale \"Chevalier le plus fort\"");
                     player.addVictoryPoint(2);
                 }
             }
@@ -784,18 +1115,18 @@ public class Game {
                     while(!reponseValide){
                         int rep=0;
                         if(player instanceof Human){
-                            System.out.println("\nChoisissez une ressource à défausser : (bois/pierre/ble/mouton/argile)");
+                            System.out.println("\nChoisissez une ressource à défausser : (bois (0)/pierre (1)/ble (2)/mouton (3)/argile (4))");
 
                             rep=scan.nextInt();
                             scan.nextLine();
                         }
                         else{
-                            rep=0+rand.nextInt(4-0);
+                            rep=rand.nextInt(5);
                         }
 
                         switch (askedResource(rep)) {
                             case Resource.BOIS:
-                                if(player.hasOneResources(Resource.BOIS)){
+                                if(player.hasOneSpecificResources(Resource.BOIS)){
                                     player.removeResource(Resource.BOIS, 1);
                                     System.out.println(player.toString()+" c'est défaussé 1 ressource bois.");
                                     reponseValide=true;
@@ -806,7 +1137,7 @@ public class Game {
                                 }
                                 break;
                             case Resource.PIERRE:
-                                if(player.hasOneResources(Resource.PIERRE)){
+                                if(player.hasOneSpecificResources(Resource.PIERRE)){
                                     player.removeResource(Resource.PIERRE, 1);
                                     System.out.println(player.toString()+" c'est défaussé 1 ressource pierre.");
                                     reponseValide=true;
@@ -817,7 +1148,7 @@ public class Game {
                                 }
                                 break;
                             case Resource.BLE:
-                                if(player.hasOneResources(Resource.BLE)){
+                                if(player.hasOneSpecificResources(Resource.BLE)){
                                     player.removeResource(Resource.BLE, 1);
                                     System.out.println(player.toString()+" c'est défaussé 1 ressource ble.");
                                     reponseValide=true;
@@ -828,7 +1159,7 @@ public class Game {
                                 }
                                 break;
                             case Resource.MOUTON:
-                                if(player.hasOneResources(Resource.MOUTON)){
+                                if(player.hasOneSpecificResources(Resource.MOUTON)){
                                     player.removeResource(Resource.MOUTON, 1);
                                     System.out.println(player.toString()+" c'est défaussé 1 ressource mouton.");
                                     reponseValide=true;
@@ -839,7 +1170,7 @@ public class Game {
                                 }
                                 break;
                             case Resource.ARGILE:
-                                if(player.hasOneResources(Resource.ARGILE)){
+                                if(player.hasOneSpecificResources(Resource.ARGILE)){
                                     player.removeResource(Resource.ARGILE, 1);
                                     System.out.println(player.toString()+" c'est défaussé 1 ressource argoile.");
                                     reponseValide=true;
@@ -894,7 +1225,7 @@ public class Game {
 
                 if(rep<=index){
                     Random rand =new Random();
-                    int randResource = rand.nextInt(4);
+                    int randResource = rand.nextInt(5);
                     board.getCases()[board.getIndexRobber()].getCaseIntersections()[rep].getPlayer().removeResource(randResource, 1);
                     player.collectResources(randResource, 1);
                     reponseValide=true;
@@ -905,6 +1236,31 @@ public class Game {
         }
         player.setKnightPlayed(player.getKnightPlayed()+1);
         strongestKnight();
+    }
+
+    public void knightCardIA(IA ia){
+        ia.moveRobber(board, this);
+
+        int playerSettlementOrCity=0;
+        for(Intersection inter : board.getCases()[board.getIndexRobber()].getCaseIntersections()){
+            if(inter.getPlayer()!=null){
+                playerSettlementOrCity++;
+            }
+        }
+        if(playerSettlementOrCity!=0){
+            ArrayList<Player> playerInter =new ArrayList<Player>();
+            for(Intersection inter : board.getCases()[board.getIndexRobber()].getCaseIntersections()){
+                if(inter.getPlayer()!=null){
+                    playerInter.add(inter.getPlayer());
+                }
+            }
+
+            Player randPlayer = playerInter.get(rand.nextInt(playerInter.size()));
+        
+            int randResource = rand.nextInt(5);
+            randPlayer.removeResource(randResource, 1);
+            ia.collectResources(randResource, 1);
+        }
     }
 
     public void progressCard(Player player, int cardType){
@@ -921,22 +1277,42 @@ public class Game {
         }
     }
 
+    public void progressCardIA(IA ia, int cardType){
+        switch (cardType) {
+            case DevCard.PROGRESS_BUILD:
+                progressBuildCardIA(ia);
+                break;
+            case DevCard.PROGRESS_DISCOVERY:
+                progressDiscoveryCardIA(ia);
+                break;
+            case DevCard.PROGRESS_MONOPOLY:
+                progressMonopolyCardIA(ia);
+                break;
+        }
+    }
+
     public void progressBuildCard(Player player){
         System.out.println("\nVous devez maintenant poser deux routes sur le plateau.");
 
         int route=2;
         while(route!=0){
-            System.out.println("Choisissez l'emplacement de la route (Saisissez les id de deux intersections adjacentes) :");
+            boolean reponseValide=false;
+            while(!reponseValide){
+                System.out.println("Choisissez l'emplacement de la route (Saisissez les id de deux intersections adjacentes) :");
                         
-            int rep1=scan.nextInt();
-            scan.nextLine();
-            int rep2=scan.nextInt();
-            scan.nextLine();
-
-            player.buildRoad(rep1, rep2, board, turn, this);
-            System.out.println("Route construite en ("+rep1+" "+rep2+").\n");
-
-            route--;
+                int rep1=scan.nextInt();
+                scan.nextLine();
+                int rep2=scan.nextInt();
+                scan.nextLine();
+            
+                if(idHasRoadOfPlayer(rep1, rep2, player) || idForRoadHasSettlementsOrCity(rep1, rep2, player)){
+                    player.buildRoad(rep1, rep2, board, turn, this);
+                    reponseValide=true;
+                    route--;
+                }
+                else 
+                    System.out.println("La route ne peut pas être construite car elle n'est pas placé sur une intersection déjà connecté a une route ou car elle n'est pas placé sur une intersection possedant une ville.");
+            }
         }
     }
 
@@ -987,6 +1363,45 @@ public class Game {
             else{
                 if(askedResource(rep1)==-10)
                     System.out.println("Ce type de resource n'existe pas !");
+            }
+        }
+    }
+
+    public void progressBuildCardIA(IA ia){
+        int route=2;
+        while(route!=0){
+            ArrayList<Road> emptyRoad = board.getEmptyRoad();
+
+            Road randRoad = emptyRoad.get(rand.nextInt(emptyRoad.size()));
+
+            int id1=randRoad.getId1();
+            int id2=randRoad.getId2();
+
+            if(idHasRoadOfPlayer(id1, id2, ia) || idForRoadHasSettlementsOrCity(id1, id2, ia)){
+                ia.buildRoad(id1, id2, board, turn, this);
+                route--;
+            }
+        }
+    }
+
+    public void progressDiscoveryCardIA(IA ia){
+        int resource=2;
+        while(resource!=0){
+            int randResource=rand.nextInt(5);
+
+            ia.collectResources(randResource, 1);
+
+            resource--;
+        }
+    }
+
+    public void progressMonopolyCardIA(IA ia){
+        int randResource = rand.nextInt(5);
+
+        for(Player player : players){
+            if(player.getPlayerResources()[randResource]>0){
+                player.removeResource(randResource, player.getPlayerResources()[randResource]);
+                ia.collectResources(randResource, player.getPlayerResources()[randResource]);
             }
         }
     }

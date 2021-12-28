@@ -75,7 +75,8 @@ public class Human extends Player{
                         break;
                 }
             }
-
+            
+            game.strongestKnight();
             if(game.winner()){
                 game.setWinner(game.getPlayerTurn());
             }

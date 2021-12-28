@@ -216,6 +216,12 @@ public abstract class Player {
         return portOfPlayer;
     }
 
+    public boolean hasPort(){
+        if(getPortsOfPlayer().isEmpty())
+            return false;
+        return true;
+    }
+
     public ArrayList<Port> getPortsType2OfPlayer(){
         ArrayList<Port> portType2OfPlayer =new ArrayList<Port>();
         for(int i=0; i<getPortsOfPlayer().size(); i++){
@@ -225,6 +231,12 @@ public abstract class Player {
         return portType2OfPlayer;
     }
 
+    public boolean hasType2Port(){
+        if(getPortsType2OfPlayer().isEmpty())
+            return false;
+        return true;
+    }
+
     public ArrayList<Port> getPortsType3OfPlayer(){
         ArrayList<Port> portType3OfPlayer =new ArrayList<Port>();
         for(int i=0; i<getPortsOfPlayer().size(); i++){
@@ -232,6 +244,12 @@ public abstract class Player {
                 portType3OfPlayer.add(getPortsOfPlayer().get(i));
         }
         return portType3OfPlayer;
+    }
+
+    public boolean hasType3Port(){
+        if(getPortsType3OfPlayer().isEmpty())
+            return false;
+        return true;
     }
 
     public void collectResources(int resourceType, int nb){
@@ -276,28 +294,58 @@ public abstract class Player {
         return s;
     }
 
-    public boolean hasOneResources(int resource){
+    public boolean hasOneSpecificResources(int resource){
         if(playerResources[resource]>=1)
             return true;
         return false;
     }
 
-    public boolean hasTwoResources(int resource){
+    public boolean hasTwoSpecificResources(int resource){
         if(playerResources[resource]>=2)
             return true;
         return false;
     }
 
-    public boolean hasThreeResources(int resource){
+    public boolean hasThreeSpecificResources(int resource){
         if(playerResources[resource]>=3)
             return true;
         return false;
     }
 
-    public boolean hasFourResources(int resource){
+    public boolean hasFourSpecificResources(int resource){
         if(playerResources[resource]>=4)
             return true;
         return false;
+    }
+
+    public boolean hasTwoResources(){
+        for(int resource : playerResources){
+            if(resource==2)
+                return true;
+        }
+        return false;
+    }
+
+    public boolean hasThreeResources(){
+        for(int resource : playerResources){
+            if(resource==3)
+                return true;
+        }
+        return false;
+    }
+
+    public boolean hasFourResources(){
+        for(int resource : playerResources){
+            if(resource==4)
+                return true;
+        }
+        return false;
+    }
+
+    public boolean hasDevCard(){
+        if(cards.isEmpty())
+            return false;
+        return true;
     }
 
     public int totalResource(){

@@ -1,5 +1,7 @@
 package Game;
 
+import java.util.ArrayList;
+
 public class Board {
 
     public static final int DESERT = -1;
@@ -144,6 +146,40 @@ public class Board {
             }
         }
         return rep;
+    }
+
+    public ArrayList<Integer> getEmptyIntersection(){
+        ArrayList<Integer> emptyIntersectionID=new ArrayList<Integer>();
+
+        for(Intersection inter : getIntersections()){
+            if(inter.getPlayer()==null){
+                emptyIntersectionID.add(inter.getId());
+            }
+        }
+        return emptyIntersectionID;
+    }
+
+    public ArrayList<Road> getEmptyRoad(){
+        ArrayList<Road> emptyRoadID=new ArrayList<Road>();
+
+        for(Road road : getRoads()){
+            if(road.getPlayer()==null){
+                emptyRoadID.add(road);
+            }
+        }
+        return emptyRoadID;
+    }
+
+    public ArrayList<Case> caseWithoutRobber(){
+        ArrayList<Case> isNotRobber =new ArrayList<Case>();
+
+        for(Case c : getCases()){
+            if(!c.isRobber()){
+                isNotRobber.add(c);
+            }
+        }
+
+        return isNotRobber;
     }
 
     //Getters et Setters
