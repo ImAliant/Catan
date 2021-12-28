@@ -297,11 +297,16 @@ public class Game {
             switch (rep) {
                 case "oui":
                     if(player.resourceForDevCard()){
-                        player.addDevCard(devCard.get(0));
-                        System.out.println("\n"+player.getName()+" vient de piocher "+devCard.get(0).toString()+" !");
-                        devCard.remove(0);
-                        player.removeResourceForDevCard();
-                        reponseValide=true;
+                        if(!devCard.isEmpty()){
+                            player.addDevCard(devCard.get(0));
+                            System.out.println("\n"+player.getName()+" vient de piocher "+devCard.get(0).toString()+" !");
+                            devCard.remove(0);
+                            player.removeResourceForDevCard();
+                            reponseValide=true;
+                        }
+                        else
+                            System.out.println("\nIl n'y a plus de carte de développement disponibles !");
+                            reponseValide=true;
                     }
                     else{
                         System.out.println("Vous n'avez pas les ressources nécessaires pour acheter une carte de développement !");
@@ -321,11 +326,15 @@ public class Game {
         }
     }
 
-    public void buyAnswerIA(IA ia){
-        ia.addDevCard(devCard.get(0));
-        System.out.println("\n"+ia.getName()+" vient de piocher "+devCard.get(0).toString()+" !");
-        devCard.remove(0);
-        ia.removeResourceForDevCard();
+    public boolean buyAnswerIA(IA ia){
+        if(!devCard.isEmpty()){
+            ia.addDevCard(devCard.get(0));
+            System.out.println("\n"+ia.getName()+" vient de piocher "+devCard.get(0).toString()+" !");
+            devCard.remove(0);
+            ia.removeResourceForDevCard();
+            return true;
+        }
+        return false;
     }
 
     public void resourceAnswer(Player player){
@@ -391,32 +400,37 @@ public class Game {
         }
     }
 
-    public void playCardAnswerIA(IA ia){
+    public boolean playCardAnswerIA(IA ia){
         ArrayList<DevCard> cards =new ArrayList<DevCard>();
         for(DevCard card : ia.getCards()){
             cards.add(card);
         }
 
-        DevCard randCard = cards.get(rand.nextInt(cards.size()));
+        if(!cards.isEmpty()){
 
-        switch (randCard.getCard()) {
-            case DevCard.VICTORY_POINT:
-                victoryPointCard(ia);
-                break;
-            case DevCard.PROGRESS_BUILD:
-                progressCardIA(ia, DevCard.PROGRESS_BUILD);
-                break;
-            case DevCard.PROGRESS_DISCOVERY:
-                progressCardIA(ia, DevCard.PROGRESS_DISCOVERY);
-                break;
-            case DevCard.PROGRESS_MONOPOLY:
-                progressCardIA(ia, DevCard.PROGRESS_MONOPOLY);
-                break;
-            case DevCard.KNIGHT:
-                knightCardIA(ia);
-                break;
+            DevCard randCard = cards.get(rand.nextInt(cards.size()));
+
+            switch (randCard.getCard()) {
+                case DevCard.VICTORY_POINT:
+                    victoryPointCard(ia);
+                    break;
+                case DevCard.PROGRESS_BUILD:
+                    progressCardIA(ia, DevCard.PROGRESS_BUILD);
+                    break;
+                case DevCard.PROGRESS_DISCOVERY:
+                    progressCardIA(ia, DevCard.PROGRESS_DISCOVERY);
+                    break;
+                case DevCard.PROGRESS_MONOPOLY:
+                    progressCardIA(ia, DevCard.PROGRESS_MONOPOLY);
+                    break;
+                case DevCard.KNIGHT:
+                    knightCardIA(ia);
+                    break;
+            }
+            ia.removeDevCard(randCard);
+            return true;
         }
-        ia.removeDevCard(randCard);
+        return false;
     }
 
     public void trade2or3Resources(Player player){

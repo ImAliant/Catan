@@ -75,7 +75,7 @@ public class IA extends Player {
                                 tour++;
                             }
                             else 
-                                possibleChoice.remove(0);
+                                possibleChoice.remove("0");
                             break;
                         case "10":
                             if(game.trade2ResourcesIA(this)){
@@ -83,7 +83,7 @@ public class IA extends Player {
                                 tour++;
                             }
                             else
-                                possibleChoice.remove(10);
+                                possibleChoice.remove("10");
                             break;
                         case "11":
                             if(game.trade3ResourceIA(this)){
@@ -91,7 +91,7 @@ public class IA extends Player {
                                 tour++;
                             }
                             else 
-                                possibleChoice.remove(11);
+                                possibleChoice.remove("11");
                             break;
                         case "12":
                             if(game.trade4ResourcesIA(this)){
@@ -99,17 +99,23 @@ public class IA extends Player {
                                 tour++;
                             }
                             else
-                                possibleChoice.remove(12);
+                                possibleChoice.remove("12");
                             break;
                         case "2":
-                            game.buyAnswerIA(this); //MODIFIÉ LA MÉTHODE DANS GAME
-                            reponseValide=true;
-                            tour++;
+                            if(game.buyAnswerIA(this)){ //MODIFIÉ LA MÉTHODE DANS GAME
+                                reponseValide=true;
+                                tour++;
+                            }
+                            else
+                                possibleChoice.remove("2");
                             break;
                         case "3":
-                            game.playCardAnswerIA(this); //MODIFIÉ LA MÉTHODE DANS GAME
-                            reponseValide=true;
-                            tour++;
+                            if(game.playCardAnswerIA(this)){ //MODIFIÉ LA MÉTHODE DANS GAME
+                                reponseValide=true;
+                                tour++;
+                            }
+                            else 
+                                possibleChoice.remove("3");
                             break;
                         case "100":
                             System.out.println(getName()+" choisit de ne rien faire ce tour.\n");
