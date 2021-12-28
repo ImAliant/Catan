@@ -126,4 +126,9 @@ public class Game {
       }
     }
   }
+
+
+
+  public Player[] getPlayers(){ return this.players;}
+  public Board getBoard(){return this.board;}
 }

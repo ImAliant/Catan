@@ -7,21 +7,14 @@ import java.awt.*;
 import java.applet.Applet;
 
 public class GameDisplay extends JFrame{
-  private Home home;
   private JPanel content;
-  private Board board;
 
-    public GameDisplay(){
-        createDisplay();
+    public GameDisplay(Game game){
+        createDisplay(game);
     }
 
 
-    public class Carte extends JPanel{ // pour creer une grille par rapport a Board
-
-
-    }
-
-    public void createDisplay(){
+    public void createDisplay(Game game){
         setTitle("Colons de Catanes");
         setSize(600, 600);
         setResizable(false);
@@ -35,8 +28,6 @@ public class GameDisplay extends JFrame{
             System.out.println("Le chemin de l'icone n'existe pas !");
         }
 
-                this.home = new Home();
-                this.board = new Board();
                 this.content = new JPanel();
                 JPanel panelJoueurs = new JPanel();
                 panelJoueurs.setPreferredSize(new Dimension(600,200));
@@ -48,10 +39,11 @@ public class GameDisplay extends JFrame{
                 this.content.add(panelJoueurs,BorderLayout.SOUTH);
 
 
-                if(this.home.getPlayer().getSelectedIndex() == 0){
-                  panelJoueurs.setLayout(new GridLayout(1,3));
 
-                  Player[] players  = this.home.threePlayersArrayInit() ;
+                  Player[] players  = game.getPlayers() ;
+
+              if(players.length == 3){
+                panelJoueurs.setLayout(new GridLayout(1,3));
 
                   JPanel j1 = new JPanel();
                   JPanel j2 = new JPanel();
@@ -66,31 +58,29 @@ public class GameDisplay extends JFrame{
                   JLabel nom3 = new JLabel();
 
                   j1.setBackground(Color.BLUE);
-                  j1.add(nom1);
-                  nom1.setText(players[0].getName());
                   j1.setLayout(new BorderLayout());
                   j1.add(nom1,BorderLayout.NORTH);
+                  nom1.setText(players[0].getName());
+
             //      nom1.setHorizontalAligment(80);
 
                   j2.setBackground(Color.RED);
-                  j2.add(nom2);
-                  nom2.setText(players[1].getName());
                   j2.setLayout(new BorderLayout());
                   j2.add(nom2,BorderLayout.NORTH);
+                  nom2.setText(players[1].getName());
+
               //    nom2.setHorizontalAligment(80);
 
                   j3.setBackground(Color.ORANGE);
-                  j3.add(nom3);
-                  nom3.setText(players[2].getName());
                   j3.setLayout(new BorderLayout());
                   j3.add(nom3,BorderLayout.NORTH);
+                  nom3.setText(players[2].getName());
+
               //    nom3.setHorizontalAligment(80);
 
 
                 }else{
                   panelJoueurs.setLayout(new GridLayout(1,4));
-
-                  Player[] players  = this.home.fourPlayersArrayInit() ;
 
                   JPanel j1 = new JPanel();
                   JPanel j2 = new JPanel();
@@ -118,7 +108,7 @@ public class GameDisplay extends JFrame{
                   j2.add(nom2,BorderLayout.NORTH);
                   nom2.setText(players[1].getName());
               //    nom2.setHorizontalAligment(80);
-                        
+
                   j3.setBackground(Color.ORANGE);
                   j3.setLayout(new BorderLayout());
                   j3.add(nom3,BorderLayout.NORTH);
@@ -126,15 +116,56 @@ public class GameDisplay extends JFrame{
               //    nom3.setHorizontalAligment(80);
 
 
-                  j1.setBackground(new Color(128,0,128));
+                  j1.setBackground(new Color(128,0,128)); // pour donner la couleur violet 
                   j4.setLayout(new BorderLayout());
                   j4.add(nom4,BorderLayout.NORTH);
                   nom4.setText(players[3].getName());
               //    nom4.setHorizontalAligment(80);
                 }
 
-    /*    Carte panelCarte = new Carte();
+    /*    Carte panelCarte = new Carte(game);
           panelCarte.setPreferredSize(new Dimension(350,350));
         panelCarteFond.add(panelCarte);  */
     }
+
+
+        public class Carte extends JPanel{ // pour creer une grille par rapport a Board
+          private Board board;
+
+          private static final long serialVersionUID =1L;
+
+          static final int cols = 4; // nb de colonne
+          static final int rows = 4; // nb de ligne
+
+          static final int originX = 23; // position d'origine x (en haut a droite)
+          static final int originY = 37; // position d'origine y (en haut a droite)
+          static final int cellSide = 72; // taille d'un coté (vu que c'est un carré on a besoin que de ça)
+
+          public Carte(Game game){
+            this.board = this.game.getBoard();
+          }
+
+          @Override
+          protected void paintComponent(Graphics g){
+            super.paintComponent(g);
+      //  g.drawLine(x1,y1,x2,y2) x1 =  point x de depart , y1 = point y de depart , x2 point x d'arrive, y2 point y d'arrive
+            for(int i = 0; i <rows + 1; i++){
+                g.drawLine(originX, originY + i * cellSide, originX + cols * cellSide,originY+ i * cellSide);
+                //y1,y2 = taille d'un cote * le nombre qu'il fera cette taille par rapport a originY (pour que les ligne se fasse en plusieurs exemplaires avec un ecart proportionel)
+               //x2 = taille de la ligne, la ou aura lieu l'intersection avec les colonnes
+
+            }
+
+            for(int i = 0; i< cols +1; i++ ){
+                g.drawLine(originX + i + cellSide, originY,originX + i *cellSide, originY +rows *cellSide);
+                //x1,x2 = meme delire qu'avec rows
+                // y2 = meme delire q'avec row
+            }
+          }
+
+          // ESSAYEZ DE LE RENDRE INTERACTIF
+
+
+        }
+
 }
