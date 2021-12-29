@@ -81,6 +81,7 @@ public class Human extends Player{
             }
             
             game.strongestKnight();
+            game.longestRoad();
             if(game.winner()){
                 game.setWinner(game.getPlayerTurn());
             }

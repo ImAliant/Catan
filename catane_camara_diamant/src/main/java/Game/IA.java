@@ -155,6 +155,7 @@ public class IA extends Player {
         }
 
         game.strongestKnight();
+        game.longestRoad();
         if(game.winner()){
             game.setWinner(game.getPlayerTurn());
         }

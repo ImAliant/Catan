@@ -9,7 +9,7 @@ public class Game {
     private Player[] players;
     private Board board;
     private ArrayList<DevCard> devCard;
-    //private GameDisplay display;
+    private GameDisplay display;
 
     private int winner;
     private int playerTurn;
@@ -17,8 +17,8 @@ public class Game {
 
     private int strongestKnightSize;
     private Player strongestKnightOwner;
-    //private int longestRoadSize;
-    //private Player longestRoadOwner;
+    private int longestRoadSize;
+    private Player longestRoadOwner;
 
     private Scanner scan =new Scanner(System.in);
     private Random rand =new Random();
@@ -35,8 +35,8 @@ public class Game {
 
         strongestKnightSize=0;
         strongestKnightOwner=null;
-        //longestRoadSize=0;
-        //longestRoadOwner=null;
+        longestRoadSize=0;
+        longestRoadOwner=null;
 
         winner=-1;
         int playerTurn=0;
@@ -1665,53 +1665,69 @@ public class Game {
         return true;
     }
 
-    /*public void longestRoad(){
-        int compteur=0;
-        int compteurMax=0;
-        Player lRoadOwner=null;
+    public void longestRoad(){
+        int compteur = 0;
+        int compteurMax = 0;
+        Player owner = null;
+
+        ArrayList<Road> rCrossed =new ArrayList<Road>();
 
         for(Player player : players){
-            compteur = findLongestRoadSize(0, 1, compteur, player.getRoads(), player);
-            if(compteur>compteurMax && compteur>=5){
-                compteurMax=compteur;
-                lRoadOwner=player;
+            if(!player.getRoads().isEmpty()){
+                for(Road road : player.getRoads()){
+                    compteur += findLongestRoad(road, player, rCrossed);
+
+                    if(compteur > compteurMax){
+                        compteurMax = compteur;
+                        owner = player;
+                    }
+
+                    compteur = 0;
+                }
+            }
+        }
+        if(compteurMax>=5 && compteurMax>longestRoadSize){
+            if(longestRoadOwner !=null){
+                longestRoadSize = compteurMax;
+                System.out.println(longestRoadOwner.toString()+" perd la carte spéciale \"Route la plus longue\" et "+owner.toString()+" obtient la carte avec "+longestRoadSize+" routes !");
+                longestRoadOwner.setLongestRoad(false);
+                owner.setLongestRoad(true);
+                longestRoadOwner = owner;
+            }
+            else{
+                longestRoadSize = compteurMax;
+                System.out.println(owner.toString()+" obtient la carte avec "+longestRoadSize+" routes !");
+                owner.setLongestRoad(true);
+                longestRoadOwner = owner;
+            }
+        }
+    }
+    public int findLongestRoad(Road r, Player player, ArrayList<Road> rCrossed){  //r : route sur laquelle on test si elle fait partie de la route la plus longue. rCrossed : route qu'on doit plus tester.
+        int compteur = 0;
+        int compteurMax = 0;
+
+        ArrayList<Road> roads =new ArrayList<Road>();
+
+        for(Road road1 : player.getRoads()){
+            if(!rCrossed.contains(road1)){
+                roads.add(road1);
             }
         }
 
-        if(longestRoadOwner!=null){
-            longestRoadOwner.setLongestRoad(false);            
-            lRoadOwner.setLongestRoad(true);
-            longestRoadOwner=lRoadOwner;
+        for(Road road2 : roads){
+            if(r.getId1()==road2.getId1() || r.getId2()==road2.getId2()){
+                rCrossed.add(r);
+                compteur += 1;
+                compteur += findLongestRoad(road2, player, rCrossed);
+
+                if(compteur > compteurMax){
+                    compteurMax = compteur;
+                }
+                compteur = 0;
+            }
         }
-        else{
-            lRoadOwner.setLongestRoad(true);
-            longestRoadOwner=lRoadOwner;
-        }
+        return compteurMax;
     }
-
-    public int findLongestRoadSize(int indexR1, int indexR2, int compteur, ArrayList<Road> roads, Player player){
-        ArrayList<Road> roadsWithoutR1=roads;
-        ArrayList<Road> roadsWithoutR2=roads;
-
-        int compteur1=0;
-        int compteur2=0;
-
-        if((player.getRoads().get(indexR1).getId1()==player.getRoads().get(indexR2).getId1()) 
-        || (player.getRoads().get(indexR1).getId1()==player.getRoads().get(indexR2).getId2()) 
-        || (player.getRoads().get(indexR1).getId2()==player.getRoads().get(indexR2).getId1()) 
-        || (player.getRoads().get(indexR1).getId2()==player.getRoads().get(indexR2).getId2())){
-            roadsWithoutR1.remove(player.getRoads().get(indexR1));
-            roadsWithoutR2.remove(player.getRoads().get(indexR2));
-            compteur1 += findLongestRoadSize(indexR2, indexR2+1, compteur, roadsWithoutR1, player);
-            compteur2 += findLongestRoadSize(indexR1, indexR1+1, compteur, roadsWithoutR2, player);
-            
-            if(compteur1>compteur2)
-                compteur=compteur1;
-            else compteur=compteur2;
-        }
-        System.out.println(player.getName()+": "+compteur);
-        return compteur;
-    }*/
 
     public ArrayList<Intersection> emptyIntersectionDistanceRules(){
         ArrayList<Intersection> interDistRules=new ArrayList<Intersection>();

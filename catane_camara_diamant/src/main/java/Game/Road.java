@@ -33,6 +33,10 @@ public class Road {
         return true;
     }
 
+    public String toString(){
+        return "("+id1+", "+id2+")";
+    }
+
     //Getters et Setters
     public int getId1() {return id1;}
     public int getId2() {return id2;}
