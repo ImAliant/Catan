@@ -1,4 +1,4 @@
-package Game;
+
 
 import java.util.Random;
 import java.util.Scanner;
@@ -118,9 +118,9 @@ public class Game {
       if(rep<0 || rep>15){
           System.out.println("Veillez choisir un tuile parmi celle du jeu");
       }else{
-        board.getIndexRobber().setRobber(false);
+        board.getCases()[board.getIndexRobber()].setRobber(false);
         board.setIndexRobber(rep);
-        board.getIndexRobber().setRobber(true);
+        board.getCases()[board.getIndexRobber()].setRobber(true);
         reponseValide = true;
         System.out.println("Le voleur est maintenant à la tuile "+rep+ ".");
       }

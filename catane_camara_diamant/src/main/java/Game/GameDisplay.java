@@ -1,13 +1,11 @@
-package Game;
+
 
 import java.awt.*;
 import javax.swing.*;
-import java.awt.event.*;
-import java.awt.*;
-import java.applet.Applet;
+
 
 public class GameDisplay extends JFrame{
-  private JPanel content;
+ // private JPanel content;
 
     public GameDisplay(Game game){
         createDisplay(game);
@@ -28,16 +26,16 @@ public class GameDisplay extends JFrame{
             System.out.println("Le chemin de l'icone n'existe pas !");
         }
 
-                this.content = new JPanel();
+               // this.content = new JPanel();
                 JPanel panelJoueurs = new JPanel();
                 panelJoueurs.setPreferredSize(new Dimension(600,200));
                 JPanel panelCarteFond = new JPanel();
-                panelCarteFond.setPreferredSize(new Dimension(600,400));
+                panelCarteFond.setPreferredSize(new Dimension(400,600));
                 panelCarteFond.setBackground(Color.CYAN);
-                this.content.setLayout(new GridLayout(2,1));
-                this.content.add(panelCarteFond,BorderLayout.NORTH);
-                this.content.add(panelJoueurs,BorderLayout.SOUTH);
-
+                this.setLayout(new GridLayout(2,1));
+                this.add(panelCarteFond,BorderLayout.NORTH);
+                this.add(panelJoueurs,BorderLayout.SOUTH);
+               // this.getContentPane().
 
 
                   Player[] players  = game.getPlayers() ;
@@ -97,7 +95,7 @@ public class GameDisplay extends JFrame{
                   JLabel nom3 = new JLabel();
                   JLabel nom4 = new JLabel();
 
-                  j1.setBackground(Color.BLUE);
+                  j1.setBackground(Color.blue);
                   j1.setLayout(new BorderLayout());
                   j1.add(nom1,BorderLayout.NORTH);
                   nom1.setText(players[0].getName());
@@ -116,33 +114,40 @@ public class GameDisplay extends JFrame{
               //    nom3.setHorizontalAligment(80);
 
 
-                  j1.setBackground(new Color(128,0,128)); // pour donner la couleur violet 
+                  j4.setBackground(new Color(128,0,128)); // pour donner la couleur violet 
                   j4.setLayout(new BorderLayout());
                   j4.add(nom4,BorderLayout.NORTH);
                   nom4.setText(players[3].getName());
               //    nom4.setHorizontalAligment(80);
                 }
-
-    /*    Carte panelCarte = new Carte(game);
+            Graphics g = this.getGraphics();
+        Carte panelCarte = new Carte(g);
           panelCarte.setPreferredSize(new Dimension(350,350));
-        panelCarteFond.add(panelCarte);  */
+        panelCarteFond.add(panelCarte);  
     }
 
 
         public class Carte extends JPanel{ // pour creer une grille par rapport a Board
-          private Board board;
+       //   private Board board;
+
+       //   private Object game;
 
           private static final long serialVersionUID =1L;
 
           static final int cols = 4; // nb de colonne
-          static final int rows = 4; // nb de ligne
+          static final int rows = 7; // nb de ligne
 
-          static final int originX = 23; // position d'origine x (en haut a droite)
-          static final int originY = 37; // position d'origine y (en haut a droite)
+          static final int originX = 1; // position d'origine x (en haut a droite)
+          static final int originY = 1;// position d'origine y (en haut a droite)
           static final int cellSide = 72; // taille d'un coté (vu que c'est un carré on a besoin que de ça)
 
-          public Carte(Game game){
+         /* public Carte(Game game){
             this.board = this.game.getBoard();
+          } */
+
+          public Carte(Graphics g){
+            paintComponent(g);
+               this.setBackground(Color.black);
           }
 
           @Override
@@ -156,8 +161,8 @@ public class GameDisplay extends JFrame{
 
             }
 
-            for(int i = 0; i< cols +1; i++ ){
-                g.drawLine(originX + i + cellSide, originY,originX + i *cellSide, originY +rows *cellSide);
+            for(int i = 0; i< cols +1; i++){
+                g.drawLine(originX + i + cellSide, originY, originX + i *cellSide, originY + rows *cellSide);
                 //x1,x2 = meme delire qu'avec rows
                 // y2 = meme delire q'avec row
             }
