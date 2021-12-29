@@ -3,7 +3,6 @@ package Game;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Player {
     private String name;
