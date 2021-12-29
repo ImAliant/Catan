@@ -1,7 +1,11 @@
 package Game;
 
+import java.util.Scanner;
+
 public class Human extends Player{
 
+    private Scanner scan =new Scanner(System.in);
+    
     public Human(String name, int color) {
         super(name + " (Humain)", color);
     }
@@ -79,6 +83,121 @@ public class Human extends Player{
             game.strongestKnight();
             if(game.winner()){
                 game.setWinner(game.getPlayerTurn());
+            }
+        }
+    }
+
+    @Override
+    public void buildSettlement(int id, Board board, int turn){
+        if(id>=0 && id<=24){
+            if(board.getIntersections()[id].getBuilding().upgradeToSettlements()){
+                getSettlements().add(board.getIntersections()[id]);
+                board.getIntersections()[id].setPlayer(this);
+                if(turn!=0){
+                    removeResourceForSettlements();
+                }
+                System.out.println("Colonie construite en ("+id+").");
+                addVictoryPoint(1);
+            }
+            else{
+                System.out.println("Cette intersection ne peut pas pas être amélioré en colonie !");
+                System.out.println("Saisissez un nouvel id (0 à 24) :");
+                int rep = scan.nextInt();
+                scan.nextLine();
+
+                buildSettlement(rep, board, turn);
+            }
+        }
+        else{
+            System.out.println("Cette intersection n'existe pas !");
+            System.out.println("Saisissez un nouvel id (0 à 24) :");
+            int rep=scan.nextInt();
+            scan.nextLine();
+
+            buildSettlement(rep, board, turn);
+        }
+    }
+
+    @Override
+    public void buildCity(int id, Board board){
+        if(id >= 0 && id <=24){
+            if(board.getIntersections()[id].getBuilding().upgradeToCity()){
+                getCities().add(board.getIntersections()[id]);
+                getSettlements().remove(board.getIntersections()[id]);
+                removeResourceForCities();
+                addVictoryPoint(2);
+                System.out.println("Ville construite en ("+id+").\n");
+            }
+            else{
+                System.out.println("Cette colonie ne peut pas être amélioré en ville !");
+                System.out.println("Saississez un nouvel id (0 à 24) : ");
+                int rep=scan.nextInt();
+                scan.nextLine();
+                buildCity(rep, board);
+            }
+        }
+        else{
+            System.out.println("Cette intersection n'existe pas !");
+            System.out.println("Saississez un nouvel id (0 à 24) : ");
+            int rep=scan.nextInt();
+            scan.nextLine();
+            buildCity(rep, board);
+        }
+    }
+    
+    @Override
+    public void buildRoad(int id1, int id2, Board board, int turn,  Game game){
+        if((id1 >= 0 && id1 <= 24) && (id2 >= 0 && id2 <= 24)){
+            if(board.getSpecificRoad(id1, id2)!=null){
+                if(board.getSpecificRoad(id1, id2).upgradeRoad(this)){
+                    if(turn!=0){
+                        removeResourceForRoad();
+                    }
+                    getRoads().add(board.getSpecificRoad(id1, id2));
+                    System.out.println("Route construite en ("+id1+" "+id2+").\n");
+                }
+                else{
+                    System.out.println("Cette arête possède déjà une route !");
+                    System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
+                    int rep1=scan.nextInt();
+                    scan.nextLine();
+                    int rep2=scan.nextInt();
+                    scan.nextLine();
+                    
+                    buildRoad(rep1, rep2, board, turn, game);
+                }
+            }
+            else{
+                boolean reponseValide=false;
+                while(!reponseValide){
+                    System.out.println("Cette route n'existe pas !");
+                    System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
+                    int rep1=scan.nextInt();
+                    scan.nextLine();
+                    int rep2=scan.nextInt();
+                    scan.nextLine();
+                
+                    if(game.idForRoadHasSettlementsOrCity(rep1, rep2, this)){
+                        buildRoad(rep1, rep2, board, turn, game);
+                        reponseValide=true;
+                    }
+                }
+            }
+        }
+        else{
+            boolean reponseValide=false;
+            while(!reponseValide){
+                System.out.println("Cette route n'existe pas !");
+                System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
+                int rep1=scan.nextInt();
+                scan.nextLine();
+                int rep2=scan.nextInt();
+                scan.nextLine();
+                
+                if(game.idForRoadHasSettlementsOrCity(rep1, rep2, this)){
+                    buildRoad(rep1, rep2, board, turn, game);
+                    reponseValide=true;
+                }
             }
         }
     }

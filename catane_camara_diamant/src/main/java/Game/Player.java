@@ -44,134 +44,11 @@ public abstract class Player {
 
     public abstract void moveRobber(Board board, Game game);
 
-    public void buildSettlement(int id, Board board, int turn){ //HUMAIN ET IA
-        if(id >= 0 && id <=24){
-            if(board.getIntersections()[id].getBuilding().upgradeToSettlements()){
-                settlements.add(board.getIntersections()[id]);
-                board.getIntersections()[id].setPlayer(this);
-                if(turn!=0){
-                    removeResource(Resource.BOIS, 1);
-                    removeResource(Resource.ARGILE, 1);
-                    removeResource(Resource.BLE, 1);
-                    removeResource(Resource.MOUTON, 1);
-                }
-                System.out.println("Colonie construite en ("+id+").");
-                victoryPoint+=1;
-            }
-            else{
-                int rep=0;
-                if(this instanceof Human){
-                    System.out.println("Cette intersection ne peut pas être amélioré en colonie !");
-                    System.out.println("Saississez un nouvel id (0 à 24) : ");
-                    rep=scan.nextInt();
-                }
-                else{
-                    rep=0+rand.nextInt(24-0);
-                }
-                buildSettlement(rep, board, turn);
-            }
-        }
-        else{
-            int rep=0;
-            if(this instanceof Human){
-                System.out.println("Cette intersection n'existe pas !");
-                System.out.println("Saississez un nouvel id (0 à 24) : ");
-                rep=scan.nextInt();
-            }
-            else{
-                rep=0+rand.nextInt(24-0);
-            }
-            buildSettlement(rep, board, turn);
-        }
-    }
+    public abstract void buildSettlement(int id, Board board, int turn);
 
-    public void buildCity(int id, Board board){
-        if(id >= 0 && id <=24){
-            if(board.getIntersections()[id].getBuilding().upgradeToCity()){
-                cities.add(board.getIntersections()[id]);
-                settlements.remove(board.getIntersections()[id]);
-                removeResource(Resource.BLE, 2);
-                removeResource(Resource.PIERRE, 3);
-                victoryPoint+=2;
-                System.out.println("Ville construite en ("+id+").\n");
-            }
-            else{
-                System.out.println("Cette colonie ne peut pas être amélioré en ville !");
-                System.out.println("Saississez un nouvel id (0 à 24) : ");
-                int rep=scan.nextInt();
-                buildCity(rep, board);
-            }
-        }
-        else{
-            System.out.println("Cette intersection n'existe pas !");
-            System.out.println("Saississez un nouvel id (0 à 24) : ");
-            int rep=scan.nextInt();
-            buildCity(rep, board);
-        }
-    }
+    public abstract void buildCity(int id, Board board);
 
-    public void buildRoad(int id1, int id2, Board board, int turn, Game game){ //HUMAIN ET IA
-        if((id1 >= 0 && id1 <= 24) && (id2 >= 0 && id2 <= 24)){
-            if(board.getSpecificRoad(id1, id2)!=null){
-                if(board.getSpecificRoad(id1, id2).upgradeRoad(this)){
-                    if(turn!=0){
-                        removeResource(Resource.BOIS, 1);
-                        removeResource(Resource.ARGILE, 1);
-                    }
-                    roads.add(board.getSpecificRoad(id1, id2));
-                    System.out.println("Route construite en ("+id1+" "+id2+").\n");
-                }
-                else{
-                    int rep1=0;
-                    int rep2=0;
-                    if(this instanceof Human){
-                        System.out.println("Cette arête possède déjà une route !");
-                        System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
-                        rep1=scan.nextInt();
-                        rep2=scan.nextInt();
-                    }
-                    else{
-                        rep1=settlements.get(rand.nextInt(settlements.size())).getId();
-                        
-                        ArrayList<Integer> canBuilRoad = game.intersectionsRoadIA(rep1);
-
-                        rep2=canBuilRoad.get(ThreadLocalRandom.current().nextInt(0, canBuilRoad.size()));
-                    }
-                    buildRoad(rep1, rep2, board, turn, game);
-                }
-            }
-            else{
-                int rep1=0;
-                int rep2=0;
-                if(this instanceof Human){
-                    System.out.println("Cette route n'existe pas !");
-                    System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
-                    rep1=scan.nextInt();
-                    rep2=scan.nextInt();
-                }
-                else{
-                    rep1=0+rand.nextInt(24-0);
-                    rep2=0+rand.nextInt(24-0);
-                }
-                buildRoad(rep1, rep2, board, turn, game);
-            }
-        }
-        else{
-            int rep1=0;
-            int rep2=0;
-            if(this instanceof Human){
-                System.out.println("Cette route n'existe pas !");
-                System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
-                rep1=scan.nextInt();
-                rep2=scan.nextInt();
-            }
-            else{
-                rep1=0+rand.nextInt(24-0);
-                rep2=0+rand.nextInt(24-0);
-            }
-            buildRoad(rep1, rep2, board, turn, game);
-        }
-    }
+    public abstract void buildRoad(int id1, int id2, Board board, int turn,  Game game);
 
     public boolean resourceForSettlement(){
         if(playerResources[Resource.BOIS]>=1 && playerResources[Resource.ARGILE]>=1 && playerResources[Resource.BLE]>=1 && playerResources[Resource.MOUTON]>=1){
@@ -320,7 +197,7 @@ public abstract class Player {
 
     public boolean hasTwoResources(){
         for(int resource : playerResources){
-            if(resource==2)
+            if(resource>=2)
                 return true;
         }
         return false;
@@ -328,7 +205,7 @@ public abstract class Player {
 
     public boolean hasThreeResources(){
         for(int resource : playerResources){
-            if(resource==3)
+            if(resource>=3)
                 return true;
         }
         return false;
@@ -336,7 +213,7 @@ public abstract class Player {
 
     public boolean hasFourResources(){
         for(int resource : playerResources){
-            if(resource==4)
+            if(resource>=4)
                 return true;
         }
         return false;

@@ -19,12 +19,14 @@ public class Building {
             default: return "Invalid building";
         }
     }
+    
     public boolean canUpgradeToSettlements() {
         switch (buildingType) {
             case 0: return true;
             default: return false;
         }
     }
+    
     public boolean upgradeToSettlements() {
         if (!canUpgradeToSettlements()) { return false; }
         else {
@@ -39,6 +41,7 @@ public class Building {
             default: return false;
         }
     }
+    
     public boolean upgradeToCity(){
         if(!canUpgradeToCity()) return false;
         else{
