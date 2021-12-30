@@ -1,7 +1,6 @@
 package Game;
 
 import java.awt.EventQueue;
-import java.util.ArrayList;
 
 public class Launcher {
     public static void main(String[] args) {
