@@ -29,8 +29,9 @@ public class Game {
         initDevCardGame(); 
     }
 
-    public void play(){
+    public void play() throws Exception{
         turn=0;
+        System.out.println("Bienvenue dans le jeu \"Colons de Catanes\" ! \n Vous allez rentrer dans l'étape de fondation. \n Vous devez construire deux colonies et deux routes.");
         foundation();
 
         strongestKnightSize=0;
@@ -41,6 +42,7 @@ public class Game {
         winner=-1;
         int playerTurn=0;
 
+        System.out.println("\n Le jeu commence ! \n");
         while(winner==-1){
             turn++;
             players[playerTurn].turn(board, this);
@@ -54,6 +56,23 @@ public class Game {
                 if(playerTurn%3==0)
                     playerTurn=0;
             }
+        }
+
+        switch (winner) {
+            case 0:
+                System.out.println("Le vainqueur est "+players[winner].toString());
+                break;
+            case 1:
+                System.out.println("Le vainqueur est "+players[winner].toString());
+                break;
+            case 2:
+                System.out.println("Le vainqueur est "+players[winner].toString());
+                break;
+            case 3:
+                System.out.println("Le vainqueur est "+players[winner].toString());
+                break;
+            default:
+                throw new Exception();
         }
 
         scan.close();
