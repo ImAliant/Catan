@@ -10,7 +10,7 @@ public class Launcher {
             public void run() {
                Player[] players = {new Player("a",1),new Player("b",2),new Player("c",3), new Player("d",4)};
                new GameDisplay(new Game(players));
-               
+             // new Home();
             }
         });
     }
