@@ -31,7 +31,7 @@ public class Game {
 
     public void play() throws Exception{
         turn=0;
-        System.out.println("Bienvenue dans le jeu \"Colons de Catanes\" ! \n Vous allez rentrer dans l'étape de fondation. \n Vous devez construire deux colonies et deux routes.");
+        System.out.println("Bienvenue dans le jeu \"Colons de Catanes\" ! \nVous allez rentrer dans l'étape de fondation. \nVous devez construire deux colonies et deux routes.\n");
         foundation();
 
         strongestKnightSize=0;
@@ -42,7 +42,7 @@ public class Game {
         winner=-1;
         int playerTurn=0;
 
-        System.out.println("\n Le jeu commence ! \n");
+        System.out.println("\nLe jeu commence ! \n");
         while(winner==-1){
             turn++;
             players[playerTurn].turn(board, this);
@@ -78,10 +78,11 @@ public class Game {
         scan.close();
     }
 
-    public void foundation(){  //HUMAIN ET IA
+    public void foundation() throws Exception{  //HUMAIN ET IA
         int tour=0;
+        Player[] playersFondation = players;
         while(tour!=2){
-            for(Player player : players){
+            for(Player player : playersFondation){
                 System.out.println("Tour : " + player.toString());
                 if(player instanceof Human){ //HUMAIN
                     boolean reponseValide1=false;
@@ -152,6 +153,8 @@ public class Game {
                 }
             }
             tour++;
+
+            playersFondation = playerSwap(playersFondation);
         }
         for(Player player : players){
             for(int i=0; i<player.lastSettlements().getCaseAdj().length; i++){
@@ -1758,6 +1761,29 @@ public class Game {
         }
 
         return interDistRules;
+    }
+
+    public Player[] playerSwap(Player[] p) throws Exception{
+        Player temp;
+        switch (p.length) {
+            case 3:
+                temp=p[0];
+                p[0]=p[2];
+                p[2]=temp;
+                break;
+            case 4:
+                temp=p[0];
+                p[0]=p[3];
+                p[3]=temp;
+
+                temp=p[1];
+                p[2]=p[1];
+                p[1]=temp;
+                break;
+            default:
+                throw new Exception();
+        }
+        return p;
     }
 
     //Getters et setters

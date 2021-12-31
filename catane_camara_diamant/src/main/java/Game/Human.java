@@ -31,6 +31,12 @@ public class Human extends Player{
                             player.collectResources(c.getResource().getResourceType(), 1);
                         }
                     }
+                    for(Case c : player.getCities().get(i).getCaseAdj()){
+                        if(diceRolls==c.getDiceRoll()){
+                            System.out.println(player.toString()+ " obtient 2 ressource : "+c.getResource().toString());
+                            player.collectResources(c.getResource().getResourceType(), 2);
+                        }
+                    }
                 }
             }
         }
