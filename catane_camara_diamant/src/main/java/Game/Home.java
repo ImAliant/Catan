@@ -339,18 +339,33 @@ public class Home extends JFrame{
         Player p2=null;
         Player p3=null;
         Player p4=null;
-        if(human1.isSelected())
+        if(human1.isSelected()){
             p1 =new Human("Joueur bleu", 0);
-        else p1 =new IA("Joueur bleu", 0);
-        if(human2.isSelected())
+        }
+        else{
+            p1 =new IA("Joueur bleu", 0);
+        } 
+
+        if(human2.isSelected()){
             p2 =new Human("Joueur rouge", 1);
-        else p2 =new IA("Joueur rouge", 1);
-        if(human3.isSelected())
+        }   
+        else {
+            p2 =new IA("Joueur rouge", 1);
+        }
+
+        if(human3.isSelected()){
             p3 =new Human("Joueur orange", 2);
-        else p3 =new IA("Joueur orange", 2);
-        if(human4.isSelected())
+        }
+        else {
+            p3 =new IA("Joueur orange", 2);
+        }
+
+        if(human4.isSelected()){
             p4 =new Human("Joueur violet", 3);
-        else p4 =new IA("Joueur violet", 3);
+        }
+        else {
+            p4 =new IA("Joueur violet", 3);
+        }
         Player[] players = {p1, p2, p3, p4};
 
         return players;

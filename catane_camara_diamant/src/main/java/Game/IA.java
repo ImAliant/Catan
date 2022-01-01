@@ -30,6 +30,14 @@ public class IA extends Player {
                         }
                     }
                 }
+                for(int i=0; i<player.getCities().size(); i++){
+                    for(Case c : player.getCities().get(i).getCaseAdj()){
+                        if(diceRolls==c.getDiceRoll()){
+                            System.out.println(player.toString()+ " obtient 2 ressource : "+c.getResource().toString());
+                            player.collectResources(c.getResource().getResourceType(), 2);
+                        }
+                    }
+                }
             }
         }
 
@@ -108,7 +116,7 @@ public class IA extends Player {
                                 possibleChoice.remove("12");
                             break;
                         case "2":
-                            if(game.buyAnswerIA(this)){ //MODIFIÉ LA MÉTHODE DANS GAME
+                            if(game.buyAnswerIA(this)){
                                 reponseValide=true;
                                 tour++;
                             }

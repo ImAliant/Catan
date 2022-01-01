@@ -154,6 +154,7 @@ public class Game {
             tour++;
 
             playersFondation = playerSwap(playersFondation);
+            
         }
         for(Player player : players){
             for(int i=0; i<player.lastSettlements().getCaseAdj().length; i++){
@@ -740,7 +741,7 @@ public class Game {
 
                 Resource resource = resourceChoice.get(rand.nextInt(resourceChoice.size()));
 
-                System.out.println(ia.toString()+" a échanger 4 ressources "+randResourceTypeSent.toString()+
+                System.out.println(ia.toString()+" a échanger 3 ressources "+randResourceTypeSent.toString()+
                 " contre "+ resource.toString());
 
                 ia.removeResource(randResourceTypeSent.getResourceType(), 3);
@@ -1767,7 +1768,7 @@ public class Game {
                 p[0]=p[3];
                 p[3]=temp;
 
-                temp=p[1];
+                temp=p[2];
                 p[2]=p[1];
                 p[1]=temp;
                 break;
