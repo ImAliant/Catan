@@ -189,26 +189,32 @@ public class Game {
                             System.out.println("Vous n'avez pas les resources nécessaires pour construire une colonie !");
                         }
                     }
+                    else{
+
+                    }
                     break;
                 case "ville":
-                    if(player.resourceForCity()){
-                        System.out.println("Choisissez l'emplacement de la ville (0 à 24): ");
+                    if(!player.getSettlements().isEmpty()){
+                        if(player.resourceForCity()){
+                            System.out.println("Choisissez l'emplacement de la ville (0 à 24): ");
 
-                        int rep1=scan.nextInt();
-                        scan.nextLine();
+                            int rep1=scan.nextInt();
+                            scan.nextLine();
 
-                        if(distanceRules(rep1)){
-                            player.buildCity(rep1, board);
-                            reponseValide=true;
+                            if(distanceRules(rep1)){
+                                player.buildCity(rep1, board);
+                                reponseValide=true;
+                            }
+                            else{
+                                if(player instanceof Human)
+                                    System.out.println("Vous ne pouvez pas construire sur cette intersection. La règle de distance des colonies n'est pas respecté !");
+                            }
                         }
-                        else{
-                            if(player instanceof Human)
-                                System.out.println("Vous ne pouvez pas construire sur cette intersection. La règle de distance des colonies n'est pas respecté !");
-                        }
+                        else
+                            System.out.println("Vous n'avez pas les resources nécessaires pour construire une ville !");
                     }
-                    else{
-                        System.out.println("Vous n'avez pas les resources nécessaires pour construire une ville !");
-                    }
+                    else 
+                        System.out.println("Vous ne possédez pas de colonie !");
                     break;
                 case "route":
                     if(player.resourceForRoad()){
@@ -1614,16 +1620,6 @@ public class Game {
         return false;
     }
 
-    public ArrayList<Road> possessedRoads(){
-        ArrayList<Road> roads = new ArrayList<Road>();
-        for(Road road : board.getRoads()){
-            if(road.getPlayer()!=null){
-                roads.add(road);
-            }
-        }
-        return roads;
-    }
-
     public ArrayList<Integer> canBuildRoadIA(int id){
         ArrayList<Integer> canBuilRoad =new ArrayList<Integer>();
 
@@ -1673,7 +1669,7 @@ public class Game {
     }
     
     public boolean noIntersectionAvailable(){
-        for(Intersection inter : board.getIntersections()){
+        for(Intersection inter : board.getEmptyIntersection()){
             if(distanceRules(inter.getId())){
                 return false;
             }

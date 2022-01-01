@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Board {
 
+    //Correspond aux types de terrain disponibles pour les cases.
     public static final int DESERT = -1;
     public static final int FORET = 0;
     public static final int MONTAGNE = 1;
@@ -11,6 +12,7 @@ public class Board {
     public static final int PRE = 3;
     public static final int COLLINE = 4;
     public static final int TOUT = 5;
+
 
     private Case[] cases;
     private Intersection[] intersections;
@@ -28,11 +30,9 @@ public class Board {
         initRoads();
     }
 
+    // Initialise le tableau de cases et l'index du voleur.
+    // Le plateau a initialisé sera le plateau present sur le sujet.
     private void initCases() {
-        // Initialiser le tableau de cases et l'index du voleur.
-        // Le plateau a initialiser sera le plateau present sur le sujet. --je m'en
-        // charge .IB
-        // Pour l'instant pas de plateau initialise aleatoirement.
         cases = new Case[] {
             new Case(FORET, new Resource(Resource.BOIS), 6),
             new Case(PRE, new Resource(Resource.MOUTON), 10),
@@ -56,9 +56,8 @@ public class Board {
         cases[indexRobber].setRobber(true);
     }
 
+    // Initialise les intersections du plateau.
     private void initIntersections() {
-        // Initialiser les intersections du plateau.
-        // Initialiser la position des ports. 
         intersections = new Intersection[] {
             new Intersection(new Building(0), new Port(), new Case[]{cases[0]}),
             new Intersection(new Building(0), new Port(new Resource(Resource.MOUTON)), new Case[]{cases[0], cases[1]}),
@@ -88,6 +87,7 @@ public class Board {
         };
     }
 
+    //Initialise les cases adjacentes aux intersections.
     private void initCasesIntersectionAdj(){
         cases[0].setCaseIntersections(new Intersection[]{intersections[0],intersections[1],intersections[5],intersections[6]});
         cases[1].setCaseIntersections(new Intersection[]{intersections[1],intersections[2],intersections[6],intersections[7]});
@@ -107,8 +107,8 @@ public class Board {
         cases[15].setCaseIntersections(new Intersection[]{intersections[18],intersections[19],intersections[23],intersections[24]});
     }
 
+    // Initialise les aretes du plateau.
     private void initRoads() {
-        // Initialiser les aretes du plateau.
         roads =new Road[]{
             new Road(0,1), new Road(0,5),
             new Road(1,2), new Road(1,6),
@@ -137,6 +137,7 @@ public class Board {
         };
     }
 
+    //Retourne l'objet Road qui a comme IDs id1 et id2 (si elle existe sinon null).
     public Road getSpecificRoad(int id1, int id2){
         Road rep=null;
         for(Road r : roads){
@@ -148,6 +149,7 @@ public class Board {
         return rep;
     }
 
+    //Retourne une arraylist qui contient toutes les intersections qui sont vides.
     public ArrayList<Intersection> getEmptyIntersection(){
         ArrayList<Intersection> emptyIntersection=new ArrayList<Intersection>();
 
@@ -159,6 +161,7 @@ public class Board {
         return emptyIntersection;
     }
 
+    //Retourne une arraylist qui contient toutes les arêtes qui sont vides.
     public ArrayList<Road> getEmptyRoad(){
         ArrayList<Road> emptyRoadID=new ArrayList<Road>();
 
@@ -170,6 +173,7 @@ public class Board {
         return emptyRoadID;
     }
 
+    //Retourne une arraylist de case où ne se trouve pas le voleur.
     public ArrayList<Case> caseWithoutRobber(){
         ArrayList<Case> isNotRobber =new ArrayList<Case>();
 
