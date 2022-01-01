@@ -7,7 +7,7 @@ public class Port {
     public Port(Resource resource){ // port type "2:1"
           this.portType = 0;
           this.resource = resource;
-        }
+    }
 
     public Port(){ // port type "3:1"
         this.portType=1;
@@ -18,7 +18,7 @@ public class Port {
         if(portType==1){
             return "3:1";
         }
-        return "2:1 ("+resource.toString()+")";
+        else return "2:1 ("+resource.toString()+")";
     }
 
     //Getters et Setters

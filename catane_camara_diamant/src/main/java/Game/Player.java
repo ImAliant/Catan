@@ -79,14 +79,18 @@ public abstract class Player {
 
     public ArrayList<Port> getPortsOfPlayer(){
         ArrayList<Port> portOfPlayer=new ArrayList<Port>();
-        for(int i=0; i<settlements.size(); i++){
-            if(settlements.get(i).getPort()!=null){
-                portOfPlayer.add(settlements.get(i).getPort());
+        if(!settlements.isEmpty()){
+            for(int i=0; i<settlements.size(); i++){
+                if(settlements.get(i).getPort()!=null){
+                    portOfPlayer.add(settlements.get(i).getPort());
+                }
             }
         }
-        for(int i=0; i<cities.size(); i++){
-            if(cities.get(i).getPort()!=null){
-                portOfPlayer.add(settlements.get(i).getPort());
+        if(!cities.isEmpty()){
+            for(int i=0; i<cities.size(); i++){
+                if(cities.get(i).getPort()!=null){
+                    portOfPlayer.add(cities.get(i).getPort());
+                }
             }
         }
         return portOfPlayer;
@@ -100,9 +104,11 @@ public abstract class Player {
 
     public ArrayList<Port> getPortsType2OfPlayer(){
         ArrayList<Port> portType2OfPlayer =new ArrayList<Port>();
-        for(int i=0; i<getPortsOfPlayer().size(); i++){
-            if(getPortsOfPlayer().get(i).getPortType()==0)
-                portType2OfPlayer.add(getPortsOfPlayer().get(i));
+        if(!getPortsOfPlayer().isEmpty()){
+            for(Port port : getPortsOfPlayer()){
+                if(port.getPortType()==0)
+                    portType2OfPlayer.add(port);
+            }
         }
         return portType2OfPlayer;
     }
@@ -126,6 +132,21 @@ public abstract class Player {
         if(getPortsType3OfPlayer().isEmpty())
             return false;
         return true;
+    }
+
+    public ArrayList<Intersection> allBuildingOfPlayer(){
+        ArrayList<Intersection> allBuilding =new ArrayList<Intersection>();
+        if(!settlements.isEmpty()){
+            for(Intersection inter : settlements){
+                allBuilding.add(inter);
+            }
+        }
+        if(!cities.isEmpty()){
+            for(Intersection inter : cities){
+                allBuilding.add(inter);
+            }
+        }
+        return allBuilding;
     }
 
     public void collectResources(int resourceType, int nb){

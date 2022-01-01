@@ -44,33 +44,26 @@ public class IA extends Player {
 
         if(choice0){
             possibleChoice.add("0");
-            System.out.println("ajout 0");
         }
         if(choice1){
             if(hasType2Port()){
                 possibleChoice.add("10");
-                System.out.println("ajout 10");
             }
             if(hasType3Port() && hasThreeResources()){
                 possibleChoice.add("11");
-                System.out.println("ajout 11");
             }
             if(hasFourResources()){
                 possibleChoice.add("12");
-                System.out.println("ajout 12");
             }
         }
         if(choice2){
             possibleChoice.add("2");
-            System.out.println("ajout 2");
         }
         if(choice3){
             possibleChoice.add("3");
-            System.out.println("ajout 3");
         }
         if(choice0 || choice1 || choice2 || choice3){
             possibleChoice.add("100");
-            System.out.println("ajout 100");
         }
 
         if(possibleChoice.isEmpty())
@@ -78,10 +71,8 @@ public class IA extends Player {
         else{
             int tour=0;
             while(tour!=1){
-                System.out.println("etape while(tour)");
                 boolean reponseValide=false;
                 while(!reponseValide){
-                    System.out.println("etape while(reponseValide)");
                     String choice = possibleChoice.get(game.getRand().nextInt(possibleChoice.size()));
                     switch (choice) {
                         case "0":
@@ -89,60 +80,48 @@ public class IA extends Player {
                                 reponseValide=true;
                                 tour++;
                             }
-                            else{
+                            else
                                 possibleChoice.remove("0");
-                                System.out.println("suppr 0");
-                            }
                             break;
                         case "10":
                             if(game.trade2ResourcesIA(this)){
                                 reponseValide=true;
                                 tour++;
                             }
-                            else{
+                            else
                                 possibleChoice.remove("10");
-                                System.out.println("suppr 10");
-                            }
                             break;
                         case "11":
                             if(game.trade3ResourceIA(this)){
                                 reponseValide=true;
                                 tour++;
                             }
-                            else{
+                            else
                                 possibleChoice.remove("11");
-                                System.out.println("suppr 11");
-                            }
                             break;
                         case "12":
                             if(game.trade4ResourcesIA(this)){
                                 reponseValide=true;
                                 tour++;
                             }
-                            else{
+                            else
                                 possibleChoice.remove("12");
-                                System.out.println("suppr 12");
-                            }
                             break;
                         case "2":
                             if(game.buyAnswerIA(this)){ //MODIFIÉ LA MÉTHODE DANS GAME
                                 reponseValide=true;
                                 tour++;
                             }
-                            else{
+                            else
                                 possibleChoice.remove("2");
-                                System.out.println("suppr 2");
-                            }
                             break;
                         case "3":
                             if(game.playCardAnswerIA(this)){ //MODIFIÉ LA MÉTHODE DANS GAME
                                 reponseValide=true;
                                 tour++;
                             }
-                            else{
+                            else
                                 possibleChoice.remove("3");
-                                System.out.println("suppr 3");
-                            }
                             break;
                         case "100":
                             System.out.println(getName()+" choisit de ne rien faire ce tour.\n");
@@ -163,7 +142,6 @@ public class IA extends Player {
 
     @Override
     public void buildSettlement(int id, Board board, int turn){
-        System.out.println("Test buildSettlement");
         if(board.getIntersections()[id].getBuilding().upgradeToSettlements()){
             getSettlements().add(board.getIntersections()[id]);
             board.getIntersections()[id].setPlayer(this);
@@ -177,7 +155,6 @@ public class IA extends Player {
 
     @Override
     public void buildCity(int id, Board board){
-        System.out.println("Test buildCity");
         if(board.getIntersections()[id].getBuilding().upgradeToCity()){
             getCities().add(board.getIntersections()[id]);
             getSettlements().remove(board.getIntersections()[id]);
@@ -189,7 +166,6 @@ public class IA extends Player {
 
     @Override
     public void buildRoad(int id1, int id2, Board board, int turn, Game game){
-        System.out.println("Test buildRoad");
         if(board.getSpecificRoad(id1, id2)!=null){
             if(board.getSpecificRoad(id1, id2).upgradeRoad(this)){
                 if(turn!=0)
@@ -198,14 +174,18 @@ public class IA extends Player {
                 System.out.println("Route construite en ("+id1+" "+id2+").\n");
             }
             else{
-                int rep1=getSettlements().get(game.getRand().nextInt(getSettlements().size())).getId();
+                ArrayList<Road> canBuilRoad = emptyRoadPlayerCanBuild(board, game);
 
-                ArrayList<Integer> canBuilRoad = game.canBuildRoadIA(rep1);
+                if(!canBuilRoad.isEmpty()){
+                    Road roadChoice = canBuilRoad.get(game.getRand().nextInt(canBuilRoad.size()));
                         
-                int rep2=canBuilRoad.get(game.getRand().nextInt(canBuilRoad.size()));
+                    int rep1=roadChoice.getId1();
+                    int rep2=roadChoice.getId2();
 
-                if(game.idForRoadHasSettlementsOrCity(rep1, rep2, this))
-                    buildRoad(rep1, rep2, board, turn, game);
+                    if(game.idIsRoad(id1, id2, this) || game.idForRoadIsSettlementsOrCity(rep1, rep2, this))
+                        buildRoad(rep1, rep2, board, turn, game);
+                }
+                else return;
             }
         }
     }
@@ -225,5 +205,31 @@ public class IA extends Player {
         rep.setRobber(true);
         board.setIndexRobber(rep.getId());
         System.out.println("Le voleur à été déplacé sur la case "+board.getIndexRobber());
+    }
+
+    public ArrayList<Road> emptyRoadPlayerCanBuild(Board board, Game game){
+        ArrayList<Road> ERPCB =new ArrayList<Road>();
+        if(!board.getEmptyRoad().isEmpty()){
+            for(Intersection inter : getSettlements()){
+                for(Road road : board.getEmptyRoad()){
+                    if((road.getId1()==inter.getId() || road.getId2()==inter.getId()) && road.getPlayer()==null)
+                        ERPCB.add(road);
+                }
+            }
+            for(Intersection inter : getCities()){
+                for(Road road : board.getEmptyRoad()){
+                    if((road.getId1()==inter.getId() || road.getId2()==inter.getId()) && road.getPlayer()==null)
+                        ERPCB.add(road);
+                }
+            }
+            for(Road road1 : getRoads()){
+                for(Road road2 : board.getEmptyRoad()){
+                    if((road1.getId1()==road2.getId1() || road1.getId2()==road2.getId2() || 
+                        road1.getId1()==road2.getId2() || road1.getId2()==road2.getId1()) && road2.getPlayer()==null)
+                        ERPCB.add(road2);
+                }
+            }
+        }
+        return ERPCB;
     }
 }

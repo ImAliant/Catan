@@ -1,7 +1,7 @@
 package Game;
 
 public class Case {
-    private static int nextId = -1;
+    private static int nextId = 0;
 
     private int id;
     private final Resource resource;

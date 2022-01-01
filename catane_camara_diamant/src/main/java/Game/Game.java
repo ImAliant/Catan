@@ -74,7 +74,6 @@ public class Game {
             default:
                 throw new Exception();
         }
-
         scan.close();
     }
 
@@ -116,7 +115,7 @@ public class Game {
                         int rep2 = scan.nextInt();
                         scan.nextLine();
 
-                        if(idForRoadHasSettlementsOrCity(rep1, rep2, player)){
+                        if(idForRoadIsSettlementsOrCity(rep1, rep2, player)){
                             player.buildRoad(rep1, rep2, board, turn, this);
                             reponseValide2=true;
                         }
@@ -145,7 +144,7 @@ public class Game {
                         
                         int rep2=canBuilRoad.get(rand.nextInt(canBuilRoad.size()));
 
-                        if(idForRoadHasSettlementsOrCity(rep, rep2, player)){
+                        if(idForRoadIsSettlementsOrCity(rep, rep2, player)){
                             player.buildRoad(rep, rep2, board, turn, this);
                             reponseValide2=true;
                         }
@@ -220,7 +219,7 @@ public class Game {
                         int rep2=scan.nextInt();
                         scan.nextLine();
 
-                        if(idHasRoadOfPlayer(rep1, rep2, player) || idForRoadHasSettlementsOrCity(rep1, rep2, player)){
+                        if(idIsRoad(rep1, rep2, player) || idForRoadIsSettlementsOrCity(rep1, rep2, player)){
                             player.buildRoad(rep1, rep2, board, turn, this);
                             reponseValide=true;
                         }
@@ -242,7 +241,6 @@ public class Game {
     }    
 
     public boolean buildAnswerIA(IA ia){ //IA
-        System.out.println("Test buildAnwerIA");
         ArrayList<Integer> buildChoice=new ArrayList<Integer>();
 
         if(ia.resourceForSettlement())
@@ -266,7 +264,7 @@ public class Game {
                 int randChoice=0;
                 switch (buildType) {
                     case 0:
-                        if(!noIntersectionAvailable()){
+                        if(!noIntersectionAvailable() || interDistRules.isEmpty()){
                             if(!interDistRules.isEmpty()){
                                 randChoice = interDistRules.get(rand.nextInt(interDistRules.size())).getId();
 
@@ -305,7 +303,7 @@ public class Game {
                             int id1 = roadChoice.getId1();
                             int id2 = roadChoice.getId2();
 
-                            if(idHasRoadOfPlayer(id1, id2, ia) || idForRoadHasSettlementsOrCity(id1, id2, ia)){
+                            if(idIsRoad(id1, id2, ia) || idForRoadIsSettlementsOrCity(id1, id2, ia)){
                                 ia.buildRoad(id1, id2, board, turn, this);
                                 reponseValide=true;
                                 return true;
@@ -381,7 +379,6 @@ public class Game {
     }
 
     public boolean buyAnswerIA(IA ia){
-        System.out.println("Test buyAnwerIA");
         if(!devCard.isEmpty()){
             if(ia.resourceForDevCard()){
                 ia.addDevCard(devCard.get(0));
@@ -458,7 +455,6 @@ public class Game {
     }
 
     public boolean playCardAnswerIA(IA ia){
-        System.out.println("Test playCardAnwerIA");
         ArrayList<DevCard> cards =new ArrayList<DevCard>();
         for(DevCard card : ia.getCards()){
             cards.add(card);
@@ -470,18 +466,23 @@ public class Game {
 
             switch (randCard.getCard()) {
                 case DevCard.VICTORY_POINT:
+                    System.out.println("Vous venez de jouer une carte point de victoire !");
                     victoryPointCard(ia);
                     break;
                 case DevCard.PROGRESS_BUILD:
+                    System.out.println("Vous venez de jouer une carte progrès : Construction !");
                     progressCardIA(ia, DevCard.PROGRESS_BUILD);
                     break;
                 case DevCard.PROGRESS_DISCOVERY:
+                    System.out.println("Vous venez de jouer une carte progrès : Découverte !");
                     progressCardIA(ia, DevCard.PROGRESS_DISCOVERY);
                     break;
                 case DevCard.PROGRESS_MONOPOLY:
+                    System.out.println("Vous venez de jouer une carte progrès : Monopole !");
                     progressCardIA(ia, DevCard.PROGRESS_MONOPOLY);
                     break;
                 case DevCard.KNIGHT:
+                    System.out.println("Vous venez de jouer une carte chevalier !");
                     knightCardIA(ia);
                     break;
             }
@@ -688,7 +689,6 @@ public class Game {
     }  
 
     public boolean trade3ResourceIA(IA ia){ //IA
-        System.out.println("Test trade3ResourceIA");
         if(!ia.getPortsType3OfPlayer().isEmpty()){
             ArrayList<Resource> resources =new ArrayList<Resource>();
             for(int i=0; i<ia.getPlayerResources().length; i++){
@@ -886,7 +886,6 @@ public class Game {
     }
 
     public boolean trade4ResourcesIA(IA ia){ //IA
-        System.out.println("Test trade4ResourceIA");
         ArrayList<Resource> resources =new ArrayList<Resource>();
         for(int i=0; i<ia.getPlayerResources().length; i++){
             if(ia.getPlayerResources()[i]>=4)
@@ -931,7 +930,7 @@ public class Game {
             Resource resource = resourceChoice.get(rand.nextInt(resourceChoice.size()));
 
             System.out.println(ia.toString()+" a échanger 4 ressources "+randResourceTypeSent.toString()+
-            " contre "+ resource.toString());
+            " contre "+ resource.toString()+"\n");
             
             ia.removeResource(randResourceTypeSent.getResourceType(), 4);
             ia.collectResources(resource.getResourceType(), 1);
@@ -992,7 +991,6 @@ public class Game {
     }
 
     public boolean trade2ResourcesIA(IA ia){ //IA
-        System.out.println("Test trade2ResourceIA");
         if(ia.getPortsType2OfPlayer().size()==1){
             int resourceTypeOfPort=ia.getPortsType2OfPlayer().get(0).getResource().getResourceType();
             if(ia.hasTwoSpecificResources(resourceTypeOfPort)){
@@ -1034,7 +1032,7 @@ public class Game {
 
 
                 System.out.println(ia.toString()+" a échanger 2 ressources "+ia.getPortsType2OfPlayer().get(0).getResource().toString()+
-                " contre "+ resource.toString());
+                " contre "+ resource.toString()+"\n");
 
                 ia.removeResource(resourceTypeOfPort, 2);
                 ia.collectResources(resource.getResourceType(), 1);
@@ -1204,7 +1202,7 @@ public class Game {
                         }
                         else{
                             ArrayList<Integer> hasOneResource = new ArrayList<Integer>();
-                            for(int resourceType : player.getPlayerResources()){
+                            for(int resourceType=0; resourceType<player.getPlayerResources().length; resourceType++){
                                 if(player.hasOneSpecificResources(resourceType))
                                     hasOneResource.add(resourceType);
                             }
@@ -1327,7 +1325,6 @@ public class Game {
     }
 
     public void knightCardIA(IA ia){
-        System.out.println("Test knightCardIA");
         ia.moveRobber(board, this);
 
         int playerSettlementOrCity=0;
@@ -1350,6 +1347,7 @@ public class Game {
             randPlayer.removeResource(randResource, 1);
             ia.collectResources(randResource, 1);
         }
+        strongestKnight();
     }
 
     public void progressCard(Player player, int cardType){
@@ -1367,7 +1365,6 @@ public class Game {
     }
 
     public void progressCardIA(IA ia, int cardType){
-        System.out.println("Test progressCardIA");
         switch (cardType) {
             case DevCard.PROGRESS_BUILD:
                 progressBuildCardIA(ia);
@@ -1385,9 +1382,9 @@ public class Game {
         System.out.println("\nVous devez maintenant poser deux routes sur le plateau.");
 
         int route=2;
-        while(route!=0){
-            ArrayList<Road> emptyRoad = board.getEmptyRoad();
-            if(emptyRoad.size()>=2){
+        ArrayList<Road> emptyRoad = board.getEmptyRoad();
+        if(emptyRoad.size()>=2){
+            while(route!=0){
                 boolean reponseValide=false;
                 while(!reponseValide){
                     System.out.println("Choisissez l'emplacement de la route (Saisissez les id de deux intersections adjacentes) :");
@@ -1397,7 +1394,7 @@ public class Game {
                     int rep2=scan.nextInt();
                     scan.nextLine();
             
-                    if(idHasRoadOfPlayer(rep1, rep2, player) || idForRoadHasSettlementsOrCity(rep1, rep2, player)){
+                    if(idIsRoad(rep1, rep2, player) || idForRoadIsSettlementsOrCity(rep1, rep2, player)){
                         player.buildRoad(rep1, rep2, board, turn, this);
                         reponseValide=true;
                         route--;
@@ -1407,12 +1404,11 @@ public class Game {
             
                 }
             }
-            else{
-                System.out.println(player.getName()+" n'a pas pu utilisé sa carte progrès : construction car il n'y a plus de route libre.");
-                route=0;
-            }
         }
+        else
+            System.out.println(player.getName()+" n'a pas pu utilisé sa carte progrès : construction car il n'y a plus de route libre.");
     }
+    
 
     public void progressDiscoveryCard(Player player){
         System.out.println("Vous devez choisir deux ressources.");
@@ -1466,10 +1462,9 @@ public class Game {
     }
 
     public void progressBuildCardIA(IA ia){
-        System.out.println("Test progressBuildCardIA");
         int route=2;
 
-        ArrayList<Road> emptyRoad = board.getEmptyRoad();
+        ArrayList<Road> emptyRoad = ia.emptyRoadPlayerCanBuild(board, this);
         if(emptyRoad.size()>=2){
             while(route!=0){
                 Road randRoad = emptyRoad.get(rand.nextInt(emptyRoad.size()));
@@ -1477,20 +1472,21 @@ public class Game {
                 int id1=randRoad.getId1();
                 int id2=randRoad.getId2();
 
-                if(idHasRoadOfPlayer(id1, id2, ia) || idForRoadHasSettlementsOrCity(id1, id2, ia)){
+                if(idIsRoad(id1, id2, ia) || idForRoadIsSettlementsOrCity(id1, id2, ia)){
                     ia.buildRoad(id1, id2, board, turn, this);
                     route--;
                 }
+                else{
+                    System.out.println(ia.getName()+" n'a pas pu utilisé sa carte progrès : construction car il n'y a plus de route libre.");
+                    route=0;
+                }
             }
         }
-        else{
+        else
             System.out.println(ia.getName()+" n'a pas pu utilisé sa carte progrès : construction car il n'y a plus de route libre.");
-            route=0;
-        }
     }
 
     public void progressDiscoveryCardIA(IA ia){
-        System.out.println("Test progressDiscoveryIA");
         int resource=2;
         while(resource!=0){
             int randResource=rand.nextInt(5);
@@ -1502,7 +1498,6 @@ public class Game {
     }
 
     public void progressMonopolyCardIA(IA ia){
-        System.out.println("Test progressMonopolyCardIA");
         int randResource = rand.nextInt(5);
 
         for(Player player : players){
@@ -1601,7 +1596,7 @@ public class Game {
         return devCard;
     }
 
-    public boolean idForRoadHasSettlementsOrCity(int id1, int id2, Player player){
+    public boolean idForRoadIsSettlementsOrCity(int id1, int id2, Player player){
         if(id1<0 || id1>24 || id2<0 || id2>24)
             return false;
         if(board.getIntersections()[id1].getPlayer()==player || board.getIntersections()[id2].getPlayer()==player)
@@ -1609,7 +1604,7 @@ public class Game {
         return false;
     }
 
-    public boolean idHasRoadOfPlayer(int id1, int id2, Player player){
+    public boolean idIsRoad(int id1, int id2, Player player){
         if(id1<0 || id1>24 || id2<0 || id2>24)
             return false;
         for(Road road : board.getRoads()){
@@ -1754,7 +1749,7 @@ public class Game {
     public ArrayList<Intersection> emptyIntersectionDistanceRules(){
         ArrayList<Intersection> interDistRules=new ArrayList<Intersection>();
 
-        for(Intersection inter : board.getIntersections()){
+        for(Intersection inter : board.getEmptyIntersection()){
             if(distanceRules(inter.getId())){
                 interDistRules.add(inter);
             }

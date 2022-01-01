@@ -152,7 +152,6 @@ public class Human extends Player{
         }
     }
     
-    @Override
     public void buildRoad(int id1, int id2, Board board, int turn,  Game game){
         if((id1 >= 0 && id1 <= 24) && (id2 >= 0 && id2 <= 24)){
             if(board.getSpecificRoad(id1, id2)!=null){
@@ -184,7 +183,7 @@ public class Human extends Player{
                     int rep2=scan.nextInt();
                     scan.nextLine();
                 
-                    if(game.idForRoadHasSettlementsOrCity(rep1, rep2, this)){
+                    if(game.idIsRoad(id1, id2, this) || game.idForRoadIsSettlementsOrCity(rep1, rep2, this)){
                         buildRoad(rep1, rep2, board, turn, game);
                         reponseValide=true;
                     }
@@ -201,7 +200,7 @@ public class Human extends Player{
                 int rep2=scan.nextInt();
                 scan.nextLine();
                 
-                if(game.idForRoadHasSettlementsOrCity(rep1, rep2, this)){
+                if(game.idIsRoad(id1, id2, this) || game.idForRoadIsSettlementsOrCity(rep1, rep2, this)){
                     buildRoad(rep1, rep2, board, turn, game);
                     reponseValide=true;
                 }

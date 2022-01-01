@@ -148,15 +148,15 @@ public class Board {
         return rep;
     }
 
-    public ArrayList<Integer> getEmptyIntersection(){
-        ArrayList<Integer> emptyIntersectionID=new ArrayList<Integer>();
+    public ArrayList<Intersection> getEmptyIntersection(){
+        ArrayList<Intersection> emptyIntersection=new ArrayList<Intersection>();
 
         for(Intersection inter : getIntersections()){
             if(inter.getPlayer()==null){
-                emptyIntersectionID.add(inter.getId());
+                emptyIntersection.add(inter);
             }
         }
-        return emptyIntersectionID;
+        return emptyIntersection;
     }
 
     public ArrayList<Road> getEmptyRoad(){

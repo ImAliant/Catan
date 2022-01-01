@@ -199,7 +199,8 @@ public class Home extends JFrame{
                         e1.printStackTrace();
                     }
                 }
-                Game game;
+                else{
+                    Game game;
                     try {
                         game = new Game(fourPlayersArrayInit());
                         dispose();
@@ -207,6 +208,7 @@ public class Home extends JFrame{
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }
+                }
             }
         });
         option.addActionListener(new ActionListener(){
