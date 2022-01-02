@@ -346,10 +346,18 @@ public class Game {
     }
 
     public void buyAnswer(Player player){
+        for(DevCard dv : devCard){
+            System.out.println(dv.toString()); 
+        }
+
+        for(DevCard dv : player.getCards()){
+            System.out.println(dv.toString());
+        }
+
         boolean reponseValide=false;
         while(!reponseValide){
             System.out.println(player.resourceOfPlayerToString());
-            System.out.println("Souhaitez-vous acheter une carte de développement ? (oui/non) | Revenir aux choix précédents : (choix)");
+            System.out.println("Souhaitez-vous acheter une carte de développement ? (oui/non)");
 
             String rep=scan.nextLine();
 
@@ -373,9 +381,6 @@ public class Game {
                     }
                     break;
                 case "non":
-                    reponseValide=true;
-                    break;
-                case "choix":
                     reponseValide=true;
                     break;
                 default:
@@ -403,7 +408,7 @@ public class Game {
     }
 
     public void playCardAnswer(Player player){ //HUMAIN
-        if(player.hasDevCard()){
+        if(!player.hasDevCard()){
             System.out.println("\nVous n'avez pas de cartes de développement a jouer !");
         }   
         else{
@@ -535,9 +540,9 @@ public class Game {
                             reponseValide=true;
                         }
                         else{
-                            if(askedResource(rep1)!=-10)
+                            if(askedResource(rep1)==-10)
                                 System.out.println("Ce type de ressource n'existe pas !");
-                            if(askedResource(rep1)!=player.getPortsType2OfPlayer().get(repToInt).getResource().getResourceType())
+                            if(askedResource(rep1)==player.getPortsType2OfPlayer().get(repToInt).getResource().getResourceType())
                                 System.out.println("Vous ne pouvez pas demander une ressource identique a la ressource demandé par le port !");
                         }
                     }
@@ -958,7 +963,7 @@ public class Game {
             
         boolean reponseValide=false;
         while(!reponseValide){
-            System.out.println("\nSaissisez l'un des index des ports pour échanger des ressources : | Revenir aux choix précédents : (choix)");
+            System.out.println("\nSaissisez l'un des index des ports pour échanger des ressources : | Revenir aux choix précédents : (20)");
             String rep=scan.nextLine();
                     
             int repToInt = Integer.parseInt(rep);
@@ -989,11 +994,10 @@ public class Game {
                         System.out.println("Vous n'avez pas les ressources nécessaires !");
                 }
             }
-            else if(rep=="choix")
-                reponseValide=true;
+            else if(repToInt==20)
+                reponseValide=true;  
             else
                 System.out.println("L'index que vous avez saisit n'existe pas !");
-                
         }
     }
 

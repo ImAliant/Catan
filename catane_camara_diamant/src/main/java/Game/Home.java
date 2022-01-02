@@ -50,12 +50,7 @@ public class Home extends JFrame{
         JButton option =new Button("Options");
         JButton exit =new Button("Quitter");
 
-        exit.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
+        exit.addActionListener(event -> dispose());
 
         panelButton =new JPanel();
         panelButton.setOpaque(false);
