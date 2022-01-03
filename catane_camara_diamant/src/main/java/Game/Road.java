@@ -1,12 +1,17 @@
 
 
 public class Road {
-    private int id1;
-    private int id2;
+    private static int nextId = 0;
+
+    private final int id;
+
+    private final int id1;
+    private final int id2;
     private boolean road;
     private Player player;
 
     public Road(int id1, int id2){
+        id=nextId++;
         this.id1=id1;
         this.id2=id2;
         road=false;
@@ -19,12 +24,17 @@ public class Road {
         }
         return false;
     }
+    
     public boolean upgradeRoad(Player p){
         if(!canUpgradeRoad()) return false;
         
         road=true;
         player=p;
         return true;
+    }
+
+    public String toString(){
+        return "("+id1+", "+id2+")";
     }
 
     //Getters et Setters
@@ -34,4 +44,5 @@ public class Road {
     public void setRoad(boolean road) {this.road = road;}
     public Player getPlayer() {return player;}
     public void setPlayer(Player player) {this.player = player;}
+    public int getId() {return id;}
 }

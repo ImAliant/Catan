@@ -1,84 +1,241 @@
 
-
-//import java.util.Random;
-//import java.util.Scanner;
+import java.util.Scanner;
 
 public class Human extends Player{
 
+    private Scanner scan =new Scanner(System.in);
+    
     public Human(String name, int color) {
         super(name + " (Humain)", color);
     }
-    
-    /*public void joue(Board b, Game g){
-        Random rand =new Random();
-        Scanner scan =new Scanner(System.in);
 
-        //JOUEUR lance les dés pour savoir où il y a des revenus en matiere premiere
-        int diceRolls = rand.nextInt(12-2+1)+1;
+    @Override
+    public void turn(Board board, Game game) {
+        System.out.println(this.toString() + " lance ses dés !");
+        int diceRolls1 = game.diceRolls();
+        int diceRolls2 = game.diceRolls();
+        int diceRolls=diceRolls1+diceRolls2;
+        System.out.println(this.toString() + " obtient " + diceRolls + "\n");
 
-        System.out.println(this.getName() + " lance les dés !");
-        System.out.println("Les dés donnent : "+  diceRolls);
-
-        for(Case c : b.getCases()){
-            if(c.getDiceRoll()==diceRolls){
-                for(Player p : g.getPlayers()){
-                    p.addResourcesInv(c.getResource().getResourceType());
+        if(diceRolls==7){
+            game.diceRolls7();
+            moveRobber(board, game);
+        }
+        else{
+            for(Player player : game.getPlayers()){
+                for(int i=0; i<player.getSettlements().size(); i++){
+                    for(Case c : player.getSettlements().get(i).getCaseAdj()){
+                        if(diceRolls==c.getDiceRoll()){
+                            System.out.println(player.toString() + " obtient 1 ressource : " + c.getResource().toString());
+                            player.collectResources(c.getResource().getResourceType(), 1);
+                        }
+                    }
+                }
+                for(int i=0; i<player.getCities().size(); i++){
+                    for(Case c : player.getCities().get(i).getCaseAdj()){
+                        if(diceRolls==c.getDiceRoll()){
+                            System.out.println(player.toString()+ " obtient 2 ressource : "+c.getResource().toString());
+                            player.collectResources(c.getResource().getResourceType(), 2);
+                        }
+                    }
                 }
             }
         }
 
-        System.out.println("Que voulez vous faire a présent ? (construire/developpement/port/resource)");
+        game.resourceAnswer(this);
 
-        String reponse1 = scan.nextLine();
-
-        switch (reponse1) {
-            case "construire":
-                System.out.println("Que voulez vous construire ? (colonie/ville/route)");
-                String reponse2 = scan.nextLine();
+        boolean turnCompleted = false;
+        while(!turnCompleted){
+            System.out.println("Que souhaitez-vous faire a présent ?");
+            System.out.println("Vous pouvez construire, faire du commerce avec les ports, acheter une carte de développent, jouer une carte de developpement et/ou consulter vos ressources.\n");
+            
+            boolean reponseValide = false;
+            while(!reponseValide){
+                System.out.println("Choix : construire | echange | achat | carte | ressource | rien");
                 
-                break;
-            case "developpement":
-
-                break;
-            case "port":
-
-                break;
-            case "resource":
-            default:
-                break;
+                String rep=game.getScan().nextLine();
+                
+                switch (rep) {
+                    case "construire":
+                        game.buildAnswer(this);
+                        reponseValide=true;
+                        break;
+                    case "echange":
+                        game.tradeAnswer(this);
+                        reponseValide=true;
+                        break;
+                    case "achat":
+                        game.buyAnswer(this);
+                        reponseValide=true;
+                        break;
+                    case "carte":
+                        game.playCardAnswer(this);
+                        reponseValide=true;
+                        break;
+                    case "ressource":
+                        game.resourceAnswer(this);
+                        reponseValide=true;
+                        break;
+                    case "rien":
+                        System.out.println(getName()+" choisit de ne rien faire ce tour.\n");
+                        reponseValide=true;
+                        turnCompleted=true;
+                        break;
+                    default:
+                        System.out.println("Ce choix n'existe pas!\n");
+                        break;
+                }
+            }
+            
+            game.strongestKnight();
+            game.longestRoad();
+            if(game.winner()){
+                game.setWinner(game.getPlayerTurn());
+            }
         }
-
     }
 
-    public void reponseQ2(String reponse2, Board b){
-        switch (reponse2) {
-            case "colonie":
-                if(neededResources(reponse2, b)){
-                    
+    @Override
+    public void buildSettlement(int id, Board board, int turn){
+        if(id>=0 && id<=24){
+            if(board.getIntersections()[id].getBuilding().upgradeToSettlements()){
+                getSettlements().add(board.getIntersections()[id]);
+                board.getIntersections()[id].setPlayer(this);
+                if(turn!=0){
+                    removeResourceForSettlements();
                 }
-                break;
-            case "ville":
-                if(neededResources(reponse2, b)){
-                    
-                }
-                break;
-            case "route":
-                if(neededResources(reponse2, b)){
-                    
-                }
-            default:
-                break;
+                System.out.println("Colonie construite en ("+id+").");
+                addVictoryPoint(1);
+            }
+            else{
+                System.out.println("Cette intersection ne peut pas pas être amélioré en colonie !");
+                System.out.println("Saisissez un nouvel id (0 à 24) :");
+                int rep = scan.nextInt();
+                scan.nextLine();
+
+                buildSettlement(rep, board, turn);
+            }
+        }
+        else{
+            System.out.println("Cette intersection n'existe pas !");
+            System.out.println("Saisissez un nouvel id (0 à 24) :");
+            int rep=scan.nextInt();
+            scan.nextLine();
+
+            buildSettlement(rep, board, turn);
         }
     }
 
-    public boolean neededResources(String reponse2, Board b){
-        if(reponse2=="colonie") 
-            return (getPlayerResources()[Resource.BOIS]>=1 && getPlayerResources()[Resource.ARGILE]>=1 
-            && getPlayerResources()[Resource.BLE]>=1 && getPlayerResources()[Resource.MOUTON]>=1); 
-        else if(reponse2 =="ville")
-            return (getPlayerResources()[Resource.BLE]>=2 && getPlayerResources()[Resource.PIERRE]>=1);
-        else if(reponse2 == "route")
-            return (getPlayerResources()[Resource.BOIS]>=1 && getPlayerResources()[Resource.ARGILE]>=1);
-        return false;
-    }*/
+    @Override
+    public void buildCity(int id, Board board){
+        if(id >= 0 && id <=24){
+            if(board.getIntersections()[id].getBuilding().upgradeToCity()){
+                getCities().add(board.getIntersections()[id]);
+                getSettlements().remove(board.getIntersections()[id]);
+                removeResourceForCities();
+                addVictoryPoint(2);
+                System.out.println("Ville construite en ("+id+").\n");
+            }
+            else{
+                System.out.println("Cette colonie ne peut pas être amélioré en ville !");
+                System.out.println("Saississez un nouvel id (0 à 24) : ");
+                int rep=scan.nextInt();
+                scan.nextLine();
+                buildCity(rep, board);
+            }
+        }
+        else{
+            System.out.println("Cette intersection n'existe pas !");
+            System.out.println("Saississez un nouvel id (0 à 24) : ");
+            int rep=scan.nextInt();
+            scan.nextLine();
+            buildCity(rep, board);
+        }
+    }
+    
+    public void buildRoad(int id1, int id2, Board board, int turn,  Game game){
+        if((id1 >= 0 && id1 <= 24) && (id2 >= 0 && id2 <= 24)){
+            if(board.getSpecificRoad(id1, id2)!=null){
+                if(board.getSpecificRoad(id1, id2).upgradeRoad(this)){
+                    if(turn!=0){
+                        removeResourceForRoad();
+                    }
+                    getRoads().add(board.getSpecificRoad(id1, id2));
+                    System.out.println("Route construite en ("+id1+" "+id2+").\n");
+                }
+                else{
+                    System.out.println("Cette arête possède déjà une route !");
+                    System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
+                    int rep1=scan.nextInt();
+                    scan.nextLine();
+                    int rep2=scan.nextInt();
+                    scan.nextLine();
+                    
+                    buildRoad(rep1, rep2, board, turn, game);
+                }
+            }
+            else{
+                boolean reponseValide=false;
+                while(!reponseValide){
+                    System.out.println("Cette route n'existe pas !");
+                    System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
+                    int rep1=scan.nextInt();
+                    scan.nextLine();
+                    int rep2=scan.nextInt();
+                    scan.nextLine();
+                
+                    if(game.idIsRoad(id1, id2, this) || game.idForRoadIsSettlementsOrCity(rep1, rep2, this)){
+                        buildRoad(rep1, rep2, board, turn, game);
+                        reponseValide=true;
+                    }
+                }
+            }
+        }
+        else{
+            boolean reponseValide=false;
+            while(!reponseValide){
+                System.out.println("Cette route n'existe pas !");
+                System.out.println("Saississez deux nouveaux id adjacents (0 à 24) : ");
+                int rep1=scan.nextInt();
+                scan.nextLine();
+                int rep2=scan.nextInt();
+                scan.nextLine();
+                
+                if(game.idIsRoad(id1, id2, this) || game.idForRoadIsSettlementsOrCity(rep1, rep2, this)){
+                    buildRoad(rep1, rep2, board, turn, game);
+                    reponseValide=true;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void moveRobber(Board board, Game game){
+        boolean reponseValide=false;
+        while(!reponseValide){
+            System.out.println("Dans quel case voulez-vous placer le voleur ?");
+            
+            int rep=game.getScan().nextInt();
+            game.getScan().nextLine();
+
+            if((rep>=0 && rep<=15) && board.getIndexRobber()!=rep){
+                for(Case c : board.getCases()){
+                    if(c.isRobber()){
+                        c.setRobber(false);
+                        break;
+                    }
+                }
+                board.getCases()[rep].setRobber(true);
+                board.setIndexRobber(rep);
+                reponseValide=true;
+                System.out.println("\nLe voleur à été déplacé sur la case "+board.getIndexRobber());
+            }   
+            else
+                if(board.getIndexRobber()==rep){
+                    System.out.println("Le voleur est déjà présent sur cette case !");
+                }
+                else
+                    System.out.println("Cette case n'existe pas !");
+        }
+    }
 }

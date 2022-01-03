@@ -33,7 +33,7 @@ COMMENT FAIRE LE JEU :
         COMMERCE MARITIME (Utilisation des ports):
             - JOUEUR peut échanger 4 RESOURCES du même type contre 1 RESOURCE de son choix.
             - Si JOUEUR posséde une colonie sur une case port, il peut échanger 3 RESOURCES du même type contre 1 RESOURCE de son choix (3:1).
-                                                               il peut échanger 2 RESOURCES du même type contre 1 RESOURCE du type du port (2:1).
+                                                               il peut échanger 2 RESOURCES du type du port contre 1 RESOURCE de son choix (2:1).
         COMMERCE TERRESTRE (Pas obligatoire)
 
         CONTRUCTION:
