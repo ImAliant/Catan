@@ -1,4 +1,4 @@
-package Game;
+
 
 import java.awt.EventQueue;
 
@@ -8,7 +8,9 @@ public class Launcher {
         EventQueue.invokeLater(new Runnable(){
             @Override
             public void run() {
-                new Home();
+               Player[] players = {new Player("a",1),new Player("b",2),new Player("c",3), new Player("d",4)};
+               new GameDisplay(new Game(players));
+             // new Home();
             }
         });
     }

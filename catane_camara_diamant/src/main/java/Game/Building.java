@@ -1,4 +1,4 @@
-package Game;
+
 
 public class Building {
     private int buildingType;  // 0 : Vide, 1 : Colonie, 2 : Ville 

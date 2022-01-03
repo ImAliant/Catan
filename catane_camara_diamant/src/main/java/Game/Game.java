@@ -1,4 +1,4 @@
-package Game;
+
 
 import java.util.Random;
 import java.util.Scanner;
@@ -39,7 +39,7 @@ public class Game {
                 else System.out.println("Choisissez la position de votre deuxième colonie : (0 à 24)");
                 int rep = scan.nextInt();
                 player.buildSettlement(rep, board); //METHODE A REALISER
-    
+
                 if(tour==1)
                     System.out.println("Choisissez la position de votre première route (Saisir les deux id des intersections où est présente l'arête) : ");
                 else System.out.println("Choisissez la position de votre deuxième route (Saisir les deux id des intersections où est présente l'arête) : ");
@@ -77,12 +77,12 @@ public class Game {
             while(!reponseValide){
                 System.out.println("Vous pouvez construire, faire du commerce avec les ports ou jouer une carte de developpement.");
                 System.out.println("(construire | echange | carte");
-                
+
                 String rep = scan.nextLine();
-                
+
                 switch (rep) {
                     case "construire":
-                        
+
                         reponseValide=true;
                         break;
                     case "echange":
@@ -105,4 +105,30 @@ public class Game {
         Random rand =new Random();
         return 2+rand.nextInt(12-2);
     }
+
+
+    public void moveRobber(){
+      boolean reponseValide = false;
+
+      while(!reponseValide){
+      System.out.println("Dans quel case voulez-vous placer le voleur ?");
+      int rep = scan.nextInt();
+      scan.nextLine();
+
+      if(rep<0 || rep>15){
+          System.out.println("Veillez choisir un tuile parmi celle du jeu");
+      }else{
+        board.getCases()[board.getIndexRobber()].setRobber(false);
+        board.setIndexRobber(rep);
+        board.getCases()[board.getIndexRobber()].setRobber(true);
+        reponseValide = true;
+        System.out.println("Le voleur est maintenant à la tuile "+rep+ ".");
+      }
+    }
+  }
+
+
+
+  public Player[] getPlayers(){ return this.players;}
+  public Board getBoard(){return this.board;}
 }
