@@ -1,4 +1,3 @@
-package Game;
 
 public class Intersection {
     private static int nextId = 0;
