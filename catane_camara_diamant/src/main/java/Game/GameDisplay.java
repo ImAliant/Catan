@@ -1,10 +1,8 @@
-
+package Game;
 
 import java.awt.*;
 
-import javax.imageio.plugins.jpeg.JPEGHuffmanTable;
 import javax.swing.*;
-import javax.swing.text.html.HTMLDocument.HTMLReader.BlockAction;
 
 
 public class GameDisplay extends JFrame{
@@ -25,7 +23,7 @@ public class GameDisplay extends JFrame{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         try {
-            setIconImage(new ImageIcon(getClass().getResource("Image/colons_catanes_carre.jpg")).getImage());
+            setIconImage(new ImageIcon(getClass().getResource("/Image/colons_catanes_carre.jpg")).getImage());
         } catch (Exception e) {
             System.out.println("Le chemin de l'icone n'existe pas !");
         }
@@ -45,10 +43,6 @@ public class GameDisplay extends JFrame{
                 this.setContentPane(this.content);
                 this.pack();
                 this.setVisible(true);
-
-
-      
-
     }
 
     public class Plateau extends JPanel{
@@ -67,7 +61,7 @@ public class GameDisplay extends JFrame{
         }
 
         this.setVisible(true);
-        this.setContentPane(this);
+        //this.setContentPane(this);
       }
 
     }

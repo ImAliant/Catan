@@ -1,4 +1,4 @@
-
+package Game;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -212,8 +212,8 @@ public class Home extends JFrame{
                 if(threePlayers.isSelected()){
                     Game game;
                     try {
-                        game = new Game(threePlayersArrayInit());
                         dispose();
+                        game = new Game(threePlayersArrayInit());
                         game.play();
                     } catch (Exception e1) {
                         e1.printStackTrace();
@@ -222,8 +222,8 @@ public class Home extends JFrame{
                 else{
                     Game game;
                     try {
-                        game = new Game(fourPlayersArrayInit());
                         dispose();
+                        game = new Game(fourPlayersArrayInit());
                         game.play();
                     } catch (Exception e1) {
                         e1.printStackTrace();

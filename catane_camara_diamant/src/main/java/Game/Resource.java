@@ -1,4 +1,4 @@
-
+package Game;
 
 public class Resource {
     public static final int BOIS=0;

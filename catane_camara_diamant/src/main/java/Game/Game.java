@@ -1,4 +1,4 @@
-
+package Game;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +27,7 @@ public class Game {
         this.players=players;
         board =new Board();
         initDevCardGame(); 
+        display =new GameDisplay(this);
     }
 
     public void play() throws Exception{

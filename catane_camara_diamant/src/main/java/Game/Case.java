@@ -1,4 +1,4 @@
-
+package Game;
 
 public class Case {
     private static int nextId = 0;

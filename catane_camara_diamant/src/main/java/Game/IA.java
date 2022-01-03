@@ -1,4 +1,4 @@
-
+package Game;
 
 import java.util.ArrayList;
 
@@ -124,7 +124,7 @@ public class IA extends Player {
                                 possibleChoice.remove("2");
                             break;
                         case "3":
-                            if(game.playCardAnswerIA(this)){ //MODIFIÉ LA MÉTHODE DANS GAME
+                            if(game.playCardAnswerIA(this)){ 
                                 reponseValide=true;
                                 tour++;
                             }
@@ -142,7 +142,7 @@ public class IA extends Player {
         }
 
         game.strongestKnight();
-        game.longestRoad();
+        //game.longestRoad();
         if(game.winner()){
             game.setWinner(game.getPlayerTurn());
         }
@@ -213,6 +213,8 @@ public class IA extends Player {
         rep.setRobber(true);
         board.setIndexRobber(rep.getId());
         System.out.println("Le voleur à été déplacé sur la case "+board.getIndexRobber());
+
+        //Voler une ressource comme un chevalier
     }
 
     public ArrayList<Road> emptyRoadPlayerCanBuild(Board board, Game game){

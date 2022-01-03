@@ -1,4 +1,4 @@
-
+package Game;
 
 public class DevCard {
     public static final int VICTORY_POINT=0;

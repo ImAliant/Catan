@@ -1,3 +1,4 @@
+package Game;
 
 import java.util.Scanner;
 
@@ -88,7 +89,7 @@ public class Human extends Player{
             }
             
             game.strongestKnight();
-            game.longestRoad();
+            //game.longestRoad();
             if(game.winner()){
                 game.setWinner(game.getPlayerTurn());
             }
@@ -229,6 +230,8 @@ public class Human extends Player{
                 board.setIndexRobber(rep);
                 reponseValide=true;
                 System.out.println("\nLe voleur à été déplacé sur la case "+board.getIndexRobber());
+
+                //Voler une ressource comme un chevalier
             }   
             else
                 if(board.getIndexRobber()==rep){

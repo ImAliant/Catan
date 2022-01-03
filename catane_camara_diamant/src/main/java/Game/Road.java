@@ -1,4 +1,4 @@
-
+package Game;
 
 public class Road {
     private static int nextId = 0;
