@@ -228,7 +228,7 @@ public class IA extends Player {
 
             ArrayList<Integer> randType =new ArrayList<>();
 
-            for(int resourceType : randPlayer.getPlayerResources()){
+            for(int resourceType=0; resourceType<randPlayer.getPlayerResources().length; resourceType++){
                 if(randPlayer.hasOneSpecificResources(resourceType)){
                     randType.add(resourceType);
                 }

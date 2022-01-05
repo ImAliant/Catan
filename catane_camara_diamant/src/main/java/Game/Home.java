@@ -10,10 +10,10 @@ import javax.swing.*;
 
 public class Home extends JFrame{
 
-    private static JPanel panelTitle, panelCard, panelButton, panelOption;
-    private static JCheckBox frameOrText;
-    private static RadioButton human1, human2, human3, human4;
-    private static RadioButton threePlayers, fourPlayers;
+    private JPanel panelTitle, panelCard, panelButton, panelOption;
+    private JCheckBox frameOrText;
+    private RadioButton human1, human2, human3, human4;
+    private RadioButton threePlayers, fourPlayers;
 
     public Home(){
         homeDisplay();
@@ -29,7 +29,7 @@ public class Home extends JFrame{
         } catch (Exception e) {
             System.out.println("Le chemin de l'icone n'existe pas !");
         }
-        //setContentPane(new PanelFond());
+        setContentPane(new PanelFond());
         setVisible(true);
         setResizable(false);
         setLocationRelativeTo(null);
@@ -259,18 +259,23 @@ public class Home extends JFrame{
         add(panelCard, BorderLayout.CENTER);
     }
 
-    /*public class PanelFond extends JPanel{
+    public class PanelFond extends JPanel{
         Image image;
         
         public PanelFond(){
-            image=new ImageIcon(getClass().getResource("/Image/colons_catanes_paysage.jpg")).getImage();
+            try {
+                image=new ImageIcon(getClass().getResource("/Image/colons_catanes_paysage.jpg")).getImage();
+            } catch (Exception e) {
+                System.out.println("L'image de fond n'a pas été trouvé !");
+            }
+            
         }
   
         public void paintComponent(Graphics g){
             super.paintComponent(g); 
             g.drawImage(image, 0, 0, 800, 500, null); 
         }
-    }*/
+    }
 
     public class Button extends JButton {
         public Button(String text) {
@@ -386,22 +391,27 @@ public class Home extends JFrame{
         return players;
     }
 
-
     //Getters et Setters
-    public static JPanel getPanelTitle() {return panelTitle;}
-    public static void setPanelTitle(JPanel panel) {Home.panelTitle = panel;}
-    public static JPanel getPanelButton() {return panelButton;}
-    public static void setPanelButton(JPanel panelButton) {Home.panelButton = panelButton;}
-    public static JPanel getPanelCard() {return panelCard;}
-    public static void setPanelCard(JPanel panelCard) {Home.panelCard = panelCard;}
-    public static JPanel getPanelOption() {return panelOption;}
-    public static void setPanelOption(JPanel panelOption) {Home.panelOption = panelOption;}
-    public static RadioButton getHuman1() {return human1;}
-    public static void setHuman1(RadioButton human1) {Home.human1 = human1;}
-    public static RadioButton getHuman2() {return human2;}
-    public static void setHuman2(RadioButton human2) {Home.human2 = human2;}
-    public static RadioButton getHuman3() {return human3;}
-    public static void setHuman3(RadioButton human3) {Home.human3 = human3;}
-    public static RadioButton getHuman4() {return human4;}
-    public static void setHuman4(RadioButton human4) {Home.human4 = human4;}
+    public JPanel getPanelTitle() {return panelTitle;}
+    public void setPanelTitle(JPanel panelTitle) {this.panelTitle = panelTitle;}
+    public JPanel getPanelCard() {return panelCard;}
+    public void setPanelCard(JPanel panelCard) {this.panelCard = panelCard;}
+    public JPanel getPanelButton() {return panelButton;}
+    public void setPanelButton(JPanel panelButton) {this.panelButton = panelButton;}
+    public JPanel getPanelOption() {return panelOption;}
+    public void setPanelOption(JPanel panelOption) {this.panelOption = panelOption;}
+    public JCheckBox getFrameOrText() {return frameOrText;}
+    public void setFrameOrText(JCheckBox frameOrText) {this.frameOrText = frameOrText;}
+    public RadioButton getHuman1() {return human1;}
+    public void setHuman1(RadioButton human1) {this.human1 = human1;}
+    public RadioButton getHuman2() {return human2;}
+    public void setHuman2(RadioButton human2) {this.human2 = human2;}
+    public RadioButton getHuman3() {return human3;}
+    public void setHuman3(RadioButton human3) {this.human3 = human3;}
+    public RadioButton getHuman4() {return human4;}
+    public void setHuman4(RadioButton human4) {this.human4 = human4;}
+    public RadioButton getThreePlayers() {return threePlayers;}
+    public void setThreePlayers(RadioButton threePlayers) {this.threePlayers = threePlayers;}
+    public RadioButton getFourPlayers() {return fourPlayers;}
+    public void setFourPlayers(RadioButton fourPlayers) {this.fourPlayers = fourPlayers;}
 }

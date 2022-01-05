@@ -270,10 +270,11 @@ public class Human extends Player{
                 if(rep<=index){
                     ArrayList<Integer> randType =new ArrayList<>();
 
-                    for(int resourceType : board.getCases()[board.getIndexRobber()].getCaseIntersections()[rep].getPlayer().getPlayerResources()){
-                        if(board.getCases()[board.getIndexRobber()].getCaseIntersections()[rep].getPlayer().hasOneSpecificResources(resourceType)){
+                    Player p = board.getCases()[board.getIndexRobber()].getCaseIntersections()[rep].getPlayer();
+
+                    for(int resourceType=0; resourceType<board.getCases()[board.getIndexRobber()].getCaseIntersections()[rep].getPlayer().getPlayerResources().length; resourceType++){
+                        if(p.hasOneSpecificResources(resourceType))
                             randType.add(resourceType);
-                        }
                     }
 
                     if(randType.isEmpty()){
