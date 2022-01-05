@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 
-import Ui.GameDisplayAlexandre;
+import Ui.GameDisplay;
 
 public class Game {
     private Player[] players;
@@ -13,7 +13,7 @@ public class Game {
     private ArrayList<DevCard> devCard;
     private boolean viewMod;
 
-    private GameDisplayAlexandre display;
+    private GameDisplay display;
 
     private int winner;
     private int playerTurn;
@@ -41,7 +41,7 @@ public class Game {
         board =new Board();
 
         if(viewMod)
-            display =new GameDisplayAlexandre(this);
+            display =new GameDisplay(this);
     }
     
 
@@ -1774,6 +1774,6 @@ public class Game {
     public void setLongestRoadOwner(Player longestRoadOwner) {this.longestRoadOwner = longestRoadOwner;}
     public boolean isViewMod() {return viewMod;}
     public void setViewMod(boolean viewMod) {this.viewMod = viewMod;}
-    public GameDisplayAlexandre getDisplay() {return display;}
-    public void setDisplay(GameDisplayAlexandre display) {this.display = display;}
+    public GameDisplay getDisplay() {return display;}
+    public void setDisplay(GameDisplay display) {this.display = display;}
 }
