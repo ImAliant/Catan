@@ -259,7 +259,7 @@ public class Game {
                             int rep1=scan.nextInt();
                             scan.nextLine();
 
-                            if(distanceRules(rep1)){
+                            if(intersectionIsSettlement(rep1)){
                                 player.buildCity(rep1, board);
                                 reponseValide=true;
                             }
@@ -350,7 +350,7 @@ public class Game {
                         if(!settlementsIA.isEmpty()){
                             randChoice = settlementsIA.get(rand.nextInt(settlementsIA.size()));
 
-                            if(distanceRules(randChoice)){
+                            if(intersectionIsSettlement(randChoice)){
                                 ia.buildCity(randChoice, board);
                                 reponseValide=true;
                                 return true;
@@ -1587,6 +1587,12 @@ public class Game {
             if((road.getId1()==id1 || road.getId2()==id2) && road.getPlayer()==player)
                 return true;
         }
+        return false;
+    }
+
+    public boolean intersectionIsSettlement(int id){
+        if(board.getIntersections()[id].getBuilding().getBuildingType()==1)
+            return true;
         return false;
     }
 

@@ -1,11 +1,13 @@
 package Ui;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
 import Game.Board;
 import Game.Intersection;
+import Game.Port;
 
 public class BoardDisplay extends JPanel{
     private Board board;
@@ -14,14 +16,17 @@ public class BoardDisplay extends JPanel{
     private ArrayList<IntersectionDisplay> interD;
     private ArrayList<HorizontalRoadDisplay> hrd;
     private ArrayList<VerticalRoadDisplay> vrd;
+    private ArrayList<PortDisplay> portDisplays;
 
     public BoardDisplay(Board board) throws Exception{
         this.board=board;
 
         setLayout(null);
+        setBackground(new Color(0, 166, 255));
 
-        initRoads();
+        initPort();
         initIntersections();
+        initRoads();
         initCases();
         
         setVisible(true);
@@ -117,6 +122,27 @@ public class BoardDisplay extends JPanel{
             }
 
             add(roads);
+        }
+    }
+
+    public void initPort(){
+        portDisplays =new ArrayList<>();
+
+        for(Port port : board.getPorts()){
+            portDisplays.add(new PortDisplay(port));
+        }
+
+        portDisplays.get(0).setLocation(250, 10);
+        portDisplays.get(1).setLocation(450, 10);
+        portDisplays.get(2).setLocation(80, 80);
+        portDisplays.get(3).setLocation(540, 180);
+        portDisplays.get(4).setLocation(50, 280);
+        portDisplays.get(5).setLocation(520, 380);
+        portDisplays.get(6).setLocation(155, 460);
+        portDisplays.get(7).setLocation(355, 460);
+
+        for(PortDisplay portDisplay : portDisplays){
+            add(portDisplay);
         }
     }
 

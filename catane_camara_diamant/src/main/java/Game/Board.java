@@ -16,6 +16,7 @@ public class Board {
 
     private Case[] cases;
     private Intersection[] intersections;
+    private Port[] ports;
     private Road[] roads;
     private int indexRobber;
 
@@ -25,6 +26,7 @@ public class Board {
 
     private void init() {
         initCases();
+        initPortsLocation();
         initIntersections();
         initCasesIntersectionAdj();
         initRoads();
@@ -56,34 +58,47 @@ public class Board {
         cases[indexRobber].setRobber(true);
     }
 
+    private void initPortsLocation(){
+        ports =new Port[] {
+            new Port(new Resource(Resource.MOUTON)),
+            new Port(),
+            new Port(),
+            new Port(new Resource(Resource.BOIS)),
+            new Port(new Resource(Resource.BLE)),
+            new Port(),
+            new Port(new Resource(Resource.PIERRE)),
+            new Port(new Resource(Resource.ARGILE))
+        };
+    }
+
     // Initialise les intersections du plateau.
     private void initIntersections() {
         intersections = new Intersection[] {
-            new Intersection(new Building(0), new Port(), new Case[]{cases[0]}),
-            new Intersection(new Building(0), new Port(new Resource(Resource.MOUTON)), new Case[]{cases[0], cases[1]}),
-            new Intersection(new Building(0), new Port(new Resource(Resource.MOUTON)), new Case[]{cases[1], cases[2]}),
-            new Intersection(new Building(0), new Port(), new Case[]{cases[2], cases[3]}),
-            new Intersection(new Building(0), new Port(), new Case[]{cases[3]}),
-            new Intersection(new Building(0), new Port(), new Case[]{cases[0], cases[4]}),
+            new Intersection(new Building(0), ports[2], new Case[]{cases[0]}),
+            new Intersection(new Building(0), ports[0], new Case[]{cases[0], cases[1]}),
+            new Intersection(new Building(0), ports[0], new Case[]{cases[1], cases[2]}),
+            new Intersection(new Building(0), ports[1], new Case[]{cases[2], cases[3]}),
+            new Intersection(new Building(0), ports[1], new Case[]{cases[3]}),
+            new Intersection(new Building(0), ports[2], new Case[]{cases[0], cases[4]}),
             new Intersection(new Building(0), null, new Case[]{cases[0], cases[1], cases[4], cases[5]}),
             new Intersection(new Building(0), null, new Case[]{cases[1], cases[2], cases[5], cases[6]}),
             new Intersection(new Building(0), null, new Case[]{cases[2], cases[3], cases[6], cases[7]}),
-            new Intersection(new Building(0), new Port(new Resource(Resource.BOIS)), new Case[]{cases[3], cases[7]}),
-            new Intersection(new Building(0), new Port(new Resource(Resource.BLE)), new Case[]{cases[4], cases[8]}),
+            new Intersection(new Building(0), ports[3], new Case[]{cases[3], cases[7]}),
+            new Intersection(new Building(0), ports[4], new Case[]{cases[4], cases[8]}),
             new Intersection(new Building(0), null, new Case[]{cases[4], cases[5], cases[8], cases[9]}),
             new Intersection(new Building(0), null, new Case[]{cases[5], cases[6], cases[9], cases[10]}),
             new Intersection(new Building(0), null, new Case[]{cases[6], cases[7], cases[10], cases[11]}),
-            new Intersection(new Building(0), new Port(new Resource(Resource.BOIS)), new Case[]{cases[7], cases[11]}),
-            new Intersection(new Building(0), new Port(new Resource(Resource.BLE)), new Case[]{cases[8], cases[12]}),
+            new Intersection(new Building(0), ports[3], new Case[]{cases[7], cases[11]}),
+            new Intersection(new Building(0), ports[4], new Case[]{cases[8], cases[12]}),
             new Intersection(new Building(0), null, new Case[]{cases[8], cases[9], cases[12], cases[13]}),
             new Intersection(new Building(0), null, new Case[]{cases[9], cases[10], cases[13], cases[14]}),
             new Intersection(new Building(0), null, new Case[]{cases[10], cases[11], cases[14], cases[15]}),
-            new Intersection(new Building(0), new Port(), new Case[]{cases[11], cases[15]}),
-            new Intersection(new Building(0), new Port(new Resource(Resource.PIERRE)), new Case[]{cases[12]}),
-            new Intersection(new Building(0), new Port(new Resource(Resource.PIERRE)), new Case[]{cases[12], cases[13]}),
-            new Intersection(new Building(0), new Port(new Resource(Resource.ARGILE)), new Case[]{cases[13], cases[14]}),
-            new Intersection(new Building(0), new Port(new Resource(Resource.ARGILE)), new Case[]{cases[14], cases[15]}),
-            new Intersection(new Building(0), new Port(), new Case[]{cases[15]})
+            new Intersection(new Building(0), ports[5], new Case[]{cases[11], cases[15]}),
+            new Intersection(new Building(0), ports[6], new Case[]{cases[12]}),
+            new Intersection(new Building(0), ports[6], new Case[]{cases[12], cases[13]}),
+            new Intersection(new Building(0), ports[7], new Case[]{cases[13], cases[14]}),
+            new Intersection(new Building(0), ports[7], new Case[]{cases[14], cases[15]}),
+            new Intersection(new Building(0), ports[5], new Case[]{cases[15]})
         };
     }
 
@@ -195,5 +210,7 @@ public class Board {
     public Road[] getRoads() {return roads;}
     public void setRoads(Road[] roads) {this.roads = roads;}
     public int getIndexRobber() {return indexRobber;}
-    public void setIndexRobber(int indexRobber) {this.indexRobber = indexRobber;} 
+    public void setIndexRobber(int indexRobber) {this.indexRobber = indexRobber;}
+    public Port[] getPorts() {return ports;}
+    public void setPorts(Port[] ports) {this.ports = ports;} 
 }

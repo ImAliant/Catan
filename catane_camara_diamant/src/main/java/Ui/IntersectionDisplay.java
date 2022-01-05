@@ -11,9 +11,9 @@ public class IntersectionDisplay extends JPanel{
     public IntersectionDisplay(Intersection inter) throws Exception{
         this.inter=inter;
 
-        setSize(20, 20);
+        setSize(30, 30);
 
-        setBorder(BorderFactory.createLineBorder(Color.black, 2));
+        setBorder(BorderFactory.createLineBorder(Color.black, 1));
 
         JLabel interID =new JLabel(Integer.toString(inter.getId()));
 
@@ -27,6 +27,12 @@ public class IntersectionDisplay extends JPanel{
     public void updateInfo() throws Exception{
         if(inter.getPlayer()!=null)
             setBackground(intToColor(inter.getPlayer().getColor()));
+
+        if(inter.getBuilding().getBuildingType()==1)
+            setBorder(BorderFactory.createLineBorder(Color.black, 2));
+
+        if(inter.getBuilding().getBuildingType()==2)
+            setBorder(BorderFactory.createLineBorder(Color.black, 3));
     }
 
     public Color intToColor(int color) throws Exception{
