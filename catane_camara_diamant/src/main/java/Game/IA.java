@@ -141,7 +141,6 @@ public class IA extends Player {
             }
         }
 
-        game.strongestKnight();
         //game.longestRoad();
         if(game.winner()){
             game.setWinner(game.getPlayerTurn());
@@ -215,6 +214,33 @@ public class IA extends Player {
         System.out.println("Le voleur à été déplacé sur la case "+board.getIndexRobber());
 
         //Voler une ressource comme un chevalier
+
+        ArrayList<Player> p =new ArrayList<>();
+
+        for(Intersection inter : game.getBoard().getCases()[game.getBoard().getIndexRobber()].getCaseIntersections()){
+            if(inter.getPlayer()!=null && inter.getPlayer().hasOneResources()){
+                p.add(inter.getPlayer());
+            }
+        }
+
+        if(!p.isEmpty()){
+            Player randPlayer = p.get(game.getRand().nextInt(p.size()));
+
+            ArrayList<Integer> randType =new ArrayList<>();
+
+            for(int resourceType : randPlayer.getPlayerResources()){
+                if(randPlayer.hasOneSpecificResources(resourceType)){
+                    randType.add(resourceType);
+                }
+            }
+
+            int randResource = randType.get(game.getRand().nextInt(randType.size()));
+
+            randPlayer.removeResource(randResource, 1);
+            collectResources(randResource, 1);
+        }
+        else
+            System.out.println(getName()+" ne vole pas de ressource après le déplacement du voleur !");
     }
 
     public ArrayList<Road> emptyRoadPlayerCanBuild(Board board, Game game){

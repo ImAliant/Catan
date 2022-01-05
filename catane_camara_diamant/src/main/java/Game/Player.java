@@ -184,10 +184,30 @@ public abstract class Player {
     public String resourceOfPlayerToString(){
         String s="";
         s+="Ressource du " + name + " : [";
+        int index=-1;
         for(int resource : playerResources){
-            s+=(resource+" ");
+            index++;
+            if(index!=playerResources.length-1)
+                s+=(resource+" ");
+            else
+                s+=(resource);
         }
         s+="] (bois/pierre/ble/mouton/argile)";
+        return s;
+    }
+
+    public String resourceOfPlayerToStringWithoutResourceType(){
+        String s="";
+        s+="[";
+        int index=-1;
+        for(int resource : playerResources){
+            index++;
+            if(index!=playerResources.length-1)
+                s+=(resource+" ");
+            else
+                s+=(resource);
+        }
+        s+="]";
         return s;
     }
 
@@ -212,6 +232,14 @@ public abstract class Player {
     public boolean hasFourSpecificResources(int resource){
         if(playerResources[resource]>=4)
             return true;
+        return false;
+    }
+
+    public boolean hasOneResources(){
+        for(int resource : playerResources){
+            if(resource>=1)
+                return true;
+        }
         return false;
     }
 

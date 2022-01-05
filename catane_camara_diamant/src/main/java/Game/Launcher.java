@@ -1,14 +1,24 @@
 package Game;
 
-import java.awt.EventQueue;
+import javax.swing.SwingUtilities;
 
 public class Launcher {
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable(){
+        SwingUtilities.invokeLater(new Runnable(){
             @Override
             public void run() {
-                System.out.println("\033[H\033[2J");
                 new Home();
+                /*Player[] players = {
+                    new Human("Alexandre", 0),
+                    new Human("Ibrahime", 1),
+                    new Human("Bob", 2),
+                    new Human("Francis", 3)
+                };
+                try {
+                    Game game = new Game(players);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }*/
             }
         });
     }

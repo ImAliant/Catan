@@ -1,5 +1,6 @@
 package Game;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Human extends Player{
@@ -88,7 +89,6 @@ public class Human extends Player{
                 }
             }
             
-            game.strongestKnight();
             //game.longestRoad();
             if(game.winner()){
                 game.setWinner(game.getPlayerTurn());
@@ -229,9 +229,7 @@ public class Human extends Player{
                 board.getCases()[rep].setRobber(true);
                 board.setIndexRobber(rep);
                 reponseValide=true;
-                System.out.println("\nLe voleur à été déplacé sur la case "+board.getIndexRobber());
-
-                //Voler une ressource comme un chevalier
+                System.out.println("\nLe voleur à été déplacé sur la case "+board.getIndexRobber());            
             }   
             else
                 if(board.getIndexRobber()==rep){
@@ -239,6 +237,60 @@ public class Human extends Player{
                 }
                 else
                     System.out.println("Cette case n'existe pas !");
+        }
+
+        //Voler une ressource comme un chevalier
+
+        int playerSettlementOrCity=0;
+        for(Intersection inter : board.getCases()[board.getIndexRobber()].getCaseIntersections()){
+            if(inter.getPlayer()!=null){
+                playerSettlementOrCity++;
+            }
+        }
+        if(playerSettlementOrCity==0){
+            System.out.println("Cette case n'a pas d'intersections où une colonie/ville est présente !");
+        }
+        else{
+            System.out.println("Voici les joueurs auxquelles vous pouvez voler une ressources:");
+            int index = -1;
+            for(Intersection inter : game.getBoard().getCases()[game.getBoard().getIndexRobber()].getCaseIntersections()){
+                index++;
+                if(inter.getPlayer()!=null && inter.getPlayer().hasOneResources()){
+                    System.out.println(inter.getPlayer().getName()+" : "+index);
+                }
+            }
+
+            boolean reponseValide2=false;
+            while(!reponseValide2){
+                System.out.println("Saisissez l'index du joueur a qui vous voulez voler une ressource :");
+
+                int rep =scan.nextInt();
+                scan.nextLine();
+
+                if(rep<=index){
+                    ArrayList<Integer> randType =new ArrayList<>();
+
+                    for(int resourceType : board.getCases()[board.getIndexRobber()].getCaseIntersections()[rep].getPlayer().getPlayerResources()){
+                        if(board.getCases()[board.getIndexRobber()].getCaseIntersections()[rep].getPlayer().hasOneSpecificResources(resourceType)){
+                            randType.add(resourceType);
+                        }
+                    }
+
+                    if(randType.isEmpty()){
+                        System.out.println("Le joueur que vous avez choisi ne possède pas de ressources !");
+
+                        break;
+                    }
+
+                    int randResource = randType.get(game.getRand().nextInt(randType.size()));
+
+                    board.getCases()[board.getIndexRobber()].getCaseIntersections()[rep].getPlayer().removeResource(randResource, 1);
+                    collectResources(randResource, 1);
+                    reponseValide2=true;
+                }
+                else
+                    System.out.println("Cet index n'existe pas !");
+            }
         }
     }
 }

@@ -9,6 +9,8 @@ public class Game {
     private Player[] players;
     private Board board;
     private ArrayList<DevCard> devCard;
+    private boolean viewMod;
+
     private GameDisplay display;
 
     private int winner;
@@ -23,16 +25,66 @@ public class Game {
     private Scanner scan =new Scanner(System.in);
     private Random rand =new Random();
  
-    public Game(Player[] players) throws Exception{
+    public Game(Player[] players, boolean viewMod) throws Exception{
         this.players=players;
-        board =new Board();
-        initDevCardGame(); 
-        display =new GameDisplay(this);
+        this.viewMod=viewMod;
+
+        setUpBoard();
+        setUpDevCards(); 
+
+        startGame();
     }
 
-    public void play() throws Exception{
+    public void setUpBoard() throws Exception{
+        board =new Board();
+
+        if(viewMod)
+            display =new GameDisplay(this);
+    }
+    
+
+    public ArrayList<DevCard> setUpDevCards() throws Exception{
+        devCard =new ArrayList<DevCard>();
+        int victoryCard=5;
+        int progressBuildCard=2;
+        int progressDiscoveryCard=2;
+        int progressMonopolyCard=2;
+        int knightCard=14;
+        
+        while(victoryCard!=0){
+            devCard.add(new DevCard(DevCard.VICTORY_POINT));
+            victoryCard--;
+        }
+        while(progressBuildCard!=0){
+            devCard.add(new DevCard(DevCard.PROGRESS_BUILD));
+            progressBuildCard--;
+        }
+        while(progressDiscoveryCard!=0){
+            devCard.add(new DevCard(DevCard.PROGRESS_DISCOVERY));
+            progressDiscoveryCard--;
+        }
+        while(progressMonopolyCard!=0){
+            devCard.add(new DevCard(DevCard.PROGRESS_MONOPOLY));
+            progressMonopolyCard--;
+        }
+        while(knightCard!=0){
+            devCard.add(new DevCard(DevCard.KNIGHT));
+            knightCard--;
+        }
+
+        Collections.shuffle(devCard);
+
+        return devCard;
+    }
+
+    public void startGame() throws Exception{
+        play();
+    }
+
+    public void play() throws Exception {
         turn=0;
         System.out.println("Bienvenue dans le jeu \"Colons de Catanes\" ! \nVous allez rentrer dans l'étape de fondation. \nVous devez construire deux colonies et deux routes.\n");
+        
         foundation();
 
         strongestKnightSize=0;
@@ -75,10 +127,11 @@ public class Game {
             default:
                 throw new Exception();
         }
+        
         scan.close();
     }
 
-    public void foundation() throws Exception{  //HUMAIN ET IA
+    public void foundation() throws Exception {  //HUMAIN ET IA
         int tour=0;
         Player[] playersFondation = players;
         while(tour!=2){
@@ -162,6 +215,7 @@ public class Game {
                 player.collectResources(player.lastSettlements().getCaseAdj()[i].getResource().getResourceType(), 1);
             }
         }
+        
     }
 
     public void buildAnswer(Player player){ //HUMAIN
@@ -251,11 +305,11 @@ public class Game {
     public boolean buildAnswerIA(IA ia){ //IA
         ArrayList<Integer> buildChoice=new ArrayList<Integer>();
 
-        if(ia.resourceForSettlement())
+        if(ia.resourceForSettlement() && !noIntersectionAvailable())
             buildChoice.add(0);
         if(ia.resourceForCity())
             buildChoice.add(1);
-        if(ia.resourceForRoad())
+        if(ia.resourceForRoad() && !board.getEmptyRoad().isEmpty())
             buildChoice.add(2);
         
         if(!buildChoice.isEmpty()){
@@ -1295,43 +1349,6 @@ public class Game {
     public void knightCard(Player player){
         player.moveRobber(board, this);
 
-        int playerSettlementOrCity=0;
-        for(Intersection inter : board.getCases()[board.getIndexRobber()].getCaseIntersections()){
-            if(inter.getPlayer()!=null){
-                playerSettlementOrCity++;
-            }
-        }
-        if(playerSettlementOrCity==0){
-            System.out.println("Cette case n'a pas d'intersections où une colonie/ville est présente !");
-        }
-        else{
-            System.out.println("Voici les joueurs auxquelles vous pouvez voler une ressource: ");
-            int index=-1;
-            for(Intersection inter : board.getCases()[board.getIndexRobber()].getCaseIntersections()){
-                index++;
-                if(inter.getPlayer()!=null){
-                    System.out.println(inter.getPlayer().getName()+" : "+index);
-                }
-            }
-            
-            boolean reponseValide=false;
-            while(!reponseValide){
-                System.out.println("Saisissez l'index du joueur a qui vous voulez voler une ressource :");
-
-                int rep =scan.nextInt();
-                scan.nextLine();
-
-                if(rep<=index){
-                    Random rand =new Random();
-                    int randResource = rand.nextInt(5);
-                    board.getCases()[board.getIndexRobber()].getCaseIntersections()[rep].getPlayer().removeResource(randResource, 1);
-                    player.collectResources(randResource, 1);
-                    reponseValide=true;
-                }
-                else
-                    System.out.println("Cet index n'existe pas !");
-            }
-        }
         player.setKnightPlayed(player.getKnightPlayed()+1);
         strongestKnight();
     }
@@ -1339,26 +1356,7 @@ public class Game {
     public void knightCardIA(IA ia){
         ia.moveRobber(board, this);
 
-        int playerSettlementOrCity=0;
-        for(Intersection inter : board.getCases()[board.getIndexRobber()].getCaseIntersections()){
-            if(inter.getPlayer()!=null){
-                playerSettlementOrCity++;
-            }
-        }
-        if(playerSettlementOrCity!=0){
-            ArrayList<Player> playerInter =new ArrayList<Player>();
-            for(Intersection inter : board.getCases()[board.getIndexRobber()].getCaseIntersections()){
-                if(inter.getPlayer()!=null){
-                    playerInter.add(inter.getPlayer());
-                }
-            }
-
-            Player randPlayer = playerInter.get(rand.nextInt(playerInter.size()));
-        
-            int randResource = rand.nextInt(5);
-            randPlayer.removeResource(randResource, 1);
-            ia.collectResources(randResource, 1);
-        }
+        ia.setKnightPlayed(ia.getKnightPlayed()+1);
         strongestKnight();
     }
 
@@ -1574,40 +1572,6 @@ public class Game {
         return false;
     }
 
-    public ArrayList<DevCard> initDevCardGame() throws Exception{
-        devCard =new ArrayList<DevCard>();
-        int victoryCard=5;
-        int progressBuildCard=2;
-        int progressDiscoveryCard=2;
-        int progressMonopolyCard=2;
-        int knightCard=14;
-        
-        while(victoryCard!=0){
-            devCard.add(new DevCard(DevCard.VICTORY_POINT));
-            victoryCard--;
-        }
-        while(progressBuildCard!=0){
-            devCard.add(new DevCard(DevCard.PROGRESS_BUILD));
-            progressBuildCard--;
-        }
-        while(progressDiscoveryCard!=0){
-            devCard.add(new DevCard(DevCard.PROGRESS_DISCOVERY));
-            progressDiscoveryCard--;
-        }
-        while(progressMonopolyCard!=0){
-            devCard.add(new DevCard(DevCard.PROGRESS_MONOPOLY));
-            progressMonopolyCard--;
-        }
-        while(knightCard!=0){
-            devCard.add(new DevCard(DevCard.KNIGHT));
-            knightCard--;
-        }
-
-        Collections.shuffle(devCard);
-
-        return devCard;
-    }
-
     public boolean idForRoadIsSettlementsOrCity(int id1, int id2, Player player){
         if(id1<0 || id1>24 || id2<0 || id2>24)
             return false;
@@ -1804,4 +1768,8 @@ public class Game {
     public void setStrongestKnightOwner(Player strongestKnightOwner) {this.strongestKnightOwner = strongestKnightOwner;}
     public Random getRand() {return rand;}
     public void setRand(Random rand) {this.rand = rand;}
+    public int getLongestRoadSize() {return longestRoadSize;}
+    public void setLongestRoadSize(int longestRoadSize) {this.longestRoadSize = longestRoadSize;}
+    public Player getLongestRoadOwner() {return longestRoadOwner;}
+    public void setLongestRoadOwner(Player longestRoadOwner) {this.longestRoadOwner = longestRoadOwner;}
 }

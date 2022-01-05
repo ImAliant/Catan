@@ -11,6 +11,7 @@ import javax.swing.*;
 public class Home extends JFrame{
 
     private static JPanel panelTitle, panelCard, panelButton, panelOption;
+    private static JCheckBox frameOrText;
     private static RadioButton human1, human2, human3, human4;
     private static RadioButton threePlayers, fourPlayers;
 
@@ -28,7 +29,7 @@ public class Home extends JFrame{
         } catch (Exception e) {
             System.out.println("Le chemin de l'icone n'existe pas !");
         }
-        setContentPane(new PanelFond());
+        //setContentPane(new PanelFond());
         setVisible(true);
         setResizable(false);
         setLocationRelativeTo(null);
@@ -188,6 +189,16 @@ public class Home extends JFrame{
         c.gridy=4;
         humanIA.add(ia4, c);
 
+        JLabel fenLabel =new JLabel("FENETRE + TERMINAL ou TERMINAL : (COCHE/PAS COCHE)");
+        frameOrText =new JCheckBox();
+        frameOrText.setOpaque(false);
+        c.gridx=0;
+        c.gridy=5;
+        humanIA.add(fenLabel, c);
+        c.gridx=1;
+        c.gridy=5;
+        humanIA.add(frameOrText, c);
+
         JButton back =new Button("Retour");
         panelButton.add(back);
 
@@ -209,22 +220,22 @@ public class Home extends JFrame{
         play.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
+                boolean viewMode=false;
+                if(frameOrText.isSelected()){
+                    viewMode=true;
+                }
                 if(threePlayers.isSelected()){
-                    Game game;
                     try {
                         dispose();
-                        game = new Game(threePlayersArrayInit());
-                        game.play();
+                        new Game(threePlayersArrayInit(), viewMode);
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }
                 }
                 else{
-                    Game game;
                     try {
                         dispose();
-                        game = new Game(fourPlayersArrayInit());
-                        game.play();
+                        new Game(fourPlayersArrayInit(), viewMode);
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }
@@ -244,11 +255,11 @@ public class Home extends JFrame{
             }
         });
 
-        getContentPane().add(panelTitle, BorderLayout.NORTH);
-        getContentPane().add(panelCard, BorderLayout.CENTER);
+        add(panelTitle, BorderLayout.NORTH);
+        add(panelCard, BorderLayout.CENTER);
     }
 
-    public class PanelFond extends JPanel{
+    /*public class PanelFond extends JPanel{
         Image image;
         
         public PanelFond(){
@@ -259,7 +270,7 @@ public class Home extends JFrame{
             super.paintComponent(g); 
             g.drawImage(image, 0, 0, 800, 500, null); 
         }
-    }
+    }*/
 
     public class Button extends JButton {
         public Button(String text) {
@@ -315,15 +326,24 @@ public class Home extends JFrame{
         Player p1 =null;
         Player p2 =null;
         Player p3 =null;
-        if(human1.isSelected())
+        if(human1.isSelected()){
             p1 =new Human("Joueur bleu", 0);
-        else p1 =new IA("Joueur bleu", 0);
-        if(human2.isSelected())
+        }
+        else{
+            p1 =new IA("Joueur bleu", 0);
+        } 
+        if(human2.isSelected()){
             p2 =new Human("Joueur rouge", 1);
-        else p2 =new IA("Joueur rouge", 1);
-        if(human3.isSelected())
+        }
+        else{
+            p2 =new IA("Joueur rouge", 1);
+        } 
+        if(human3.isSelected()){
             p3 =new Human("Joueur orange", 2);
-        else p3 =new IA("Joueur orange", 2);
+        }
+        else{
+            p3 =new IA("Joueur orange", 2);
+        } 
         Player[] players = {p1, p2, p3};
 
         return players;
