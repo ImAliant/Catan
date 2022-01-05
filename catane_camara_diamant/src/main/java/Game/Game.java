@@ -5,13 +5,15 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 
+import Ui.GameDisplayAlexandre;
+
 public class Game {
     private Player[] players;
     private Board board;
     private ArrayList<DevCard> devCard;
     private boolean viewMod;
 
-    private GameDisplay display;
+    private GameDisplayAlexandre display;
 
     private int winner;
     private int playerTurn;
@@ -39,7 +41,7 @@ public class Game {
         board =new Board();
 
         if(viewMod)
-            display =new GameDisplay(this);
+            display =new GameDisplayAlexandre(this);
     }
     
 
@@ -113,16 +115,16 @@ public class Game {
 
         switch (winner) {
             case 0:
-                System.out.println("Le vainqueur est "+players[winner].toString());
+                System.out.println("Le vainqueur est "+players[0].toString());
                 break;
             case 1:
-                System.out.println("Le vainqueur est "+players[winner].toString());
+                System.out.println("Le vainqueur est "+players[1].toString());
                 break;
             case 2:
-                System.out.println("Le vainqueur est "+players[winner].toString());
+                System.out.println("Le vainqueur est "+players[2].toString());
                 break;
             case 3:
-                System.out.println("Le vainqueur est "+players[winner].toString());
+                System.out.println("Le vainqueur est "+players[3].toString());
                 break;
             default:
                 throw new Exception();
@@ -215,7 +217,7 @@ public class Game {
                 player.collectResources(player.lastSettlements().getCaseAdj()[i].getResource().getResourceType(), 1);
             }
         }
-        
+        display.update();
     }
 
     public void buildAnswer(Player player){ //HUMAIN
@@ -1209,11 +1211,9 @@ public class Game {
         return resource;
     }
 
-    public boolean winner(){
-        for(Player player : players){
-            if(player.getVictoryPoint()==10){
-                return true;
-            }
+    public boolean winner(Player player){
+        if(player.getVictoryPoint()>=10){
+            return true;
         }
         return false;
     }
@@ -1772,4 +1772,8 @@ public class Game {
     public void setLongestRoadSize(int longestRoadSize) {this.longestRoadSize = longestRoadSize;}
     public Player getLongestRoadOwner() {return longestRoadOwner;}
     public void setLongestRoadOwner(Player longestRoadOwner) {this.longestRoadOwner = longestRoadOwner;}
+    public boolean isViewMod() {return viewMod;}
+    public void setViewMod(boolean viewMod) {this.viewMod = viewMod;}
+    public GameDisplayAlexandre getDisplay() {return display;}
+    public void setDisplay(GameDisplayAlexandre display) {this.display = display;}
 }

@@ -42,8 +42,8 @@ public class PanelPlayer extends JPanel{
     }
 
     public void updateInfo(){
-        resourceLabel =new JLabel(player.resourceOfPlayerToStringWithoutResourceType());
-        victoryPointLabel =new JLabel(Integer.toString(player.getVictoryPoint()));
+        resourceLabel.setText(player.resourceOfPlayerToStringWithoutResourceType());
+        victoryPointLabel.setText(Integer.toString(player.getVictoryPoint()));
     }
     
     public Color intToColor(int colorPlayer) throws Exception{

@@ -18,10 +18,7 @@ public class GameDisplayAlexandre extends JFrame implements MouseInputListener{
 
     private BoardDisplay boardDisplay;
     private PlayersDisplay playersPanel;
-    private PanelPlayer p1, p2, p3, p4;
 
-    private ArrayList<PanelPlayer> panplay;
-    
     public GameDisplayAlexandre(Game game) throws Exception{
         init(game);
     }
@@ -48,24 +45,6 @@ public class GameDisplayAlexandre extends JFrame implements MouseInputListener{
         boardDisplay =new BoardDisplay(board);
 
         playersPanel =new PlayersDisplay(game, players);
-
-        panplay =new ArrayList<>();
-
-        if(game.getPlayers().length==3){
-            panplay.add(p1=new PanelPlayer(game, players[0]));
-            panplay.add(p2=new PanelPlayer(game, players[1]));
-            panplay.add(p3=new PanelPlayer(game, players[2]));
-        }
-        else{
-            panplay.add(p1=new PanelPlayer(game, players[0]));
-            panplay.add(p2=new PanelPlayer(game, players[1]));
-            panplay.add(p3=new PanelPlayer(game, players[2]));
-            panplay.add(p4=new PanelPlayer(game, players[3]));
-        }
-
-        for(PanelPlayer panelPlayer : panplay){
-            playersPanel.add(panelPlayer);
-        }
         
         playersPanel.setVisible(true);
 
@@ -75,10 +54,10 @@ public class GameDisplayAlexandre extends JFrame implements MouseInputListener{
         setVisible(true);
     }
 
-    public void update(){
-        for(PanelPlayer panelPlayer : panplay){
-            panelPlayer.updateInfo();
-        }
+    public void update() throws Exception{
+        boardDisplay.updateInfo();
+
+        playersPanel.updateInfo();
     }
 
     
@@ -92,16 +71,6 @@ public class GameDisplayAlexandre extends JFrame implements MouseInputListener{
     public void setGame(Game game) {this.game = game;}
     public PlayersDisplay getPlayersPanel() {return playersPanel;}
     public void setPlayersPanel(PlayersDisplay playersPanel) {this.playersPanel = playersPanel;}
-    public PanelPlayer getP1() {return p1;}
-    public void setP1(PanelPlayer p1) {this.p1 = p1;}
-    public PanelPlayer getP2() {return p2;}
-    public void setP2(PanelPlayer p2) {this.p2 = p2;}
-    public PanelPlayer getP3() {return p3;}
-    public void setP3(PanelPlayer p3) {this.p3 = p3;}
-    public PanelPlayer getP4() {return p4;}
-    public void setP4(PanelPlayer p4) {this.p4 = p4;}
-    public ArrayList<PanelPlayer> getPanplay() {return panplay;}
-    public void setPanplay(ArrayList<PanelPlayer> panplay) {this.panplay = panplay;}
 
     @Override
     public void mouseClicked(MouseEvent e) {

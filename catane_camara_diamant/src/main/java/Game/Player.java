@@ -39,7 +39,7 @@ public abstract class Player {
         knightPlayed=0;
     }
 
-    public abstract void turn(Board board, Game game);
+    public abstract void turn(Board board, Game game) throws Exception;
 
     public abstract void moveRobber(Board board, Game game);
 

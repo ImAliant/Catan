@@ -12,7 +12,7 @@ public class Human extends Player{
     }
 
     @Override
-    public void turn(Board board, Game game) {
+    public void turn(Board board, Game game) throws Exception {
         System.out.println(this.toString() + " lance ses dés !");
         int diceRolls1 = game.diceRolls();
         int diceRolls2 = game.diceRolls();
@@ -90,10 +90,11 @@ public class Human extends Player{
             }
             
             //game.longestRoad();
-            if(game.winner()){
-                game.setWinner(game.getPlayerTurn());
+            if(game.winner(this)){
+                game.setWinner(this.getColor());
             }
         }
+        game.getDisplay().update();
     }
 
     @Override
