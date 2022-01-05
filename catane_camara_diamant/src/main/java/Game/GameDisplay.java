@@ -1,18 +1,19 @@
 
 
 import java.awt.*;
-
-import javax.imageio.plugins.jpeg.JPEGHuffmanTable;
+import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.text.html.HTMLDocument.HTMLReader.BlockAction;
+
 
 
 public class GameDisplay extends JFrame{
-  private JPanel content;
+ JPanel content;
   //int spacing = 4 ;
 
     public GameDisplay(Game game){
-        createDisplay(game);
+      this.content = new JPanel();
+      createDisplay(game);
+
     }
 
 
@@ -29,22 +30,22 @@ public class GameDisplay extends JFrame{
         } catch (Exception e) {
             System.out.println("Le chemin de l'icone n'existe pas !");
         }
-
-                this.content = new JPanel();            
+          
                 Joueurs j= new Joueurs(game.getPlayers());
                 JPanel panelCarteFond = new JPanel();
                 Plateau p = new Plateau(game.getBoard());
-                panelCarteFond.setPreferredSize(new Dimension(500,500));
 
+                panelCarteFond.setPreferredSize(new Dimension(500,500));
                 panelCarteFond.setBackground(Color.CYAN);
                 panelCarteFond.add(p);
-                this.content.setLayout((new BoxLayout(this.content, BoxLayout.Y_AXIS)));
+
+                this.content.setLayout(new BoxLayout(this.content, BoxLayout.Y_AXIS));
                 this.content.add(panelCarteFond,BorderLayout.NORTH);
                 this.content.add(j,BorderLayout.SOUTH);
 
                 this.setContentPane(this.content);
                 this.pack();
-                this.setVisible(true);
+                this.content.setVisible(true);
 
 
       
@@ -60,17 +61,37 @@ public class GameDisplay extends JFrame{
 
       public void createBoard(){
       this.setPreferredSize(new Dimension(385,385));
-      
       this.setLayout(new GridLayout(4,4));
         for(int i = 0; i<board.getCases().length; i++){
-          this.add(new Tuile(board.getCases()[i]));
+          Tuile a = new Tuile(board.getCases()[i]);
+          this.add(a);
         }
 
         this.setVisible(true);
-        this.setContentPane(this);
+       // this.setOpaque(true);
       }
 
+      
+
+      
     }
+
+  /*  public class Infrastructures extends JPanel{
+      Board board;
+
+      public Infrastructures(Board board){
+        this.board = board;
+        createInfra();
+      }
+      
+      public void createInfra(){
+        this
+      }
+    
+
+
+    } */
+    
 
 
 
@@ -84,42 +105,8 @@ public class GameDisplay extends JFrame{
 
       public void createJoueurs(){
         this.setPreferredSize(new Dimension(500,300));
-        
-        if(players.length == 3){
-         this.setLayout(new GridLayout(1,3));
+      
 
-            JPanel j1 = new JPanel();
-            JPanel j2 = new JPanel();
-            JPanel j3 = new JPanel();
-
-            this.add(j1);
-            this.add(j2);
-            this.add(j3);
-
-            JLabel nom1 = new JLabel();
-            JLabel nom2 = new JLabel();
-            JLabel nom3 = new JLabel();
-
-            j1.setBackground(Color.BLUE);
-            j1.setLayout(new BorderLayout());
-            j1.add(nom1,BorderLayout.NORTH);
-            nom1.setText(players[0].getName());
-            nom1.setHorizontalAlignment(80);
-
-            j2.setBackground(Color.RED);
-            j2.setLayout(new BorderLayout());
-            j2.add(nom2,BorderLayout.NORTH);
-            nom2.setText(players[1].getName());
-            nom2.setHorizontalAlignment(80);
-
-            j3.setBackground(Color.ORANGE);
-            j3.setLayout(new BorderLayout());
-            j3.add(nom3,BorderLayout.NORTH);
-            nom3.setText(players[2].getName());
-            nom3.setHorizontalAlignment(80);
-
-
-          }else{
             this.setLayout(new GridLayout(1,4));
 
             JPanel j1 = new JPanel();
@@ -139,30 +126,91 @@ public class GameDisplay extends JFrame{
 
             j1.setBackground(Color.blue);
             j1.setLayout(new BorderLayout());
-            j1.add(nom1,BorderLayout.NORTH);
+            j1.add(nom1);
             nom1.setText(players[0].getName());
+            nom1.setAlignmentX(250);
+            nom1.setAlignmentY(0);
            
             j2.setBackground(Color.RED);
             j2.setLayout(new BorderLayout());
-            j2.add(nom2,BorderLayout.NORTH);
+            j2.add(nom2);
             nom2.setText(players[1].getName());
-           
+            nom2.setAlignmentX(250);
+            nom2.setAlignmentY(0);
+
             j3.setBackground(Color.ORANGE);
             j3.setLayout(new BorderLayout());
-            j3.add(nom3,BorderLayout.NORTH);
+            j3.add(nom3);
             nom3.setText(players[2].getName());
+            nom3.setAlignmentX(250);
+            nom3.setAlignmentY(0);
+
           
             j4.setBackground(new Color(128,0,128)); // pour donner la couleur violet 
             j4.setLayout(new BorderLayout());
-            j4.add(nom4,BorderLayout.NORTH);
+            j4.add(nom4);
             nom4.setText(players[3].getName());
+            nom4.setAlignmentX(250);
+            nom4.setAlignmentY(0);
+
            
-          }
-        this.setVisible(true);
-  
+       
+        this.setVisible(true);    
+    }
+
+  }
+
+  public class Joueur extends JPanel {
+    Player player;
+    JTextArea infos;
+    JLabel nom, playerRessources, roads, settlements, cities, cards, longestRoad, strongestKnight, victoryPoint;
     
+  
+
+     public Joueur(Player player){
+      this.player = player;
+      createJoueur();
+    }
+
+    public void createJoueur(){
+      this.infos = new JTextArea();
+      setPreferredSize(new Dimension(125,300));
+      infos.setPreferredSize(new Dimension(100,300));
+
+      switch(player.getColor()){
+        case 0:
+        setBackground(Color.blue);
+        break;
+        case 1:
+        setBackground(Color.RED);
+        break;
+        case 2:
+        setBackground(Color.orange);
+        break;
+        case 3:
+        setBackground(new Color(128,0,128));
+      }
+
+      this.nom = new JLabel();
+      this.playerRessources = new JLabel();
+      this.roads = new JLabel();
+      this.settlements = new JLabel();
+      cities = new JLabel();
+      cards = new JLabel();
+      longestRoad = new JLabel();
+      strongestKnight = new JLabel();
+
+      nom.setBounds(63, 0, 95, 45);
+      roads.setBounds(7,35,65,30);
+      settlements.setBounds(7,70,65,30);
+      cities.setBounds(7,105,65,30);
+      cards.setBounds(7, 140, 65, 30);
+
     }
   }
+
+    
+
 
       public class Tuile extends JPanel {
         private final Color[] COLOR_ARRAY = {Color.decode("#FFFFE0"), Color.decode("#014421"),  Color.decode("	#8C92AC"),Color.decode("#FFDF00"), Color.decode("#dbe9f4 "), Color.decode("#BB6528")   };  
@@ -175,6 +223,7 @@ public class GameDisplay extends JFrame{
 
       public void createTuile(){
         this.setSize(100,100);
+        this.setVisible(true);    
         JLabel diceroll = new JLabel();
         if(this.c.isRobber() == false){
         diceroll.setText(String.valueOf(this.c.getDiceRoll()) );
@@ -207,8 +256,7 @@ public class GameDisplay extends JFrame{
            case 4 : 
            setBackground(COLOR_ARRAY[5]);
            break;
-        }
-        this.setVisible(true);
+        } 
       }
       
      }
@@ -216,6 +264,7 @@ public class GameDisplay extends JFrame{
      public class Ports extends JPanel {
        Port port;
        JLabel type;
+      
 
       public Ports(Port port){
         this.port = port;
@@ -225,7 +274,8 @@ public class GameDisplay extends JFrame{
 
       public void createPort(){
         
-        this.setBackground(Color.BLUE);
+      
+        this.setBackground(Color.BLUE.darker());
         if(this.port.getPortType() == 0){
               type.setText("3:1");
             }else{
@@ -249,7 +299,7 @@ public class GameDisplay extends JFrame{
             }
             this.add(type);
             this.setVisible(true);
-      }
+      } 
     }
 
       public class Buildings extends JPanel {
@@ -357,10 +407,10 @@ public class GameDisplay extends JFrame{
 
       public void createRoute(){
         if(this.route.getId2() == this.route.getId1() +1 || this.route.getId2() == this.route.getId1()-1){
-          this.setSize(70,20);
+          this.setPreferredSize(new Dimension(70,20));
         }
         if(this.route.getId2() == this.route.getId1() +5 || this.route.getId2() == this.route.getId1() -5  ){
-          this.setSize(20,70);
+          this.setPreferredSize(new Dimension(20,70));
         }
 
         if(this.player == null){
@@ -383,20 +433,17 @@ public class GameDisplay extends JFrame{
         this.setBackground(Color.black);
         break;    
       }
-    
-
     }
     this.setVisible(true);
   }
 }
-    
 
-
-        //public class Carte extends JPanel{ // pour creer une grille par rapport a Board
+        /*
+        /public class Carte extends JPanel{ // pour creer une grille par rapport a Board
        /************************* *
          private Board board;
 
-       /   private Object game;
+          private Object game;
 
           private static final long serialVersionUID =1L;
 
@@ -525,15 +572,14 @@ class Piece extends JLabel{
       }
   }   ***********************/
 
+}
 
  // }  
   //}
 
+  
 
 
+  
+    
 
-
-
-
-
-}

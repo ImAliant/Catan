@@ -9,8 +9,9 @@ public class Launcher {
             @Override
             public void run() {
                Player[] players = {new Player("a",1),new Player("b",2),new Player("c",3), new Player("d",4)};
-               new GameDisplay(new Game(players));
+                GameDisplay g = new GameDisplay(new Game(players));
              // new Home();
+                g.setVisible(true);
             }
         });
     }
