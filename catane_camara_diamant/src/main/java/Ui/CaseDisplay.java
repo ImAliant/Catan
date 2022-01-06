@@ -22,7 +22,7 @@ public class CaseDisplay extends JPanel{
         JLabel idLabel =new JLabel(Integer.toString(c.getId()));
         JLabel diceRollLabel =new JLabel(Integer.toString(c.getDiceRoll()));
 
-        robber =new RobberDraw(4, 80);
+        robber =new RobberDraw();
 
         if(c.isRobber())
             robber.setOpaque(true);
