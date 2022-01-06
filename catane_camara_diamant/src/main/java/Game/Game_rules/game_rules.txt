@@ -1,0 +1,82 @@
+COMMENT FAIRE LE JEU :
+
+    PHASE DE FONDATION :
+        (Se déroule en deux tours)
+        TOUR 1 :
+            - L'ordre de jeu est celui de la création de l'objet jeu dans Home.
+            - Le joueur place une colonie sur une intersection de son choix et place ensuite une route adjacente
+            a la colonie dans la direction de son choix. Chaque joueur fait de même dans le sens des aiguilles d'une montre. 
+            Le placement des colonies doit respecter la règle de distance entre deux colonies.
+
+        TOUR 2 :
+            - Le joueur qui a placé sa derniere colonie commence le deuxième tour.
+            - Le joueur place sa deuxieme colonie sur une intersection de son choix et place ensuite une route adjacente
+            a cette colonie dans la direction de son choix. Chaque joueur fait de même dans le sens inverse des aiguilles 
+            d'une montre. Le placement des colonies doit respecter la règle de distance entre deux colonies.
+
+        Apres ce tour chaque joueur recoit 1 resource par case adjacentes, correspondant au type de terrain de la case adjacent
+        a la deuxieme colonie.
+
+        C'est le joueur qui a placer la derniere colonie qui commence la partie.
+
+    BOUCLE DE JEU :
+        (General)
+        - JOUEUR lance les dés pour savoir où il y a des revenus en RESOURCES (concerne tous les joueurs)
+        - JOUEUR peut choisir de faire du commerce (PAS OBLIGATOIRE POUR LE MOMENT)
+        - JOUEUR peut effectuer des constructions (routes, colonies, villes) et/ou acheter des cartes de developpement.
+        
+        - JOUEUR peut jouer une seule carte développement à n'importe quel moment de son tour.
+
+        C'est le JOUEUR suivant dans le tableau des JOUEURS qui continue la partie.
+
+        (Detaillé)
+        COMMERCE MARITIME (Utilisation des ports):
+            - JOUEUR peut échanger 4 RESOURCES du même type contre 1 RESOURCE de son choix.
+            - Si JOUEUR posséde une colonie sur une case port, il peut échanger 3 RESOURCES du même type contre 1 RESOURCE de son choix (3:1).
+                                                               il peut échanger 2 RESOURCES du type du port contre 1 RESOURCE de son choix (2:1).
+        COMMERCE TERRESTRE (Pas obligatoire)
+
+        CONTRUCTION:
+            ROUTE:
+                - RESOURCE: 1 bois + 1 argile
+                - Nécessairement relié à une route une colonie ou une ville de même couleur.
+                - Si routes continu d'au moins 5 routes, JOUEUR recoit carte spéciale "Route la plus longue". Donne deux point de victoire.
+
+            COLONIE:
+                - RESOURCE: 1 bois + 1 argile + 1 blé + 1 laine
+                - Une colonie ne peut être construite que si les quatres croisements adjacents ne sont pas occupés par des colonies ou des villes
+                quelque soit le propriétaire de ces colonies ou des ces villes.
+                - Donne 1 point de victoire.
+            
+            VILLE:
+                - RESOURCE: 2 blé + 3 pierre
+                - Seules les colonies peuvent être transformées en villes.
+                - Donne 2 points de victoires.
+
+        ACHAT CARTE DE DEVELOPPEMENT:
+            - RESOURCE: 1 blé + 1 laine + 1 pierre
+
+            CARTE CHEVALIER:
+                - Deplace le voleur.
+                - Vole au hasard 1 resource au hasard a un des joueurs présent sur la case où a été placé le voleur.
+                - A partir de trois carte chevalier, JOUEUR recoit carte spéciale "Chevalier le plus puissant" qui vaut 2 points de victoires.
+
+            CARTE PROGRES:
+                - JOUEUR peut construire deux routes gratuitement.
+                ou
+                - JOUEUR peut obtenir 2 resources de son choix.
+                ou
+                - JOUEUR peut désigner la resource de son choix. Chaque joueurs doit donner toutes les resources correspondant au choix de JOUEUR.
+
+        CAS PARTICULIER:
+            7 aux dés:
+                - JOUEUR déplace le voleur.
+        
+    FIN DE LA PARTIE:
+        - La partie prend fin lorsque qu'un joueur possède 10 points de victoire.
+        POINT DE VICTOIRE : 
+            COLONIE: 1
+            VILLE: 2
+            CARTE "ROUTE COMMERCE LA PLUS LONGUE": 2
+            CARTE "CHEVALIER LE PLUS PUISSANT": 2
+            CARTE "POINT DE VICTOIRE" : 1
