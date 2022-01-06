@@ -26,7 +26,7 @@ public class Board {
 
     private void init() {
         initCases();
-        initPortsLocation();
+        initPorts();
         initIntersections();
         initCasesIntersectionAdj();
         initRoads();
@@ -58,7 +58,7 @@ public class Board {
         cases[indexRobber].setRobber(true);
     }
 
-    private void initPortsLocation(){
+    private void initPorts(){
         ports =new Port[] {
             new Port(new Resource(Resource.MOUTON)),
             new Port(),
