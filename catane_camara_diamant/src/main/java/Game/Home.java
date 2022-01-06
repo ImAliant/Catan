@@ -8,6 +8,18 @@ import java.awt.event.MouseListener;
 
 import javax.swing.*;
 
+/**
+ * <b>Home est la classe qui sert d'accueil a notre jeu.</b>
+ * <p>
+ * Home est caractérisé par plusieurs champs:
+ * <ul>
+ * <li>Des JPanels: {@link #panelTitle}, {@link #panelCard}, {@link #panelButton}, {@link #panelOption}</li>
+ * <li>Un JCheckBox: {@link #frameOrText}</li>
+ * <li>Des RadioButtons: {@link #human1}, {@link #human2}, {@link #human3}, {@link #human4}</li>
+ * <li>Des RadioButtons: {@link #threePlayers}, {@link #fourPlayers}</li>
+ * </ul>
+ * </p>
+ */
 public class Home extends JFrame{
 
     private JPanel panelTitle, panelCard, panelButton, panelOption;
