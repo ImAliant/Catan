@@ -7,7 +7,7 @@ import java.util.Scanner;
 public abstract class Player {
     private String name;
     private int color;
-
+    private boolean winner;
 
     private int[] playerResources; //(index) 0: bois | 1: pierre | 2: ble | 3: mouton | 4: argile
     private ArrayList<Road> roads;
@@ -26,6 +26,9 @@ public abstract class Player {
     public Player(String name, int color){
         this.name=name;
         this.color=color;
+
+        winner=false;
+
         playerResources=new int[]{0,0,0,0,0}; 
 
         roads =new ArrayList<Road>();
@@ -329,5 +332,6 @@ public abstract class Player {
     public void setStrongestKnight(boolean strongestKnight) {this.strongestKnight = strongestKnight;}
     public int getKnightPlayed() {return knightPlayed;}
     public void setKnightPlayed(int knightPlayed) {this.knightPlayed = knightPlayed;}
-    
+    public boolean isWinner(){return winner;}
+    public void setWinner(boolean winner){this.winner=winner;}
 }

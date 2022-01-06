@@ -1,12 +1,11 @@
 package Ui;
 
-import java.awt.*;
 import javax.swing.*;
 
 import Game.Port;
 
 public class PortDisplay extends JPanel{
-    private JLabel portType, portResource;
+    private JLabel portType;
 
     public PortDisplay(Port port){
         portType =new JLabel(port.toString());

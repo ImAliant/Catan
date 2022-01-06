@@ -3,8 +3,8 @@
 Commande de compilation :
 =========================
 
-* Dans un terminal ouvert dans le dossier du projet (\catane_camara_diamant), écrire 
-javac -d . src/main/java/Game/*.java .
+* Dans un terminal ouvert dans le dossier du projet (\colons_catanes), écrire 
+javac -d . catane_camara_diamant/src/main/java/Game/*.java catane_camara_diamant/src/main/java/Ui/*.java.
 
 Exécution du programme :
 ========================

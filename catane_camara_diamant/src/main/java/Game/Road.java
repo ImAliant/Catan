@@ -24,6 +24,13 @@ public class Road {
         }
         return false;
     }
+
+    public void destroyRoad(){
+        if(road){
+            road=false;
+            player=null;
+        }
+    }
     
     public boolean upgradeRoad(Player p){
         if(!canUpgradeRoad()) return false;

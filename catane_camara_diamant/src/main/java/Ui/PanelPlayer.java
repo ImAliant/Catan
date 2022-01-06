@@ -3,24 +3,23 @@ package Ui;
 import java.awt.*;
 import javax.swing.*;
 
-import Game.Game;
 import Game.Player;
 
 public class PanelPlayer extends JPanel{
     private Player player;
-    private JLabel nameLabel, resourceLabel, victoryPointLabel;
+    private JLabel nameLabel, resourceLabel, victoryPointLabel, victoryLabel;
 
-    public PanelPlayer(Game game, Player player) throws Exception{
+    public PanelPlayer(int size, Player player) throws Exception{
         this.player=player;
 
         setLayout(new GridBagLayout());
-        if(game.getPlayers().length==3){
-            setSize(170, 60);
-            setPreferredSize(new Dimension(170, 60));
+        if(size==3){
+            setSize(170, 80);
+            setPreferredSize(new Dimension(170, 80));
         }
         else{
-            setSize(125, 60);
-            setPreferredSize(new Dimension(125, 60));
+            setSize(125, 80);
+            setPreferredSize(new Dimension(125, 80));
         }
         
         setBackground(intToColor(player.getColor()));
@@ -28,6 +27,9 @@ public class PanelPlayer extends JPanel{
         nameLabel =new JLabel(player.getName());
         resourceLabel =new JLabel(player.resourceOfPlayerToStringWithoutResourceType());
         victoryPointLabel =new JLabel(Integer.toString(player.getVictoryPoint()));
+        victoryLabel =new JLabel("WINNER !");
+
+        victoryLabel.setVisible(false);
 
         GridBagConstraints c =new GridBagConstraints();
 
@@ -39,11 +41,17 @@ public class PanelPlayer extends JPanel{
         add(resourceLabel, c);
         c.gridy=3;
         add(victoryPointLabel, c);
+        c.gridy=4;
+        add(victoryLabel, c);
     }
 
     public void updateInfo(){
         resourceLabel.setText(player.resourceOfPlayerToStringWithoutResourceType());
         victoryPointLabel.setText(Integer.toString(player.getVictoryPoint()));
+        
+        if(player.isWinner()){
+            victoryLabel.setVisible(true);
+        }
     }
     
     public Color intToColor(int colorPlayer) throws Exception{

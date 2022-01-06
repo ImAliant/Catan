@@ -41,7 +41,7 @@ public class Game {
         board =new Board();
 
         if(viewMod)
-            display =new GameDisplay(this);
+            display =new GameDisplay(this, board, players);
     }
     
 
@@ -217,6 +217,7 @@ public class Game {
                 player.collectResources(player.lastSettlements().getCaseAdj()[i].getResource().getResourceType(), 1);
             }
         }
+
         display.update();
     }
 
@@ -332,7 +333,7 @@ public class Game {
                             if(!interDistRules.isEmpty()){
                                 randChoice = interDistRules.get(rand.nextInt(interDistRules.size())).getId();
 
-                                if(distanceRules(randChoice)){
+                                if(distanceRules(randChoice) && idIsRoadOrBuilding(randChoice, ia)){
                                     ia.buildSettlement(randChoice, board, turn);
                                     reponseValide=true;
                                     return true;
@@ -1213,6 +1214,7 @@ public class Game {
 
     public boolean winner(Player player){
         if(player.getVictoryPoint()>=10){
+            player.setWinner(true);
             return true;
         }
         return false;
@@ -1494,6 +1496,18 @@ public class Game {
         }
         else
             System.out.println(ia.getName()+" n'a pas pu utilisé sa carte progrès : construction car il n'y a plus de route libre.");
+    }
+
+    public boolean idIsRoadOrBuilding(int id, Player player){
+        for(Road road : board.getRoads()){
+            if(road.getId1()==id || road.getId2()==id && road.getPlayer()==player)
+                return true;
+        }
+        for(Intersection inter : board.getIntersections()){
+            if(inter.getId()==id && inter.getPlayer()==player)
+                return true;
+        }
+        return false;
     }
 
     public void progressDiscoveryCardIA(IA ia){

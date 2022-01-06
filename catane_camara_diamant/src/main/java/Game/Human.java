@@ -45,6 +45,7 @@ public class Human extends Player{
         }
 
         game.resourceAnswer(this);
+        System.out.println("Point de victoire de "+toString()+" : "+getVictoryPoint());
 
         boolean turnCompleted = false;
         while(!turnCompleted){
@@ -103,9 +104,11 @@ public class Human extends Player{
             if(board.getIntersections()[id].getBuilding().upgradeToSettlements()){
                 getSettlements().add(board.getIntersections()[id]);
                 board.getIntersections()[id].setPlayer(this);
+                
                 if(turn!=0){
                     removeResourceForSettlements();
                 }
+
                 System.out.println("Colonie construite en ("+id+").");
                 addVictoryPoint(1);
             }

@@ -42,6 +42,7 @@ public class IA extends Player {
         }
 
         game.resourceAnswer(this);
+        System.out.println("Point de victoire de "+toString()+" : "+getVictoryPoint());
 
         ArrayList<String> possibleChoice =new ArrayList<String>();
 
@@ -154,9 +155,11 @@ public class IA extends Player {
         if(board.getIntersections()[id].getBuilding().upgradeToSettlements()){
             getSettlements().add(board.getIntersections()[id]);
             board.getIntersections()[id].setPlayer(this);
+
             if(turn!=0){
                 removeResourceForSettlements();
             }
+
             System.out.println("Colonie construite en ("+id+").");
             addVictoryPoint(1);
         }
