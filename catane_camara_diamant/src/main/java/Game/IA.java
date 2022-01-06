@@ -2,12 +2,24 @@ package Game;
 
 import java.util.ArrayList;
 
+/**
+ * <b>IA est la classe qui représente les joueurs de type IA.</b>
+ * <p>Elle hérite de la classe Player donc ses champs sont les mêmes que la classe Player.
+ * </p>
+ * 
+ * @see Player
+ * 
+ * @author CAMARA Ibrahime, DIAMANT Alexandre
+ */
 public class IA extends Player {
 
     public IA(String name, int color) {
         super(name + " (IA)", color);
     }
 
+    /**
+     * @see Player#turn(Board, Game)
+     */
     @Override
     public void turn(Board board, Game game) throws Exception {
         System.out.println(this.toString() + " lance ses dés !");
@@ -42,7 +54,6 @@ public class IA extends Player {
         }
 
         game.resourceAnswer(this);
-        System.out.println("Point de victoire de "+toString()+" : "+getVictoryPoint());
 
         ArrayList<String> possibleChoice =new ArrayList<String>();
 
@@ -150,6 +161,9 @@ public class IA extends Player {
         game.getDisplay().update();
     }
 
+    /**
+     * @see Player#buildSettlement(int, Board, int)
+     */
     @Override
     public void buildSettlement(int id, Board board, int turn){
         if(board.getIntersections()[id].getBuilding().upgradeToSettlements()){
@@ -164,7 +178,9 @@ public class IA extends Player {
             addVictoryPoint(1);
         }
     }
-
+    /**
+     * @see Player#buildCity(int, Board)
+     */
     @Override
     public void buildCity(int id, Board board){
         if(board.getIntersections()[id].getBuilding().upgradeToCity()){
@@ -175,7 +191,9 @@ public class IA extends Player {
             System.out.println("Ville construite en ("+id+").");
         }
     }
-
+    /**
+     * @see Player#buildRoad(int, int, Board, int, Game)
+     */
     @Override
     public void buildRoad(int id1, int id2, Board board, int turn, Game game){
         if(board.getSpecificRoad(id1, id2)!=null){
@@ -201,7 +219,9 @@ public class IA extends Player {
             }
         }
     }
-
+    /**
+     * @see Player#moveRobber(Board, Game)
+     */
     @Override
     public void moveRobber(Board board, Game game){
         ArrayList<Case> isNotRobber = board.caseWithoutRobber(); 
@@ -247,7 +267,14 @@ public class IA extends Player {
         else
             System.out.println(getName()+" ne vole pas de ressource après le déplacement du voleur !");
     }
-
+    /**
+     * Retourne toutes les routes où l'IA peut construire.
+     * @param board
+     *      Plateau de la partie.
+     * @param game
+     *      Partie.
+     * @return Une arraylist
+     */
     public ArrayList<Road> emptyRoadPlayerCanBuild(Board board, Game game){
         ArrayList<Road> ERPCB =new ArrayList<Road>();
         if(!board.getEmptyRoad().isEmpty()){

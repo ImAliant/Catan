@@ -2,9 +2,16 @@ package Game;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-
+/**
+ * <b>Human est la classe qui représent les joueurs de Humain.</b>
+ * <p>Elle hérite de la classe Player donc ses champs sont les mêmes que la classe Player.</p>
+ * 
+ * @see Player
+ * 
+ * @author CAMARA Ibrahime, DIAMANT Alexandre
+ */
 public class Human extends Player{
-
+    
     private Scanner scan =new Scanner(System.in);
     
     public Human(String name, int color) {
@@ -45,7 +52,6 @@ public class Human extends Player{
         }
 
         game.resourceAnswer(this);
-        System.out.println("Point de victoire de "+toString()+" : "+getVictoryPoint());
 
         boolean turnCompleted = false;
         while(!turnCompleted){

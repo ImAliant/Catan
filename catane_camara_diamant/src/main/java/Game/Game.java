@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 
-import Ui.GameDisplay;
+import Ui.GameIG;
 
 /**
  * <b>Game est la classe qui gére la partie de "Colons de Catanes".</b>
@@ -32,7 +32,7 @@ import Ui.GameDisplay;
  * @see Player
  * @see Board
  * @see DevCard
- * @see GameDisplay
+ * @see GameIG
  * 
  * @author CAMARA Ibrahime, DIAMANT Alexandre
  */
@@ -42,7 +42,7 @@ public class Game {
     private ArrayList<DevCard> devCard;
     private boolean viewMod;
 
-    private GameDisplay display;
+    private GameIG display;
 
     private int winner;
     private int playerTurn;
@@ -70,7 +70,7 @@ public class Game {
         board =new Board();
 
         if(viewMod)
-            display =new GameDisplay(this, board, players);
+            display =new GameIG(this, board, players);
     }
     
     public ArrayList<DevCard> setUpDevCards() throws Exception{
@@ -1822,6 +1822,6 @@ public class Game {
     public void setLongestRoadOwner(Player longestRoadOwner) {this.longestRoadOwner = longestRoadOwner;}
     public boolean isViewMod() {return viewMod;}
     public void setViewMod(boolean viewMod) {this.viewMod = viewMod;}
-    public GameDisplay getDisplay() {return display;}
-    public void setDisplay(GameDisplay display) {this.display = display;}
+    public GameIG getDisplay() {return display;}
+    public void setDisplay(GameIG display) {this.display = display;}
 }
