@@ -2,29 +2,127 @@ package Game;
 
 import java.util.ArrayList;
 
+/**
+ * <b>Board est la classe représentant le plateau</b>
+ * <p>
+ * Board est caractérisé par les champs suivants:
+ * <ul>
+ * <li>Un tableau de cases: {@link #cases}</li>
+ * <li>Un tableau d'intersections: {@link #intersections}</li>
+ * <li>Un tableau de ports: {@link #ports}</li>
+ * <li>Un tableau d'arêtes: {@link #roads}</li>
+ * <li>L'index du voleur: {@link #indexRobber}</li>
+ * </ul>
+ * </p>
+ * 
+ * @see Case
+ * @see Intersection
+ * @see Port
+ * @see Road
+ * 
+ * @author CAMARA Ibrahime, DIAMANT Alexandre
+ */
 public class Board {
 
-    //Correspond aux types de terrain disponibles pour les cases.
+    /**
+     * Correspond au terrain de type désert.
+     */
     public static final int DESERT = -1;
+    /**
+     * Correspond au terrain de type forêt.
+     */
     public static final int FORET = 0;
+    /**
+     * Correspond au terrain de type montagne.
+     */
     public static final int MONTAGNE = 1;
+    /**
+     * Correspond au terrain de type champs.
+     */
     public static final int CHAMPS = 2;
+    /**
+     * Correspond au terrain de type pré.
+     */
     public static final int PRE = 3;
+    /**
+     * Correspond au terrain de type colline.
+     */
     public static final int COLLINE = 4;
-    public static final int TOUT = 5;
 
-
+    /**
+     * Cases du plateau.
+     * 
+     * @see Board#getCases()
+     * @see Case
+     */
     private Case[] cases;
+    /**
+     * Intersection du plateau.
+     * 
+     * @see Board#getIntersections()
+     * @see Intersection
+     */
     private Intersection[] intersections;
+    /**
+     * Ports du plateau
+     * 
+     * @see Board#getPorts()
+     * @see Case
+     */
     private Port[] ports;
+    /**
+     * Arêtes du plateau.
+     * 
+     * @see Board#getRoads()
+     * @see Case
+     */
     private Road[] roads;
+    /**
+     * Index de la case où est présent le voleur. 
+     * 
+     * @see Board#getIndexRobber()
+     */
     private int indexRobber;
 
-    public Board() {
+    /**
+     * <b>Constructeur Board</b>
+     * <p>
+     * A la construction d'un objet Board, une méthode init() est appelé.
+     * </p>
+     * 
+     * @throws Exception
+     * 
+     * @see Board#init()
+     */
+    public Board() throws Exception {
         init();
     }
 
-    private void init() {
+    /**
+     * <p>
+     * Init() est appelé dans le constructeur de la classe Board. Elle sert
+     * a initialisé tout les champs de Board.
+     * </p>
+     * <p>
+     * Elle appelle plusieurs méthodes initialisations :
+     * <ul>
+     * <li>initCases()</li>
+     * <li>initPorts()</li>
+     * <li>initIntersections()</li>
+     * <li>initCasesIntersectionAdj()</li>
+     * <li>initRoads()</li>
+     * </ul>
+     * </p>
+     * 
+     * @throws Exception
+     * 
+     * @see Board#initCases() 
+     * @see Board#initPorts()
+     * @see Board#initIntersections()
+     * @see Board#initCasesIntersectionAdj()
+     * @see Board#initRoads()
+     */
+    private void init() throws Exception {
         initCases();
         initPorts();
         initIntersections();
@@ -32,6 +130,13 @@ public class Board {
         initRoads();
     }
 
+    /**
+     * Initialise le tableau de cases de Board, la position du voleur au départ.
+     * 
+     * @see Board#getCases()
+     * @see Board#getIndexRobber()
+     * @see Case
+     */
     private void initCases() {
         cases = new Case[] {
             new Case(FORET, new Resource(Resource.BOIS), 6),
@@ -56,6 +161,12 @@ public class Board {
         cases[indexRobber].setRobber(true);
     }
 
+    /**
+     * Initialise le tableau de ports de Board.
+     * 
+     * @see Board#getPorts()
+     * @see Port
+     */
     private void initPorts(){
         ports =new Port[] {
             new Port(new Resource(Resource.MOUTON)),
@@ -69,8 +180,14 @@ public class Board {
         };
     }
 
-    
-    private void initIntersections() {
+    /**
+     * Initialise le tableau d'intersections de Board.
+     * @throws Exception
+     * 
+     * @see Board#getIntersections()
+     * @see Intersection
+     */
+    private void initIntersections() throws Exception {
         intersections = new Intersection[] {
             new Intersection(new Building(0), ports[2], new Case[]{cases[0]}),
             new Intersection(new Building(0), ports[0], new Case[]{cases[0], cases[1]}),
@@ -100,7 +217,12 @@ public class Board {
         };
     }
 
-    
+    /**
+     * Initialise les intersections adjacentes aux cases de Board.
+     * 
+     * @see Case#getCaseIntersections()
+     * @see Intersection
+     */
     private void initCasesIntersectionAdj(){
         cases[0].setCaseIntersections(new Intersection[]{intersections[0],intersections[1],intersections[5],intersections[6]});
         cases[1].setCaseIntersections(new Intersection[]{intersections[1],intersections[2],intersections[6],intersections[7]});
@@ -120,7 +242,12 @@ public class Board {
         cases[15].setCaseIntersections(new Intersection[]{intersections[18],intersections[19],intersections[23],intersections[24]});
     }
 
-    
+    /**
+     * Initialise les arêtes de Board.
+     * 
+     * @see Board#getRoads()
+     * @see Road
+     */
     private void initRoads() {
         roads =new Road[]{
             new Road(0,1), new Road(1,2), new Road(2,3), new Road(3,4),
@@ -151,6 +278,18 @@ public class Board {
         };
     }
 
+    /**
+     * Permet d'obtenir une arête spécifique de Board.
+     * @param id1
+     *      Le premier index de l'arête que l'on cherche.
+     * @param id2
+     *      Le second index de l'arête que l'on cherche.
+     * @return
+     *      Un objet Road appartenant au tableau d'arête ou null si elle n'existe pas.
+     * 
+     * @see Board#getRoads()
+     * @see Road
+     */
     public Road getSpecificRoad(int id1, int id2){
         Road rep=null;
         for(Road r : roads){
@@ -162,6 +301,13 @@ public class Board {
         return rep;
     }
 
+    /**
+     * Permet d'obtenir les intersections où un batiment n'a pas encore été construit.
+     * @return Une arraylist contenant toutes les intersections considéré comme vide.
+     * 
+     * @see Board#getIntersections()
+     * @see Intersection
+     */
     public ArrayList<Intersection> getEmptyIntersection(){
         ArrayList<Intersection> emptyIntersection=new ArrayList<Intersection>();
 
@@ -173,6 +319,13 @@ public class Board {
         return emptyIntersection;
     }
 
+    /**
+     * Permet d'obtenir les arêtes où une route n'a pas encore été construite.
+     * @return Une arraylist contenant toutes les arêtes considéré comme vide.
+     * 
+     * @see Board#getRoads()
+     * @see Road
+     */
     public ArrayList<Road> getEmptyRoad(){
         ArrayList<Road> emptyRoadID=new ArrayList<Road>();
 
@@ -184,6 +337,13 @@ public class Board {
         return emptyRoadID;
     }
 
+    /**
+     * Permet d'obtenir toutes les cases où le voleur n'est pas présent.
+     * @return Une arraylist contenant toutes les cases où le voleur n'est pas présent.
+     * 
+     * @see Board#getCases()
+     * @see Case
+     */
     public ArrayList<Case> caseWithoutRobber(){
         ArrayList<Case> isNotRobber =new ArrayList<Case>();
 
@@ -196,15 +356,54 @@ public class Board {
         return isNotRobber;
     }
 
-    //Getters et Setters
+    /**
+     * Getters
+     * @return Le tableau de cases de l'objet Board.
+     */
     public Case[] getCases() {return cases;}
+    /**
+     * Setters
+     * @param cases
+     */
     public void setCases(Case[] cases) {this.cases = cases;}
+    /**
+     * Getters
+     * @return Le tableau d'intersections de l'objet Board.
+     */
     public Intersection[] getIntersections() {return intersections;}
+    /**
+     * Setters
+     * @param intersections
+     */
     public void setIntersections(Intersection[] intersections) {this.intersections = intersections;}
+    /**
+     * Getters
+     * @return Le tableau d'arêtes de l'objet Board.
+     */
     public Road[] getRoads() {return roads;}
+    /**
+     * Setters
+     * @param roads
+     */
     public void setRoads(Road[] roads) {this.roads = roads;}
+    /**
+     * Getters
+     * @return Le tableau de cases de l'objet Board.
+     */
     public int getIndexRobber() {return indexRobber;}
+    /**
+     * Setters
+     * @param indexRobber
+     */
     public void setIndexRobber(int indexRobber) {this.indexRobber = indexRobber;}
+    /**
+     * Getters
+     * @return Le tableau de cases de l'objet Board.
+     */
     public Port[] getPorts() {return ports;}
+    /**
+     * Setters
+     * @param ports
+     */
     public void setPorts(Port[] ports) {this.ports = ports;} 
 }

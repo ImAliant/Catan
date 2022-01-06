@@ -7,6 +7,35 @@ import java.util.Scanner;
 
 import Ui.GameDisplay;
 
+/**
+ * <b>Game est la classe qui gére la partie de "Colons de Catanes".</b>
+ * <p>
+ * Game est caractérisé par les champs suivants:
+ * <ul>
+ * <li>Un tableau de joueurs: {@link #players}</li>
+ * <li>Un plateau Board: {@link #board}</li>
+ * <li>Une arraylist contenant les cartes de développement de la partie: {@link #devCard}</li>
+ * <li>Un booléen correspondant au choix de l'utilisateur concernant la vue: {@link #viewMod}</li>
+ * <li>La vue du jeu: {@link #display}</li>
+ * <li>Un entier correspondant au gagnant de la partie: {@link #winner}</li>
+ * <li>Un entier correspondant a l'index du joueur faisant son tour: {@link #playerTurn}</li>
+ * <li>Un entier correspondant au tour dans la partie: {@link #turn}</li>
+ * <li>Un entier correspondant au nombre maximum de carte "chevalier" joué par un joueur: {@link #strongestKnightSize}</li>
+ * <li>Un objet Player correspondant au joueur possedant la carte spéciale "le plus de chevalier joué": {@link #strongestKnightOwner}</li>
+ * <li>Un entier correspondant a la taille de la route la plus longue: {@link #longestRoadSize}</li>
+ * <li>Un objet Player correspondant au joueur possedant la carte spéciale "la plus longue route": {@link #longestRoadOwner}</li>
+ * <li>Un objet Scanner: {@link #scan}</li>
+ * <li>Un objet Random: {@link #rand}</li>
+ * </ul>
+ * </p>
+ * 
+ * @see Player
+ * @see Board
+ * @see DevCard
+ * @see GameDisplay
+ * 
+ * @author CAMARA Ibrahime, DIAMANT Alexandre
+ */
 public class Game {
     private Player[] players;
     private Board board;
@@ -44,7 +73,6 @@ public class Game {
             display =new GameDisplay(this, board, players);
     }
     
-
     public ArrayList<DevCard> setUpDevCards() throws Exception{
         devCard =new ArrayList<DevCard>();
         int victoryCard=5;
@@ -1421,7 +1449,6 @@ public class Game {
             System.out.println(player.getName()+" n'a pas pu utilisé sa carte progrès : construction car il n'y a plus de route libre.");
     }
     
-
     public void progressDiscoveryCard(Player player){
         System.out.println("Vous devez choisir deux ressources.");
 
@@ -1705,6 +1732,7 @@ public class Game {
             }
         }
     }
+
     public int findLongestRoad(Road r, Player player, ArrayList<Road> rCrossed){  //r : route sur laquelle on test si elle fait partie de la route la plus longue. rCrossed : route qu'on doit plus tester.
         int compteur = 0;
         int compteurMax = 0;
