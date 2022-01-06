@@ -4,6 +4,31 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * <b>Player est la classe correspondant aux joueurs présent dans la partie.</b>
+ * <p>
+ * Player est une classe abstraite et est caractérisé par les champs suivants:
+ * <ul>
+ * <li>Une chaine de caractère correspondant au nom du joueur: {@link #name}</li>
+ * <li>Un entier correspondant a la couleur du joueur: {@link #color}</li>
+ * <li>Un booléen qui correspond a la victoire du joueur: {@link #winner}</li>
+ * <li>Un tableau d'entiers correspondants aux ressources du joueur: {@link #playerResources}</li>
+ * <li>Plusieurs arraylist correspondants aux possessions du joueur, c'est les routes, les colonies, les villes et
+ * les cartes de développements: {@link #roads}, {@link #settlements}, {@link #cities}, {@link #cards}</li>
+ * <li>Un booléen correspondant a la possession de "la route la plus longue": {@link #longestRoad}</li>
+ * <li>Un booléen correspondant a la possession du "chevalier le plus fort": {@link #strongestKnight}</li>
+ * <li>Un entier correspondant au point de victoire du joueur: {@link #victoryPoint}</li>
+ * <li>Un entier correspondant au nombre de chevalier joué par le joueur: {@link #knightPlayed}</li>
+ * <li>Un scanner et un random: {@link #scan}, {@link #rand}</li>
+ * </ul>
+ * </p>
+ * 
+ * @see Road
+ * @see Intersection
+ * @see DevCard
+ * 
+ * @author CAMARA Ibrahime, DIAMANT Alexandre
+ */
 public abstract class Player {
     private String name;
     private int color;
