@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
-import Game.Game;
 import Game.Player;
 
 public class PlayersDisplay extends JPanel{
